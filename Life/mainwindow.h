@@ -21,6 +21,8 @@ private slots:
     void on_actionExit_triggered();
 
 private:
+    void setupShortcuts();
+
     Ui::MainWindow *ui;
 
     Board *wgt;
