@@ -23,6 +23,11 @@ public slots:
 
 private:
     void paint();
+    void drawLine(QPoint from, QPoint to, QRgb color);
+    void drawLineBresenham(QPoint &from, QPoint &to, QRgb color);
+    void drawLineBresenhamY(QPoint &from, QPoint &to, QRgb color);
+    void drawHorizontalLine(QPoint &from, QPoint &to, QRgb color);
+    void drawVerticalLine(QPoint &from, QPoint &to, QRgb color);
     void fill(QRgb color);
 
     static const QRgb RedColor = qRgb(255, 0, 0);
