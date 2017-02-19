@@ -2,30 +2,34 @@
 
 Board::Board(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32)
 {
+    paint();
 }
 
-void Board::drawLine(uint x_from, uint y_from, uint x_to, uint y_to) {
+void Board::fill(QRgb color) {
+    // red = green = blue
+    if ((uchar) color == (uchar) (color >> 8) &&
+            (uchar) color == (uchar) (color >> 16)) {
+        memset(image.bits(), (uchar) color, image.bytesPerLine() * image.height());
+    } else {
+        QRgb *pixels = reinterpret_cast<QRgb *> (image.bits());
+        for (size_t j = 0; j < image.height(); ++j) {
+            for (size_t i = 0; i < image.width(); ++i) {
+                pixels[j * image.width() + i] = color;
+            }
+        }
+    }
 }
 
-void Board::bresenham(uint x_from, uint y_from, uint x_to, uint y_to) {
+void Board::paint() {
+    fill(WhiteColor);
 }
-
-#define min(x, y) (x) > (y) ? (y) : (x)
-#define max(x, y) (x) > (y) ? (x) : (y)
 
 void Board::resizeEvent(QResizeEvent * event) {
     image = QImage(this->size(), QImage::Format_RGB32);
+    paint();
 }
 
 void Board::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    image.fill(qRgb(255, 255, 255));
-    uchar* bits = image.bits();
-    int y_max = max(0, min(50, image.height() - 50));
-    int x_max = max(0, min(50, image.width() - 50));
-    for (int j = 0; j < y_max; ++j) {
-        uchar *line = bits + (50 + j) * image.bytesPerLine();
-        memset(line + (50 * image.depth() / 8), 0, image.depth() / 8 * x_max);
-    }
     painter.drawImage(0, 0, image);
 }

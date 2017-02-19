@@ -22,8 +22,15 @@ signals:
 public slots:
 
 private:
-    void drawLine(uint x_from, uint y_from, uint x_to, uint y_to);
-    void bresenham(uint x_from, uint y_from, uint x_to, uint y_to);
+    void paint();
+    void fill(QRgb color);
+
+    static const QRgb RedColor = qRgb(255, 0, 0);
+    static const QRgb GreenColor = qRgb(0, 255, 0);
+    static const QRgb BlueColor = qRgb(0, 0, 255);
+    static const QRgb WhiteColor = qRgb(255, 255, 255);
+    static const QRgb BlackColor = qRgb(0, 0, 0);
+
 
     QImage image;
 };
