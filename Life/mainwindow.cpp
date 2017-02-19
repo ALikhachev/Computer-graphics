@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    wgt = new QCanvas(this);
+    wgt = new Board(this);
     ui->verticalLayout->addWidget(wgt);
     wgt->show();
 }
@@ -20,9 +20,3 @@ void MainWindow::on_actionExit_triggered()
 {
     qApp->quit();
 }
-
-//void MainWindow::paintEvent(QPaintEvent *event) {
-//    QPainter painter(this);
-//    QImage image("E:/green_nsu.png");
-//    painter.drawImage(0, 0, image);
-//}

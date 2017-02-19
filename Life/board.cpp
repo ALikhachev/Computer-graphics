@@ -1,23 +1,23 @@
-#include "qcanvas.h"
+#include "board.h"
 
-QCanvas::QCanvas(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32)
+Board::Board(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32)
 {
 }
 
-void QCanvas::drawLine(uint x_from, uint y_from, uint x_to, uint y_to) {
+void Board::drawLine(uint x_from, uint y_from, uint x_to, uint y_to) {
 }
 
-void QCanvas::bresenham(uint x_from, uint y_from, uint x_to, uint y_to) {
+void Board::bresenham(uint x_from, uint y_from, uint x_to, uint y_to) {
 }
 
 #define min(x, y) (x) > (y) ? (y) : (x)
 #define max(x, y) (x) > (y) ? (x) : (y)
 
-void QCanvas::resizeEvent(QResizeEvent * event) {
+void Board::resizeEvent(QResizeEvent * event) {
     image = QImage(this->size(), QImage::Format_RGB32);
 }
 
-void QCanvas::paintEvent(QPaintEvent *) {
+void Board::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     image.fill(qRgb(255, 255, 255));
     uchar* bits = image.bits();

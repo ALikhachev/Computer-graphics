@@ -7,11 +7,11 @@
 #include <QPaintEvent>
 #include <QSharedPointer>
 
-class QCanvas : public QWidget
+class Board : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QCanvas(QWidget *parent = 0);
+    explicit Board(QWidget *parent = 0);
 
 protected:
     void paintEvent(QPaintEvent *) override;
