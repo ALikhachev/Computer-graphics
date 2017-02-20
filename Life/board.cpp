@@ -174,6 +174,49 @@ void Board::drawHexagon(QPoint start, uint size) {
     drawLine(hexagonPoint(start, size, 5), hexagonPoint(start, size, 0), BlackColor);
 }
 
+bool Board::spanFillStackX(uint x, uint y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans) {
+    if (pixels[y * image.width() + x] != oldValue) {
+        return false;
+    }
+    uint i, j;
+    for (i = x - 1; i >= 0; --i) {
+        if (pixels[y * image.width() + i] != oldValue) {
+            break;
+        }
+    }
+    for (j = x + 1; j < image.width(); ++j) {
+        if (pixels[y * image.width() + j] != oldValue) {
+            break;
+        }
+    }
+    spans.push_back( { i + 1, j - 1, y } );
+    return true;
+}
+
+void Board::spanFillStackY(QPoint &point, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans) {
+    for (uint i = point.y(); i < image.height(); ++i) {
+        if (!spanFillStackX(point.x(), i, pixels, oldValue, spans)) {
+            break;
+        }
+    }
+    for (uint i = point.y() - 1; i > 0; --i) {
+        if (!spanFillStackX(point.x(), i, pixels, oldValue, spans)) {
+            break;
+        }
+    }
+}
+
+void Board::spanFill(QPoint start, QRgb color) {
+    QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
+    QRgb oldValue = pixels[start.y() * image.width() + start.x()];
+    std::vector<SpanLine> spans;
+    spanFillStackY(start, pixels, oldValue, spans);
+    for (auto it = spans.begin(); it < spans.end(); ++it) {
+        drawLine(QPoint((*it).x0, (*it).y), QPoint((*it).x1, (*it).y), color);
+    }
+
+}
+
 void Board::paint() {
     fill(WhiteColor);
     /*drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
@@ -185,6 +228,7 @@ void Board::paint() {
     drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
     drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);*/
     drawHexagon(QPoint(0, 0), 50);
+    spanFill(QPoint(30, 30), RedColor);
     drawHexagon(QPoint(sqrt(3) * 50 +1, 0), 50);
 }
 

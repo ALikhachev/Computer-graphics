@@ -7,6 +7,12 @@
 #include <QPaintEvent>
 #include <QSharedPointer>
 
+struct SpanLine {
+    uint x0;
+    uint x1;
+    uint y;
+};
+
 class Board : public QWidget
 {
     Q_OBJECT
@@ -32,6 +38,9 @@ private:
     void drawHorizontalLine(QPoint &from, QPoint &to, QRgb color);
     void drawVerticalLine(QPoint &from, QPoint &to, QRgb color);
     void fill(QRgb color);
+    void spanFill(QPoint start, QRgb color);
+    bool spanFillStackX(uint x, uint y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
+    void spanFillStackY(QPoint &point, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
 
     static const QRgb RedColor = qRgb(255, 0, 0);
     static const QRgb GreenColor = qRgb(0, 255, 0);
