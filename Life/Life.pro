@@ -28,6 +28,7 @@ SOURCES += main.cpp\
     board.cpp
 
 HEADERS  += mainwindow.h \
-    board.h
+    board.h \
+    utils.h
 
 FORMS    += mainwindow.ui

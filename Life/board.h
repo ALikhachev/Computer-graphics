@@ -24,6 +24,7 @@ public slots:
 private:
     void paint();
     void drawLine(QPoint from, QPoint to, QRgb color);
+    void drawHexagon(QPoint start, uint size);
     bool tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color);
     void clipLine(QPoint &from, QPoint &to);
     void drawLineBresenham(QPoint &from, QPoint &to, QRgb color);

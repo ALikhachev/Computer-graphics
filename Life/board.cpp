@@ -1,4 +1,7 @@
 #include "board.h"
+#include "utils.h"
+
+using Utils::hexagonPoint;
 
 Board::Board(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32)
 {
@@ -157,16 +160,32 @@ void Board::drawVerticalLine(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
+void Board::drawHexagon(QPoint start, uint size) {
+    // width = sqrt(3)/2 * height
+    start.setX(start.x() + sqrt(3) / 2 * size);
+    // height = size * 2
+    // vert = height * 3/4.
+    start.setY(start.y() + size);
+    drawLine(hexagonPoint(start, size, 0), hexagonPoint(start, size, 1), BlackColor);
+    drawLine(hexagonPoint(start, size, 1), hexagonPoint(start, size, 2), BlackColor);
+    drawLine(hexagonPoint(start, size, 2), hexagonPoint(start, size, 3), BlackColor);
+    drawLine(hexagonPoint(start, size, 3), hexagonPoint(start, size, 4), BlackColor);
+    drawLine(hexagonPoint(start, size, 4), hexagonPoint(start, size, 5), BlackColor);
+    drawLine(hexagonPoint(start, size, 5), hexagonPoint(start, size, 0), BlackColor);
+}
+
 void Board::paint() {
     fill(WhiteColor);
-    drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
+    /*drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
     drawLine(QPoint(0, 0), QPoint(1024, 100), BlueColor);
     drawLine(QPoint(-100, 500), QPoint(50, 0), RedColor);
     drawLine(QPoint(-100, 500), QPoint(0, 90), RedColor);
     drawLine(QPoint(0, 50), QPoint(100, 10), BlackColor);
     drawLine(QPoint(-50, 50), QPoint(-10, 10), BlackColor);
     drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
-    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);
+    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);*/
+    drawHexagon(QPoint(0, 0), 50);
+    drawHexagon(QPoint(sqrt(3) * 50 +1, 0), 50);
 }
 
 void Board::resizeEvent(QResizeEvent * event) {
