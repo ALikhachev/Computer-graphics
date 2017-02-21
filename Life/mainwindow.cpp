@@ -10,14 +10,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Life");
     setupShortcuts();
-    wgt = new Board(this);
-    ui->verticalLayout->addWidget(wgt);
-    wgt->show();
+    about = new About(this);
+    board = new Board(this);
+    ui->verticalLayout->addWidget(board);
+    board->show();
 }
 
 void MainWindow::setupShortcuts() {
-    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+Q"), this);
-    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(on_actionExit_triggered()));
+    QShortcut *shortcutExit = new QShortcut(QKeySequence("Ctrl+Q"), this);
+    QShortcut *shortcutAbout = new QShortcut(QKeySequence("F1"), this);
+    QObject::connect(shortcutExit, SIGNAL(activated()), this, SLOT(on_actionExit_triggered()));
+    QObject::connect(shortcutAbout, SIGNAL(activated()), this, SLOT(on_actionAbout_triggered()));
 }
 
 MainWindow::~MainWindow()
@@ -28,4 +31,9 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionExit_triggered()
 {
     qApp->quit();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    about->show();
 }

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+#include "about.h"
 #include "board.h"
 
 namespace Ui {
@@ -20,12 +21,15 @@ public:
 private slots:
     void on_actionExit_triggered();
 
+    void on_actionAbout_triggered();
+
 private:
     void setupShortcuts();
 
     Ui::MainWindow *ui;
 
-    Board *wgt;
+    About *about;
+    Board *board;
 };
 
 #endif // MAINWINDOW_H
