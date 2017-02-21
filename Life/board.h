@@ -8,9 +8,9 @@
 #include <QSharedPointer>
 
 struct SpanLine {
-    uint x0;
-    uint x1;
-    uint y;
+    int x0;
+    int x1;
+    int y;
 };
 
 class Board : public QWidget
@@ -39,8 +39,7 @@ private:
     void drawVerticalLine(QPoint &from, QPoint &to, QRgb color);
     void fill(QRgb color);
     void spanFill(QPoint start, QRgb color);
-    bool spanFillStackX(uint x, uint y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
-    void spanFillStackY(QPoint &point, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
+    void getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
 
     static const QRgb RedColor = qRgb(255, 0, 0);
     static const QRgb GreenColor = qRgb(0, 255, 0);
