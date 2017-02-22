@@ -29,12 +29,14 @@ void Board::fill(QRgb color) {
 void Board::drawLine(QPoint from, QPoint to, QRgb color) {
     if (!tryDrawSimpleLine(from, to, color)) {
         clipLine(from, to);
-        if (!tryDrawSimpleLine(from, to, color)) {
-            clipLine(to, from);
-            if (!tryDrawSimpleLine(from, to, color)) {
-                drawLineBresenham(from, to, color);
-            }
+        if (from.x() == to.x() || from.y() == to.y()) {
+            return;
         }
+        clipLine(to, from);
+        if (from.x() == to.x() || from.y() == to.y()) {
+            return;
+        }
+        drawLineBresenham(from, to, color);
     }
 }
 
@@ -256,19 +258,19 @@ void Board::spanFill(QPoint start, QRgb color) {
 
 void Board::paint() {
     fill(WhiteColor);
-//    drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
-//    drawLine(QPoint(0, 0), QPoint(1024, 100), BlueColor);
-//    drawLine(QPoint(-100, 500), QPoint(50, 0), RedColor);
-//    drawLine(QPoint(-100, 500), QPoint(0, 90), RedColor);
-//    drawLine(QPoint(0, 50), QPoint(100, 10), BlackColor);
+    /*drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
+    drawLine(QPoint(0, 0), QPoint(1024, 100), BlueColor);
+    drawLine(QPoint(-100, 500), QPoint(50, 0), RedColor);
+    drawLine(QPoint(-100, 500), QPoint(0, 90), RedColor);
+    drawLine(QPoint(0, 50), QPoint(100, 10), BlackColor);
     drawLine(QPoint(-50, 50), QPoint(-10, 10), BlackColor);
-//    drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
-//    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);
-    /*static int offset;
+    drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
+    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);*/
+    static int offset;
     offset = QDateTime::currentMSecsSinceEpoch() / 10 % image.width();
     drawHexagon(QPoint(offset, 0), 50);
     spanFill(QPoint(offset + 30, 30), RedColor);
-    drawHexagon(QPoint(offset + sqrt(3) * 50 + 1, 0), 50);*/
+    drawHexagon(QPoint(offset + sqrt(3) * 50 + 1, 0), 50);
 }
 
 void Board::resizeEvent(QResizeEvent * event) {
