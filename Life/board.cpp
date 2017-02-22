@@ -43,24 +43,32 @@ void Board::drawLine(QPoint from, QPoint to, QRgb color) {
 // Алгоритм Коэна — Сазерленда
 void Board::clipLine(QPoint &from, QPoint &to) {
     if (from.x() < 0) {
-        int newY = from.y() + (to.y() - from.y()) * from.x() / (from.x() - to.x());
-        from.setY(newY);
-        from.setX(0);
+        if (from.x() != to.x()) {
+            int newY = from.y() + (to.y() - from.y()) * from.x() / (from.x() - to.x());
+            from.setY(newY);
+            from.setX(0);
+        }
     }
     if (from.x() >= image.width()) {
-        int newY = from.y() + (to.y() - from.y()) * (image.width() - 1 - from.x()) / (to.x() - from.x());
-        from.setY(newY);
-        from.setX(image.width() - 1);
+        if (to.x() != from.x()) {
+            int newY = from.y() + (to.y() - from.y()) * (image.width() - 1 - from.x()) / (to.x() - from.x());
+            from.setY(newY);
+            from.setX(image.width() - 1);
+        }
     }
     if (from.y() < 0) {
-        int newX = from.x() + (to.x() - from.x()) * from.y() / (from.y() - to.y());
-        from.setX(newX);
-        from.setY(0);
+        if (from.y() != to.y()) {
+            int newX = from.x() + (to.x() - from.x()) * from.y() / (from.y() - to.y());
+            from.setX(newX);
+            from.setY(0);
+        }
     }
     if (from.y() >= image.height()) {
-        int newX = from.x() + (to.x() - from.x()) * (image.height() - 1 - from.y()) / (to.y() - from.y());
-        from.setX(newX);
-        from.setY(image.height() - 1);
+        if (to.y() != from.y()) {
+            int newX = from.x() + (to.x() - from.x()) * (image.height() - 1 - from.y()) / (to.y() - from.y());
+            from.setX(newX);
+            from.setY(image.height() - 1);
+        }
     }
 }
 
@@ -197,8 +205,6 @@ void Board::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, s
             x0 = 0;
         }
     }
-    static int i = 0;
-    if (i++ == 4) i = i;
     for (uint j = min_x + 1; j < image.width(); ++j) {
         if (pixels[y * image.width() + j] != oldValue) {
             if (x0 != -1) {

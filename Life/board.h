@@ -48,7 +48,6 @@ private:
     static const QRgb WhiteColor = qRgb(255, 255, 255);
     static const QRgb BlackColor = qRgb(0, 0, 0);
 
-
     QImage image;
     QTimer timer;
 };
