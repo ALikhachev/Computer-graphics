@@ -1,6 +1,7 @@
 #ifndef QCANVAS_H
 #define QCANVAS_H
 
+#include <QTimer>
 #include <QImage>
 #include <QPainter>
 #include <QWidget>
@@ -49,6 +50,7 @@ private:
 
 
     QImage image;
+    QTimer timer;
 };
 
 #endif // QCANVAS_H

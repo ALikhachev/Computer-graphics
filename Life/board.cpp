@@ -1,10 +1,14 @@
+#include <QDateTime>
+
 #include "board.h"
 #include "utils.h"
 
 using Utils::hexagonPoint;
 
-Board::Board(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32)
+Board::Board(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32), timer(this)
 {
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer.start(10);
 }
 
 void Board::fill(QRgb color) {
@@ -218,6 +222,9 @@ void Board::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, s
 }
 
 void Board::spanFill(QPoint start, QRgb color) {
+    if (start.y() < 0 || start.x() < 0 || start.y() >= image.height() || start.x() >= image.width()) {
+        return;
+    }
     QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
     QRgb oldValue = pixels[start.y() * image.width() + start.x()];
     int i, j;
@@ -235,7 +242,6 @@ void Board::spanFill(QPoint start, QRgb color) {
     int start_max_x = j - 1;
     std::vector<SpanLine> spans;
     spans.push_back({start_min_x, start_max_x, start.y()});
-    int a = 0;
     while (spans.size() > 0) {
         std::vector<SpanLine> newSpans;
         for (auto it = spans.begin(); it < spans.end(); ++it) {
@@ -250,25 +256,27 @@ void Board::spanFill(QPoint start, QRgb color) {
 
 void Board::paint() {
     fill(WhiteColor);
-    /*drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
-    drawLine(QPoint(0, 0), QPoint(1024, 100), BlueColor);
-    drawLine(QPoint(-100, 500), QPoint(50, 0), RedColor);
-    drawLine(QPoint(-100, 500), QPoint(0, 90), RedColor);
-    drawLine(QPoint(0, 50), QPoint(100, 10), BlackColor);
+//    drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
+//    drawLine(QPoint(0, 0), QPoint(1024, 100), BlueColor);
+//    drawLine(QPoint(-100, 500), QPoint(50, 0), RedColor);
+//    drawLine(QPoint(-100, 500), QPoint(0, 90), RedColor);
+//    drawLine(QPoint(0, 50), QPoint(100, 10), BlackColor);
     drawLine(QPoint(-50, 50), QPoint(-10, 10), BlackColor);
-    drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
-    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);*/
-    drawHexagon(QPoint(0, 0), 50);
-    spanFill(QPoint(30, 30), RedColor);
-    drawHexagon(QPoint(sqrt(3) * 50 +1, 0), 50);
+//    drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
+//    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);
+    /*static int offset;
+    offset = QDateTime::currentMSecsSinceEpoch() / 10 % image.width();
+    drawHexagon(QPoint(offset, 0), 50);
+    spanFill(QPoint(offset + 30, 30), RedColor);
+    drawHexagon(QPoint(offset + sqrt(3) * 50 + 1, 0), 50);*/
 }
 
 void Board::resizeEvent(QResizeEvent * event) {
     image = QImage(this->size(), QImage::Format_RGB32);
-    paint();
 }
 
 void Board::paintEvent(QPaintEvent *) {
     QPainter painter(this);
+    paint();
     painter.drawImage(0, 0, image);
 }
