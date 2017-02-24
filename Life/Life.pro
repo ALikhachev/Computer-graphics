@@ -11,3 +11,6 @@ HEADERS  += mainwindow.h \
     board.h \
     utils.h \
     about.h
+
+RESOURCES += \
+    toolbar.qrc
