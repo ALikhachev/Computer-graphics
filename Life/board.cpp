@@ -22,8 +22,8 @@ void Board::fill(QRgb color) {
         memset(image.bits(), (uchar) color, image.bytesPerLine() * image.height());
     } else {
         QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
-        for (uint j = 0; j < image.height(); ++j) {
-            for (uint i = 0; i < image.width(); ++i) {
+        for (int j = 0; j < image.height(); ++j) {
+            for (int i = 0; i < image.width(); ++i) {
                 pixels[j * image.width() + i] = color;
             }
         }
@@ -100,7 +100,7 @@ void Board::drawLineBresenham(QPoint &from, QPoint &to, QRgb color) {
     uint dy = abs(to.y() - from.y());
     int err = 2 * dy - dx;
     uint y = from.y();
-    uint x;
+    int x;
     int sign = to.y() > from.y() ? 1 : -1;
     QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
     for (x = from.x(); x <= to.x(); ++x) {
@@ -121,7 +121,7 @@ void Board::drawLineBresenhamY(QPoint &from, QPoint &to, QRgb color) {
     uint dy = to.y() - from.y();
     int err = 2 * dx - dy;
     uint x = from.x();
-    uint y;
+    int y;
     int sign = to.x() > from.x() ? 1 : -1;
     QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
     for (y = from.y(); y <= to.y(); ++y) {
@@ -153,7 +153,7 @@ void Board::drawHorizontalLine(QPoint &from, QPoint &to, QRgb color) {
         memset(line + from.x() * image.depth() / 8, color, 3 * (to.x() - from.x()));
     } else {
         QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
-        for (uint i = from.x(); i <= to.x(); ++i) {
+        for (int i = from.x(); i <= to.x(); ++i) {
             pixels[from.y() * image.width() + i] = color;
         }
     }
@@ -173,7 +173,7 @@ void Board::drawVerticalLine(QPoint &from, QPoint &to, QRgb color) {
         to.setY(image.height() - 1);
     }
     QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
-    for (uint j = from.y(); j <= to.y(); ++j) {
+    for (int j = from.y(); j <= to.y(); ++j) {
         pixels[j * image.width() + from.x()] = color;
     }
 }
@@ -209,7 +209,7 @@ void Board::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, s
             x0 = 0;
         }
     }
-    for (uint j = min_x + 1; j < image.width(); ++j) {
+    for (int j = min_x + 1; j < image.width(); ++j) {
         if (pixels[y * image.width() + j] != oldValue) {
             if (x0 != -1) {
                 spans.push_back({x0, j - 1, y});
@@ -283,7 +283,7 @@ void Board::paint() {
     drawHexagon(QPoint(offset + sqrt(3) * 50 + 1, 0), 50);
 }
 
-void Board::resizeEvent(QResizeEvent * event) {
+void Board::resizeEvent(QResizeEvent *) {
     image = QImage(this->size(), QImage::Format_RGB32);
 }
 
