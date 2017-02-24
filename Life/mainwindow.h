@@ -20,12 +20,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
 private slots:
-    void on_actionExit_triggered();
-
-    void on_actionAbout_triggered();
+    void showAbout();
 
 private:
-    void setupShortcuts();
+    void createActions();
 
     QScopedPointer<QScrollArea> scrollArea;
 
