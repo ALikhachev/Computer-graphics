@@ -5,12 +5,16 @@ TARGET = Life
 SOURCES += main.cpp\
     mainwindow.cpp \
     board.cpp \
-    about.cpp
+    about.cpp \
+    boardsettings.cpp \
+    boardsettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     board.h \
     utils.h \
-    about.h
+    about.h \
+    boardsettings.h \
+    boardsettingsdialog.h
 
 RESOURCES += \
     toolbar.qrc

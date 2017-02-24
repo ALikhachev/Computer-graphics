@@ -7,17 +7,18 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    scrollArea(new QScrollArea),
-    about(new About(this)),
-    board(new Board(this))
+    scrollArea(this),
+    about(this),
+    board(this),
+    settings(NULL, this)
 {
     setWindowTitle("Life");
 
     createActions();
 
-    scrollArea->setWidget(board.data());
+    scrollArea.setWidget(&board);
 
-    setCentralWidget(scrollArea.data());
+    setCentralWidget(&scrollArea);
 }
 
 void MainWindow::createActions() {
@@ -83,7 +84,7 @@ void MainWindow::createActions() {
 
     editMenu->addSeparator();
 
-    QAction *parametersAct = editMenu->addAction(tr("&Parameters"), this, &QWidget::close);
+    QAction *parametersAct = editMenu->addAction(tr("&Parameters"), this, showSettings);
     const QIcon settingsIcon = QIcon::fromTheme("settings", QIcon(":/icons/settings.png"));
     parametersAct->setIcon(settingsIcon);
     parametersAct->setStatusTip("Show game settings window");
@@ -124,8 +125,13 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::showAbout() {
-    about->show();
-    about->activateWindow();
+    about.show();
+    about.activateWindow();
+}
+
+void MainWindow::showSettings() {
+    settings.show();
+    settings.activateWindow();
 }
 
 void MainWindow::toggleStatusBar() {

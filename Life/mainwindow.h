@@ -9,6 +9,7 @@
 
 #include "about.h"
 #include "board.h"
+#include "boardsettingsdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,16 +24,18 @@ public:
 
 private slots:
     void showAbout();
+    void showSettings();
     void toggleStatusBar();
     void toggleToolBar();
 
 private:
     void createActions();
 
-    QScopedPointer<QScrollArea> scrollArea;
+    QScrollArea scrollArea;
 
-    QScopedPointer<About> about;
-    QScopedPointer<Board> board;
+    About about;
+    Board board;
+    BoardSettingsDialog settings;
 
     QToolBar *toolBar;
     QAction *toolBarStateAction;
