@@ -5,15 +5,18 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    scrollArea(new QScrollArea),
+    about(new About(this)),
+    board(new Board(this))
 {
-    ui->setupUi(this);
     setWindowTitle("Life");
+
     setupShortcuts();
-    about = new About(this);
-    board = new Board(this);
-    ui->verticalLayout->addWidget(board);
-    board->show();
+
+    scrollArea->setWidget(board.data());
+    scrollArea->setVisible(true);
+
+    setCentralWidget(scrollArea.data());
 }
 
 void MainWindow::setupShortcuts() {
@@ -21,11 +24,6 @@ void MainWindow::setupShortcuts() {
     QShortcut *shortcutAbout = new QShortcut(QKeySequence("F1"), this);
     QObject::connect(shortcutExit, SIGNAL(activated()), this, SLOT(on_actionExit_triggered()));
     QObject::connect(shortcutAbout, SIGNAL(activated()), this, SLOT(on_actionAbout_triggered()));
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
 }
 
 void MainWindow::on_actionExit_triggered()

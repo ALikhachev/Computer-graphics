@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QScrollArea>
+#include <QScopedPointer>
 
 #include "about.h"
 #include "board.h"
@@ -16,7 +18,6 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
 
 private slots:
     void on_actionExit_triggered();
@@ -26,10 +27,10 @@ private slots:
 private:
     void setupShortcuts();
 
-    Ui::MainWindow *ui;
+    QScopedPointer<QScrollArea> scrollArea;
 
-    About *about;
-    Board *board;
+    QScopedPointer<About> about;
+    QScopedPointer<Board> board;
 };
 
 #endif // MAINWINDOW_H

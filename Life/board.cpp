@@ -5,8 +5,12 @@
 
 using Utils::hexagonPoint;
 
-Board::Board(QWidget *parent) : QWidget(parent), image(this->size(), QImage::Format_RGB32), timer(this)
+Board::Board(QWidget *parent) :
+    QWidget(parent),
+    timer(this)
 {
+    resize(500, 400);
+    image = QImage(this->size(), QImage::Format_RGB32);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(10);
 }
