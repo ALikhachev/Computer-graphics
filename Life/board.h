@@ -4,6 +4,7 @@
 #include <QSharedPointer>
 
 #include "board_settings.h"
+#include "iboard_view.h"
 
 struct Cell {
     quint16 external_impact;
@@ -20,6 +21,7 @@ private:
     quint32 width;
     quint32 height;
     quint32 ticks_passed;
+    std::vector<IBoardView *> listeners;
 
     // only call this method when cell state is changed
     void updateImpacts(quint32 x, quint32 y, bool born);
@@ -29,6 +31,7 @@ public slots:
 
 public:
     Board(const BoardSettings *rules, const quint32 width, const quint32 height, std::vector<Cell> initial_state);
+    void subscribe(IBoardView *listener);
 
     void setCell(quint32 x, quint32 y, bool alive);
     void invertCell(quint32 x, quint32 y);

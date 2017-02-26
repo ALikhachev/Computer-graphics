@@ -81,6 +81,7 @@ void Board::setCell(quint32 x, quint32 y, bool alive) {
         // only if value is changed
         updateImpacts(x, y, alive);
         cell.alive = alive;
+        std::for_each(listeners.begin(), listeners.end(), [x, y, cell](IBoardView *l){l->onCellStateChanged(x, y, cell);});
     }
 }
 
@@ -88,6 +89,7 @@ void Board::invertCell(quint32 x, quint32 y) {
     Cell &cell = state[width * y + x];
     cell.alive = !cell.alive;
     updateImpacts(x, y, cell.alive);
+    std::for_each(listeners.begin(), listeners.end(), [x, y, cell](IBoardView *l){l->onCellStateChanged(x, y, cell);});
 }
 
 void Board::tick() {
@@ -100,11 +102,13 @@ void Board::tick() {
                 if (prev_cell.external_impact < rules->liveImpactRange.first || prev_cell.external_impact > rules->liveImpactRange.second) {
                     new_cell.alive = false;
                     updateImpacts(i, j, false);
+                    std::for_each(listeners.begin(), listeners.end(), [i, j, new_cell](IBoardView *l){l->onCellStateChanged(i, j, new_cell);});
                 }
             } else {
                 if (prev_cell.external_impact >= rules->birthdayImpactRange.first && prev_cell.external_impact <= rules->birthdayImpactRange.second) {
                     new_cell.alive = true;
                     updateImpacts(i, j, true);
+                    std::for_each(listeners.begin(), listeners.end(), [i, j, new_cell](IBoardView *l){l->onCellStateChanged(i, j, new_cell);});
                 }
             }
             if (i == width - 2 && j % 2 == 1) {
@@ -129,4 +133,8 @@ quint32 Board::getHeight() const {
 
 const BoardSettings * Board::getSettings() const {
     return rules;
+}
+
+void Board::subscribe(IBoardView *listener) {
+    listeners.push_back(listener);
 }

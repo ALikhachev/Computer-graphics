@@ -13,7 +13,9 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(10);
+    timer.start(33);
+    drawHexagonOutlines();
+    board->subscribe(this);
 }
 
 void BoardView::fill(QRgb color) {
@@ -270,7 +272,44 @@ void BoardView::spanFill(QPoint start, QRgb color) {
     }
 }
 
-void BoardView::paint() {
+void BoardView::paintEvent(QPaintEvent *) {
+    QPainter painter(this);
+    painter.drawImage(0, 0, image);
+}
+
+void BoardView::mousePressEvent(QMouseEvent * event) {
+    int x = event->x();
+    int y = event->y();
+    int row = static_cast<int>(y / (hex_qrheight * 3));
+    bool rowIsOdd = row % 2 == 1;
+    int column = rowIsOdd ? static_cast<int>((x - hex_semiwidth) / (hex_semiwidth * 2)) : static_cast<int>(x / (hex_semiwidth * 2));
+    double relY = y - (row * hex_qrheight * 3);
+    double relX;
+
+    if (rowIsOdd) {
+        relX = (x - (column * hex_semiwidth * 2)) - hex_semiwidth;
+    } else {
+        relX = x - (column * hex_semiwidth * 2);
+    }
+
+    if (relY < (-top_coeff * relX) + hex_qrheight) {
+        // left triangle
+        row--;
+        if (!rowIsOdd) {
+            column--;
+        }
+    }
+    else if (relY < (top_coeff * relX) - hex_qrheight) {
+        // right triangle
+        row--;
+        if (rowIsOdd) {
+           column++;
+        }
+    }
+    board->invertCell(column, row);
+}
+
+void BoardView::drawHexagonOutlines() {
     fill(WhiteColor);
     std::vector<Cell> &state = board->getState();
     int horizontal_offset = hex_semiwidth * 2;
@@ -295,44 +334,10 @@ void BoardView::paint() {
     }
 }
 
-void BoardView::resizeEvent(QResizeEvent *) {
-    image = QImage(this->size(), QImage::Format_RGB32);
-}
-
-void BoardView::paintEvent(QPaintEvent *) {
-    QPainter painter(this);
-    paint();
-    painter.drawImage(0, 0, image);
-}
-
-void BoardView::mousePressEvent(QMouseEvent * event) {
-    int x = event->x();
-    int y = event->y();
-    int row = static_cast<int>(y / (hex_qrheight * 3));
-    bool rowIsOdd = row % 2 == 1;
-    int column = rowIsOdd ? static_cast<int>((x - hex_semiwidth) / (hex_semiwidth * 2)) : static_cast<int>(x / (hex_semiwidth * 2));
-    double relY = y - (row * hex_qrheight * 3);
-    double relX;
-
-    if (rowIsOdd) {
-        relX = (x - (column * hex_semiwidth * 2)) - hex_semiwidth;
+void BoardView::onCellStateChanged(quint32 x, quint32 y, const Cell &cell) {
+    if (cell.alive) {
+        spanFill(QPoint((y & 1) * hex_semiwidth + hex_semiwidth * 2 * x + 1, hex_qrheight * 3 * y + hex_qrheight + 1), qRgb(16, 202, 90));
     } else {
-        relX = x - (column * hex_semiwidth * 2);
+        spanFill(QPoint((y & 1) * hex_semiwidth + hex_semiwidth * 2 * x + 1, hex_qrheight * 3 * y + hex_qrheight + 1), WhiteColor);
     }
-    printf("relx = %lf rely = %lf\n", relX, relY);
-    if (relY < (-top_coeff * relX) + hex_qrheight) {
-        // left triangle
-        row--;
-        if (!rowIsOdd) {
-            column--;
-        }
-    }
-    else if (relY < (top_coeff * relX) - hex_qrheight) {
-        // right triangle
-        row--;
-        if (rowIsOdd) {
-           column++;
-        }
-    }
-    board->invertCell(column, row);
 }

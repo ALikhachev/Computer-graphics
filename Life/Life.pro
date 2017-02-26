@@ -14,7 +14,8 @@ HEADERS  += mainwindow.h \
     board_settings_view.h \
     board_settings.h \
     about_view.h \
-    board.h
+    board.h \
+    iboard_view.h
 
 RESOURCES += \
     toolbar.qrc
