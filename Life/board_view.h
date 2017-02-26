@@ -8,7 +8,6 @@
 #include <QPaintEvent>
 
 #include "board.h"
-#include "iboard_view.h"
 
 struct SpanLine {
     int x0;
@@ -16,15 +15,15 @@ struct SpanLine {
     int y;
 };
 
-class BoardView : public QWidget, public IBoardView
+class BoardView : public QWidget
 {
     Q_OBJECT
 public:
     explicit BoardView(Board *board, QWidget *parent = 0);
-    void onCellStateChanged(quint32 x, quint32 y, const Cell &cell) override;
 
 protected:
     void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
     void mousePressEvent(QMouseEvent * event) override;
 
 signals:
@@ -32,6 +31,7 @@ signals:
 public slots:
 
 private:
+    void paint();
     void drawLine(QPoint from, QPoint to, QRgb color);
     void drawHexagon(QPoint start);
     bool tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color);
@@ -43,7 +43,6 @@ private:
     void fill(QRgb color);
     void spanFill(QPoint start, QRgb color);
     void getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
-    void drawHexagonOutlines();
 
     static const QRgb RedColor = qRgb(255, 0, 0);
     static const QRgb GreenColor = qRgb(0, 255, 0);
