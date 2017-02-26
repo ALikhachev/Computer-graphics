@@ -2,7 +2,6 @@
 
 Board::Board(const BoardSettings *rules,
              const quint32 width, const quint32 height, std::vector<Cell> initial_state) :
-    name(name),
     state(initial_state),
     prev_state(width * height),
     rules(rules),

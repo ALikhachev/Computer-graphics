@@ -7,7 +7,8 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     timer(this),
     board(board),
     hex_qrheight(board->getSettings()->cellSize / 2),
-    hex_semiwidth(board->getSettings()->cellSize * sqrt(3) / 2)
+    hex_semiwidth(board->getSettings()->cellSize * sqrt(3) / 2),
+    top_coeff((double)hex_qrheight/(double)hex_semiwidth)
 {
     resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
@@ -305,5 +306,33 @@ void BoardView::paintEvent(QPaintEvent *) {
 }
 
 void BoardView::mousePressEvent(QMouseEvent * event) {
-    spanFill(QPoint(event->x(), event->y()), qRgb(0, 204, 0));
+    int x = event->x();
+    int y = event->y();
+    int row = static_cast<int>(y / (hex_qrheight * 3));
+    bool rowIsOdd = row % 2 == 1;
+    int column = rowIsOdd ? static_cast<int>((x - hex_semiwidth) / (hex_semiwidth * 2)) : static_cast<int>(x / (hex_semiwidth * 2));
+    double relY = y - (row * hex_qrheight * 3);
+    double relX;
+
+    if (rowIsOdd) {
+        relX = (x - (column * hex_semiwidth * 2)) - hex_semiwidth;
+    } else {
+        relX = x - (column * hex_semiwidth * 2);
+    }
+    printf("relx = %lf rely = %lf\n", relX, relY);
+    if (relY < (-top_coeff * relX) + hex_qrheight) {
+        // left triangle
+        row--;
+        if (!rowIsOdd) {
+            column--;
+        }
+    }
+    else if (relY < (top_coeff * relX) - hex_qrheight) {
+        // right triangle
+        row--;
+        if (rowIsOdd) {
+           column++;
+        }
+    }
+    board->invertCell(column, row);
 }

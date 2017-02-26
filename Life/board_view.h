@@ -56,6 +56,7 @@ private:
 
     uint hex_qrheight;
     uint hex_semiwidth;
+    double top_coeff;
 };
 
 #endif // QCANVAS_H
