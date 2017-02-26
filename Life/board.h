@@ -10,8 +10,9 @@ struct Cell {
     bool alive;
 };
 
-class Board
+class Board : public QObject
 {
+    Q_OBJECT
 private:
     std::vector<Cell> state;
     std::vector<Cell> prev_state;
@@ -22,12 +23,15 @@ private:
 
     // only call this method when cell state is changed
     void updateImpacts(quint32 x, quint32 y, bool born);
+
+public slots:
+    void tick();
+
 public:
     Board(const BoardSettings *rules, const quint32 width, const quint32 height, std::vector<Cell> initial_state);
 
     void setCell(quint32 x, quint32 y, bool alive);
     void invertCell(quint32 x, quint32 y);
-    void tick();
     std::vector<Cell> & getState();
     quint32 getWidth() const;
     quint32 getHeight() const;

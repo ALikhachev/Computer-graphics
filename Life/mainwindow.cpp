@@ -106,7 +106,7 @@ void MainWindow::createActions() {
 
     QMenu *simulationMenu = menuBar()->addMenu(tr("&Simulation"));
 
-    QAction *runOnceAct = simulationMenu->addAction(tr("&Run once"), this, &QWidget::close);
+    QAction *runOnceAct = simulationMenu->addAction(tr("&Run once"), &board, &Board::tick);
     const QIcon runOnceIcon = QIcon::fromTheme("run-once", QIcon(":/icons/run-once.png"));
     runOnceAct->setIcon(runOnceIcon);
     runOnceAct->setStatusTip("Run game loop once");
