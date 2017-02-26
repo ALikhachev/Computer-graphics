@@ -278,11 +278,17 @@ void BoardView::paint() {
         for (quint32 i = 0; i < board->getWidth(); ++i) {
             if (j % 2 == 1) {
                 drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
+                if (state[j * board->getWidth() + i].alive) {
+                    spanFill(QPoint(horizontal_offset / 2 + horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
+                }
                 if (i == board->getWidth() - 2) {
                     break;
                 }
             } else {
-                drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j), board->getSettings()->cellSize);
+                drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j));
+                if (state[j * board->getWidth() + i].alive) {
+                    spanFill(QPoint(horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
+                }
             }
         }
     }
