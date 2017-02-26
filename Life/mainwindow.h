@@ -7,9 +7,9 @@
 #include <QScopedPointer>
 #include <QToolBar>
 
-#include "about.h"
-#include "board.h"
-#include "boardsettingsdialog.h"
+#include "about_view.h"
+#include "board_view.h"
+#include "board_settings_view.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,9 +33,9 @@ private:
 
     QScrollArea scrollArea;
 
-    About about;
-    Board board;
-    BoardSettingsDialog settings;
+    AboutView about;
+    BoardView board;
+    BoardSettingsView settings;
 
     QToolBar *toolBar;
     QAction *toolBarStateAction;

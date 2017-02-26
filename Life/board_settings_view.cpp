@@ -1,6 +1,6 @@
-#include "boardsettingsdialog.h"
+#include "board_settings_view.h"
 
-BoardSettingsDialog::BoardSettingsDialog(BoardSettings *, QWidget * parent) : QDialog(parent),
+BoardSettingsView::BoardSettingsView(BoardSettings *, QWidget * parent) : QDialog(parent),
     mainLayout(this),
     okButton(tr("Apply"), this),
     cancelButton(tr("Cancel"), this),

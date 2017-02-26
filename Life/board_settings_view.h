@@ -6,12 +6,12 @@
 #include <QDialog>
 #include <QPushButton>
 
-#include "boardsettings.h"
+#include "board_settings.h"
 
-class BoardSettingsDialog : public QDialog
+class BoardSettingsView : public QDialog
 {
 public:
-    BoardSettingsDialog(BoardSettings *settings, QWidget * parent = 0);
+    BoardSettingsView(BoardSettings *settings, QWidget * parent = 0);
 
 private:
     BoardSettings *settings;

@@ -14,15 +14,16 @@ struct SpanLine {
     int y;
 };
 
-class Board : public QWidget
+class BoardView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Board(QWidget *parent = 0);
+    explicit BoardView(QWidget *parent = 0);
 
 protected:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *) override;
+    void mousePressEvent(QMouseEvent * event) override;
 
 signals:
 
@@ -49,6 +50,7 @@ private:
     static const QRgb BlackColor = qRgb(0, 0, 0);
 
     QImage image;
+    QImage showedImage;
     QTimer timer;
 };
 

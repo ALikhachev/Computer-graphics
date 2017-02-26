@@ -6,14 +6,14 @@
 #include <QLabel>
 #include <QScopedPointer>
 
-class About : public QDialog
+class AboutView : public QDialog
 {
 public:
-    About(QWidget * parent = 0);
+    AboutView(QWidget * parent = 0);
 
 private:
-    QScopedPointer<QVBoxLayout> layout;
-    QScopedPointer<QLabel> label;
+    QLabel label;
+    QVBoxLayout layout;
 };
 
 #endif // ABOUT_H

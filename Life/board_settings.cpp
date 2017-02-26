@@ -1,4 +1,4 @@
-#include "boardsettings.h"
+#include "board_settings.h"
 
 BoardSettings::BoardSettings()
 {

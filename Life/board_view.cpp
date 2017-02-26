@@ -1,21 +1,22 @@
 #include <QDateTime>
 
-#include "board.h"
+#include "board_view.h"
 #include "utils.h"
 
 using Utils::hexagonPoint;
 
-Board::Board(QWidget *parent) :
+BoardView::BoardView(QWidget *parent) :
     QWidget(parent),
     timer(this)
 {
     resize(500, 400);
     image = QImage(this->size(), QImage::Format_RGB32);
+    showedImage = image;
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(10);
 }
 
-void Board::fill(QRgb color) {
+void BoardView::fill(QRgb color) {
     // red = green = blue
     if ((uchar) color == (uchar) (color >> 8) &&
             (uchar) color == (uchar) (color >> 16)) {
@@ -30,7 +31,7 @@ void Board::fill(QRgb color) {
     }
 }
 
-void Board::drawLine(QPoint from, QPoint to, QRgb color) {
+void BoardView::drawLine(QPoint from, QPoint to, QRgb color) {
     if (!tryDrawSimpleLine(from, to, color)) {
         clipLine(from, to);
         if (from.x() == to.x() || from.y() == to.y()) {
@@ -45,7 +46,7 @@ void Board::drawLine(QPoint from, QPoint to, QRgb color) {
 }
 
 // Алгоритм Коэна — Сазерленда
-void Board::clipLine(QPoint &from, QPoint &to) {
+void BoardView::clipLine(QPoint &from, QPoint &to) {
     if (from.x() < 0) {
         if (from.x() != to.x()) {
             int newY = from.y() + (to.y() - from.y()) * from.x() / (from.x() - to.x());
@@ -76,7 +77,7 @@ void Board::clipLine(QPoint &from, QPoint &to) {
     }
 }
 
-bool Board::tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color) {
+bool BoardView::tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color) {
     if (from.x() == to.x()) {
         drawVerticalLine(from, to, color);
         return true;
@@ -88,7 +89,7 @@ bool Board::tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
-void Board::drawLineBresenham(QPoint &from, QPoint &to, QRgb color) {
+void BoardView::drawLineBresenham(QPoint &from, QPoint &to, QRgb color) {
     if (abs(to.y() - from.y()) / abs(to.x() - from.x()) >= 1) {
         drawLineBresenhamY(from, to, color);
         return;
@@ -113,7 +114,7 @@ void Board::drawLineBresenham(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
-void Board::drawLineBresenhamY(QPoint &from, QPoint &to, QRgb color) {
+void BoardView::drawLineBresenhamY(QPoint &from, QPoint &to, QRgb color) {
     if (from.y() > to.y()) {
         std::swap(from, to);
     }
@@ -134,7 +135,7 @@ void Board::drawLineBresenhamY(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
-void Board::drawHorizontalLine(QPoint &from, QPoint &to, QRgb color) {
+void BoardView::drawHorizontalLine(QPoint &from, QPoint &to, QRgb color) {
     if (from.y() < 0 || from.y() >= image.height()) {
         return;
     }
@@ -159,7 +160,7 @@ void Board::drawHorizontalLine(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
-void Board::drawVerticalLine(QPoint &from, QPoint &to, QRgb color) {
+void BoardView::drawVerticalLine(QPoint &from, QPoint &to, QRgb color) {
     if (from.x() < 0 || from.x() >= image.width()) {
         return;
     }
@@ -178,7 +179,7 @@ void Board::drawVerticalLine(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
-void Board::drawHexagon(QPoint start, uint size) {
+void BoardView::drawHexagon(QPoint start, uint size) {
     // width = sqrt(3)/2 * height
     start.setX(start.x() + sqrt(3) / 2 * size);
     // height = size * 2
@@ -192,7 +193,7 @@ void Board::drawHexagon(QPoint start, uint size) {
     drawLine(hexagonPoint(start, size, 5), hexagonPoint(start, size, 0), BlackColor);
 }
 
-void Board::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans) {
+void BoardView::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans) {
     if (y < 0 || y >= image.height()) {
         return;
     }
@@ -233,7 +234,7 @@ void Board::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, s
     }
 }
 
-void Board::spanFill(QPoint start, QRgb color) {
+void BoardView::spanFill(QPoint start, QRgb color) {
     if (start.y() < 0 || start.x() < 0 || start.y() >= image.height() || start.x() >= image.width()) {
         return;
     }
@@ -266,29 +267,24 @@ void Board::spanFill(QPoint start, QRgb color) {
     }
 }
 
-void Board::paint() {
+void BoardView::paint() {
     fill(WhiteColor);
-    /*drawLine(QPoint(300, 300), QPoint(300, 300), BlueColor);
-    drawLine(QPoint(0, 0), QPoint(1024, 100), BlueColor);
-    drawLine(QPoint(-100, 500), QPoint(50, 0), RedColor);
-    drawLine(QPoint(-100, 500), QPoint(0, 90), RedColor);
-    drawLine(QPoint(0, 50), QPoint(100, 10), BlackColor);
-    drawLine(QPoint(-50, 50), QPoint(-10, 10), BlackColor);
-    drawLine(QPoint(100, 100), QPoint(2000, 100), GreenColor);
-    drawLine(QPoint(200, 100), QPoint(200, 200), GreenColor);*/
     static int offset;
     offset = QDateTime::currentMSecsSinceEpoch() / 10 % image.width();
     drawHexagon(QPoint(offset, 0), 50);
-    spanFill(QPoint(offset + 30, 30), RedColor);
     drawHexagon(QPoint(offset + sqrt(3) * 50 + 1, 0), 50);
 }
 
-void Board::resizeEvent(QResizeEvent *) {
+void BoardView::resizeEvent(QResizeEvent *) {
     image = QImage(this->size(), QImage::Format_RGB32);
 }
 
-void Board::paintEvent(QPaintEvent *) {
+void BoardView::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     paint();
     painter.drawImage(0, 0, image);
+}
+
+void BoardView::mousePressEvent(QMouseEvent * event) {
+    spanFill(QPoint(event->x(), event->y()), qRgb(0, 204, 0));
 }
