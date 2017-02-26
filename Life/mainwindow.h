@@ -7,6 +7,8 @@
 #include <QScopedPointer>
 #include <QToolBar>
 
+#include "board.h"
+#include "board_settings.h"
 #include "about_view.h"
 #include "board_view.h"
 #include "board_settings_view.h"
@@ -33,9 +35,12 @@ private:
 
     QScrollArea scrollArea;
 
+    BoardSettings settings;
+    Board board;
+
     AboutView about;
-    BoardView board;
-    BoardSettingsView settings;
+    BoardView board_view;
+    BoardSettingsView settings_view;
 
     QToolBar *toolBar;
     QAction *toolBarStateAction;

@@ -6,7 +6,8 @@
 #include <QPainter>
 #include <QWidget>
 #include <QPaintEvent>
-#include <QSharedPointer>
+
+#include "board.h"
 
 struct SpanLine {
     int x0;
@@ -18,7 +19,7 @@ class BoardView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BoardView(QWidget *parent = 0);
+    explicit BoardView(Board *board, QWidget *parent = 0);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -32,7 +33,7 @@ public slots:
 private:
     void paint();
     void drawLine(QPoint from, QPoint to, QRgb color);
-    void drawHexagon(QPoint start, uint size);
+    void drawHexagon(QPoint start);
     bool tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color);
     void clipLine(QPoint &from, QPoint &to);
     void drawLineBresenham(QPoint &from, QPoint &to, QRgb color);
@@ -50,8 +51,11 @@ private:
     static const QRgb BlackColor = qRgb(0, 0, 0);
 
     QImage image;
-    QImage showedImage;
     QTimer timer;
+    Board *board;
+
+    uint hex_qrheight;
+    uint hex_semiwidth;
 };
 
 #endif // QCANVAS_H

@@ -8,15 +8,16 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     scrollArea(this),
+    board(&settings, settings.width, settings.height, std::vector<Cell>(settings.width * settings.height)),
     about(this),
-    board(this),
-    settings(NULL, this)
+    board_view(&board, this),
+    settings_view(NULL, this)
 {
     setWindowTitle("Life");
 
     createActions();
 
-    scrollArea.setWidget(&board);
+    scrollArea.setWidget(&board_view);
 
     setCentralWidget(&scrollArea);
 }
@@ -130,8 +131,8 @@ void MainWindow::showAbout() {
 }
 
 void MainWindow::showSettings() {
-    settings.show();
-    settings.activateWindow();
+    settings_view.show();
+    settings_view.activateWindow();
 }
 
 void MainWindow::toggleStatusBar() {

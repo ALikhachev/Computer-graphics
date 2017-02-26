@@ -1,17 +1,16 @@
 #include <QDateTime>
 
 #include "board_view.h"
-#include "utils.h"
 
-using Utils::hexagonPoint;
-
-BoardView::BoardView(QWidget *parent) :
+BoardView::BoardView(Board *board, QWidget *parent) :
     QWidget(parent),
-    timer(this)
+    timer(this),
+    board(board),
+    hex_qrheight(board->getSettings()->cellSize / 2),
+    hex_semiwidth(board->getSettings()->cellSize * sqrt(3) / 2)
 {
-    resize(500, 400);
+    resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
-    showedImage = image;
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(10);
 }
@@ -179,18 +178,21 @@ void BoardView::drawVerticalLine(QPoint &from, QPoint &to, QRgb color) {
     }
 }
 
-void BoardView::drawHexagon(QPoint start, uint size) {
-    // width = sqrt(3)/2 * height
-    start.setX(start.x() + sqrt(3) / 2 * size);
-    // height = size * 2
-    // vert = height * 3/4.
-    start.setY(start.y() + size);
-    drawLine(hexagonPoint(start, size, 0), hexagonPoint(start, size, 1), BlackColor);
-    drawLine(hexagonPoint(start, size, 1), hexagonPoint(start, size, 2), BlackColor);
-    drawLine(hexagonPoint(start, size, 2), hexagonPoint(start, size, 3), BlackColor);
-    drawLine(hexagonPoint(start, size, 3), hexagonPoint(start, size, 4), BlackColor);
-    drawLine(hexagonPoint(start, size, 4), hexagonPoint(start, size, 5), BlackColor);
-    drawLine(hexagonPoint(start, size, 5), hexagonPoint(start, size, 0), BlackColor);
+void BoardView::drawHexagon(QPoint start) {
+    QPoint vertices[6] = {
+        QPoint(start.x(), start.y() + hex_qrheight),
+        QPoint(start.x() + hex_semiwidth, start.y()),
+        QPoint(start.x() + hex_semiwidth * 2, start.y() + hex_qrheight),
+        QPoint(start.x() + hex_semiwidth * 2, start.y() + hex_qrheight * 3),
+        QPoint(start.x() + hex_semiwidth, start.y() + hex_qrheight * 4),
+        QPoint(start.x(), start.y() + hex_qrheight * 3),
+    };
+    drawLine(vertices[0], vertices[1], BlackColor);
+    drawLine(vertices[1], vertices[2], BlackColor);
+    drawLine(vertices[2], vertices[3], BlackColor);
+    drawLine(vertices[3], vertices[4], BlackColor);
+    drawLine(vertices[4], vertices[5], BlackColor);
+    drawLine(vertices[0], vertices[5], BlackColor);
 }
 
 void BoardView::getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans) {
@@ -269,10 +271,21 @@ void BoardView::spanFill(QPoint start, QRgb color) {
 
 void BoardView::paint() {
     fill(WhiteColor);
-    static int offset;
-    offset = QDateTime::currentMSecsSinceEpoch() / 10 % image.width();
-    drawHexagon(QPoint(offset, 0), 50);
-    drawHexagon(QPoint(offset + sqrt(3) * 50 + 1, 0), 50);
+    std::vector<Cell> &state = board->getState();
+    int horizontal_offset = hex_semiwidth * 2;
+    int vertical_offset = hex_qrheight * 3;
+    for (quint32 j = 0; j < board->getHeight(); ++j) {
+        for (quint32 i = 0; i < board->getWidth(); ++i) {
+            if (j % 2 == 1) {
+                drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
+                if (i == board->getWidth() - 2) {
+                    break;
+                }
+            } else {
+                drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j), board->getSettings()->cellSize);
+            }
+        }
+    }
 }
 
 void BoardView::resizeEvent(QResizeEvent *) {
