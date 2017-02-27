@@ -29,28 +29,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::createActions() {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    toolBar = addToolBar(tr("File"));
+    toolbar = addToolBar(tr("Toolbar"));
 
     QAction *newAct = fileMenu->addAction(tr("&New"), this, &QWidget::close);
     newAct->setShortcut(tr("Ctrl+N"));
     const QIcon newIcon = QIcon::fromTheme("board-new", QIcon(":/icons/new.png"));
     newAct->setIcon(newIcon);
     newAct->setStatusTip("Create a new Convey's Life game board");
-    toolBar->addAction(newAct);
+    toolbar->addAction(newAct);
 
     QAction *openAct = fileMenu->addAction(tr("&Open..."), this, &QWidget::close);
     openAct->setShortcut(tr("Ctrl+O"));
     const QIcon openIcon = QIcon::fromTheme("board-open", QIcon(":/icons/open.png"));
     openAct->setIcon(openIcon);
     openAct->setStatusTip("Load Convey's Life game board from file");
-    toolBar->addAction(openAct);
+    toolbar->addAction(openAct);
 
     QAction *saveAct = fileMenu->addAction(tr("&Save"), this, &QWidget::close);
     saveAct->setShortcut(tr("Ctrl+S"));
     const QIcon saveIcon = QIcon::fromTheme("board-save", QIcon(":/icons/save.png"));
     saveAct->setIcon(saveIcon);
     saveAct->setStatusTip("Save current game board to the file");
-    toolBar->addAction(saveAct);
+    toolbar->addAction(saveAct);
 
     QAction *saveAsAct = fileMenu->addAction(tr("&Save as..."), this, &QWidget::close);
     saveAsAct->setStatusTip("Save current game board to specific file");
@@ -62,7 +62,7 @@ void MainWindow::createActions() {
     saveAsAct->setStatusTip("Exit the game");
     exitAct->setShortcut(tr("Ctrl+Q"));
 
-    toolBar->addSeparator();
+    toolbar->addSeparator();
 
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
@@ -71,7 +71,7 @@ void MainWindow::createActions() {
     const QIcon xor_mode_icon = QIcon::fromTheme("replace-mode-switch", QIcon(":/icons/xor.png"));
     xor_mode_action->setIcon(xor_mode_icon);
     xor_mode_action->setStatusTip("Enable XOR cell state setting mode");
-    toolBar->addAction(xor_mode_action);
+    toolbar->addAction(xor_mode_action);
 
     replace_mode_action = editMenu->addAction(tr("&Replace mode"), this, setReplaceMode);
     replace_mode_action->setCheckable(true);
@@ -79,17 +79,17 @@ void MainWindow::createActions() {
     const QIcon replace_mode_icon = QIcon::fromTheme("replace-mode-switch", QIcon(":/icons/replace.png"));
     replace_mode_action->setIcon(replace_mode_icon);
     replace_mode_action->setStatusTip("Enable replace cell state setting mode");
-    toolBar->addAction(replace_mode_action);
+    toolbar->addAction(replace_mode_action);
 
     editMenu->addSeparator();
-    toolBar->addSeparator();
+    toolbar->addSeparator();
 
     clear_board_action = editMenu->addAction(tr("&Clear"), &board, &Board::clear);
     clear_board_action->setShortcut(tr("Ctrl+L"));
     const QIcon clear_board_icon = QIcon::fromTheme("clear-board", QIcon(":/icons/clear.png"));
     clear_board_action->setIcon(clear_board_icon);
     clear_board_action->setStatusTip("Clear the game board");
-    toolBar->addAction(clear_board_action);
+    toolbar->addAction(clear_board_action);
 
     editMenu->addSeparator();
 
@@ -97,20 +97,27 @@ void MainWindow::createActions() {
     const QIcon settingsIcon = QIcon::fromTheme("settings", QIcon(":/icons/settings.png"));
     parametersAct->setIcon(settingsIcon);
     parametersAct->setStatusTip("Show game settings window");
-    toolBar->addAction(parametersAct);
+    toolbar->addAction(parametersAct);
 
-    toolBar->addSeparator();
+    toolbar->addSeparator();
 
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
-    toolBarStateAction = viewMenu->addAction(tr("&Toolbar"), this, toggleToolBar);
+    toolBarStateAction = viewMenu->addAction(tr("&Show toolbar"), this, toggleToolBar);
     toolBarStateAction->setCheckable(true);
     toolBarStateAction->setChecked(true);
     toolBarStateAction->setStatusTip("Show/hide toolbar");
-    statusBarStateAction = viewMenu->addAction(tr("&Statusbar"), this, toggleStatusBar);
+
+    statusBarStateAction = viewMenu->addAction(tr("&Show statusbar"), this, toggleStatusBar);
     statusBarStateAction->setCheckable(true);
     statusBarStateAction->setChecked(true);
     statusBarStateAction->setStatusTip("Show/hide statusbar");
     statusBar()->show();
+
+    show_impacts_action = viewMenu->addAction(tr("&Show impacts"), this, toggleShowImpacts);
+    show_impacts_action->setCheckable(true);
+    show_impacts_action->setIcon(QIcon(":/icons/impacts.png"));
+    show_impacts_action->setStatusTip("Show/hide impacts");
+    toolbar->addAction(show_impacts_action);
 
     QMenu *simulationMenu = menuBar()->addMenu(tr("&Simulation"));
 
@@ -118,14 +125,14 @@ void MainWindow::createActions() {
     const QIcon run_once_icon = QIcon::fromTheme("run-once", QIcon(":/icons/run-once.png"));
     run_once_action->setIcon(run_once_icon);
     run_once_action->setStatusTip("Run game loop once");
-    toolBar->addAction(run_once_action);
+    toolbar->addAction(run_once_action);
 
     run_loop_action = simulationMenu->addAction(tr("&Run loop"), this, toggleLoopMode);
     const QIcon run_loop_icon = QIcon::fromTheme("run", QIcon(":/icons/run.png"));
     run_loop_action->setIcon(run_loop_icon);
     run_loop_action->setCheckable(true);
     run_loop_action->setStatusTip("Run game loop");
-    toolBar->addAction(run_loop_action);
+    toolbar->addAction(run_loop_action);
 
     QAction *helpAct = menuBar()->addAction(tr("&?"), this, SLOT(showAbout()));
     helpAct->setShortcut(tr("F1"));
@@ -155,11 +162,11 @@ void MainWindow::toggleStatusBar() {
 }
 
 void MainWindow::toggleToolBar() {
-    if (toolBar->isHidden()) {
-        toolBar->show();
+    if (toolbar->isHidden()) {
+        toolbar->show();
         toolBarStateAction->setChecked(true);
     } else {
-        toolBar->hide();
+        toolbar->hide();
         toolBarStateAction->setChecked(false);
     }
 }
@@ -190,4 +197,9 @@ void MainWindow::setReplaceMode() {
     settings.isXorMode = false;
     xor_mode_action->setChecked(false);
     replace_mode_action->setChecked(true);
+}
+
+void MainWindow::toggleShowImpacts() {
+    settings.show_impacts = !settings.show_impacts;
+    show_impacts_action->setChecked(settings.show_impacts);
 }

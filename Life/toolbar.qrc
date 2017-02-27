@@ -10,5 +10,6 @@
         <file>icons/settings.png</file>
         <file>icons/about.png</file>
         <file>icons/xor.png</file>
+        <file>icons/impacts.png</file>
     </qresource>
 </RCC>

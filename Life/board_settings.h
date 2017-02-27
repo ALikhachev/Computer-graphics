@@ -12,6 +12,7 @@ struct BoardSettings {
     std::pair<quint8, quint8> liveImpactRange = std::make_pair(20, 33);
     std::pair<quint8, quint8> birthdayImpactRange = std::make_pair(23, 29);
     bool isXorMode = false;
+    bool show_impacts = false;
 };
 
 #endif // BOARDSETTINGS_H

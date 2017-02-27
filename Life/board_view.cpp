@@ -281,16 +281,18 @@ void BoardView::paint(QPainter &painter) {
     for (quint32 j = 0; j < board->getHeight(); ++j) {
         for (quint32 i = 0; i < board->getWidth(); ++i) {
             Cell &cell = state[j * board->getWidth() + i];
-            sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
             if (j % 2 == 1) {
                 drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
                 if (cell.alive) {
                     spanFill(QPoint(horizontal_offset / 2 + horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
                 }
-                painter.drawText(QRect(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j + hex_qrheight,
-                                       horizontal_offset, 2 * hex_qrheight),
-                                 Qt::AlignCenter,
-                                 tr(impact));
+                if (board->getSettings()->show_impacts) {
+                    sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
+                    painter.drawText(QRect(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j + hex_qrheight,
+                                           horizontal_offset, 2 * hex_qrheight),
+                                     Qt::AlignCenter,
+                                     tr(impact));
+                }
                 if (i == board->getWidth() - 2) {
                     break;
                 }
@@ -299,10 +301,13 @@ void BoardView::paint(QPainter &painter) {
                 if (cell.alive) {
                     spanFill(QPoint(horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
                 }
-                painter.drawText(QRect(horizontal_offset * i, vertical_offset * j + hex_qrheight,
-                                       horizontal_offset, 2 * hex_qrheight),
-                                 Qt::AlignCenter,
-                                 tr(impact));
+                if (board->getSettings()->show_impacts) {
+                    sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
+                    painter.drawText(QRect(horizontal_offset * i, vertical_offset * j + hex_qrheight,
+                                           horizontal_offset, 2 * hex_qrheight),
+                                     Qt::AlignCenter,
+                                     tr(impact));
+                }
             }
         }
     }
