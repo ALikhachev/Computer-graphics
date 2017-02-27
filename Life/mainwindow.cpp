@@ -11,15 +11,20 @@ MainWindow::MainWindow(QWidget *parent) :
     board(&settings, settings.width, settings.height, std::vector<Cell>(settings.width * settings.height)),
     about(this),
     board_view(&board, this),
-    settings_view(NULL, this)
+    settings_view(NULL, this),
+    loop_timer(this)
 {
     setWindowTitle("Life");
 
     createActions();
 
+    scrollArea.setBackgroundRole(QPalette::Light);
+
     scrollArea.setWidget(&board_view);
 
     setCentralWidget(&scrollArea);
+
+    connect(&loop_timer, SIGNAL(timeout()), &board, SLOT(tick()));
 }
 
 void MainWindow::createActions() {
@@ -76,12 +81,12 @@ void MainWindow::createActions() {
     editMenu->addSeparator();
     toolBar->addSeparator();
 
-    QAction *clearBoardAct = editMenu->addAction(tr("&Clear"), this, &QWidget::close);
-    clearBoardAct->setShortcut(tr("Ctrl+L"));
-    const QIcon clearBoardIcon = QIcon::fromTheme("clear-board", QIcon(":/icons/clear.png"));
-    clearBoardAct->setIcon(clearBoardIcon);
-    clearBoardAct->setStatusTip("Clear the game board");
-    toolBar->addAction(clearBoardAct);
+    clear_board_action = editMenu->addAction(tr("&Clear"), &board, &Board::clear);
+    clear_board_action->setShortcut(tr("Ctrl+L"));
+    const QIcon clear_board_icon = QIcon::fromTheme("clear-board", QIcon(":/icons/clear.png"));
+    clear_board_action->setIcon(clear_board_icon);
+    clear_board_action->setStatusTip("Clear the game board");
+    toolBar->addAction(clear_board_action);
 
     editMenu->addSeparator();
 
@@ -106,17 +111,18 @@ void MainWindow::createActions() {
 
     QMenu *simulationMenu = menuBar()->addMenu(tr("&Simulation"));
 
-    QAction *runOnceAct = simulationMenu->addAction(tr("&Run once"), &board, &Board::tick);
-    const QIcon runOnceIcon = QIcon::fromTheme("run-once", QIcon(":/icons/run-once.png"));
-    runOnceAct->setIcon(runOnceIcon);
-    runOnceAct->setStatusTip("Run game loop once");
-    toolBar->addAction(runOnceAct);
+    run_once_action = simulationMenu->addAction(tr("&Run once"), &board, &Board::tick);
+    const QIcon run_once_icon = QIcon::fromTheme("run-once", QIcon(":/icons/run-once.png"));
+    run_once_action->setIcon(run_once_icon);
+    run_once_action->setStatusTip("Run game loop once");
+    toolBar->addAction(run_once_action);
 
-    QAction *runLoopAct = simulationMenu->addAction(tr("&Run loop"), this, &QWidget::close);
-    const QIcon runLoopIcon = QIcon::fromTheme("run", QIcon(":/icons/run.png"));
-    runLoopAct->setIcon(runLoopIcon);
-    runLoopAct->setStatusTip("Run game loop");
-    toolBar->addAction(runLoopAct);
+    run_loop_action = simulationMenu->addAction(tr("&Run loop"), this, toggleLoopMode);
+    const QIcon run_loop_icon = QIcon::fromTheme("run", QIcon(":/icons/run.png"));
+    run_loop_action->setIcon(run_loop_icon);
+    run_loop_action->setCheckable(true);
+    run_loop_action->setStatusTip("Run game loop");
+    toolBar->addAction(run_loop_action);
 
     QAction *helpAct = menuBar()->addAction(tr("&?"), this, SLOT(showAbout()));
     helpAct->setShortcut(tr("F1"));
@@ -152,5 +158,21 @@ void MainWindow::toggleToolBar() {
     } else {
         toolBar->hide();
         toolBarStateAction->setChecked(false);
+    }
+}
+
+void MainWindow::toggleLoopMode() {
+    if (loop_timer.isActive()) {
+        run_loop_action->setChecked(false);
+        run_once_action->setDisabled(false);
+        clear_board_action->setDisabled(false);
+        loop_timer.stop();
+        board_view.toggleEditing(true);
+    } else {
+        run_loop_action->setChecked(true);
+        run_once_action->setDisabled(true);
+        clear_board_action->setDisabled(true);
+        loop_timer.start(1000);
+        board_view.toggleEditing(false);
     }
 }

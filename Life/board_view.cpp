@@ -9,7 +9,8 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     hex_qrheight(board->getSettings()->cellSize / 2),
     hex_semiwidth(board->getSettings()->cellSize * sqrt(3) / 2),
     top_coeff((double)hex_qrheight/(double)hex_semiwidth),
-    lastChangedCell(-1, -1)
+    lastChangedCell(-1, -1),
+    editIsAllowed(true)
 {
     resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
@@ -307,6 +308,9 @@ void BoardView::paintEvent(QPaintEvent *) {
 }
 
 void BoardView::mousePressEvent(QMouseEvent * event) {
+    if (!editIsAllowed) {
+        return;
+    }
     int x = event->x();
     int y = event->y();
     if (x > image.width() || y > image.height()) {
@@ -365,4 +369,8 @@ void BoardView::mouseReleaseEvent(QMouseEvent *) {
 
 void BoardView::mouseMoveEvent(QMouseEvent * event) {
     emit mousePressEvent(event);
+}
+
+void BoardView::toggleEditing(bool allow) {
+    editIsAllowed = allow;
 }

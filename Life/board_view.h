@@ -21,6 +21,8 @@ class BoardView : public QWidget
 public:
     explicit BoardView(Board *board, QWidget *parent = 0);
 
+    void toggleEditing(bool allow);
+
 protected:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *) override;
@@ -51,6 +53,9 @@ private:
     static const QRgb BlueColor = qRgb(0, 0, 255);
     static const QRgb WhiteColor = qRgb(255, 255, 255);
     static const QRgb BlackColor = qRgb(0, 0, 0);
+    static const QRgb GrayBackground = qRgb(240, 240, 240);
+    static const QRgb AliveCellColor = qRgb(16, 202, 90);
+    static const QRgb DeadCellColor = WhiteColor;
 
     QImage image;
     QTimer timer;
@@ -60,6 +65,7 @@ private:
     int hex_semiwidth;
     double top_coeff;
     std::pair<int, int> lastChangedCell;
+    bool editIsAllowed;
 };
 
 #endif // QCANVAS_H

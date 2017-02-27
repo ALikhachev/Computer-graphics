@@ -36,6 +36,7 @@ public:
     quint32 getWidth() const;
     quint32 getHeight() const;
     const BoardSettings * getSettings() const;
+    void clear();
 };
 
 #endif // BOARD_H

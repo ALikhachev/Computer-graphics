@@ -29,6 +29,7 @@ private slots:
     void showSettings();
     void toggleStatusBar();
     void toggleToolBar();
+    void toggleLoopMode();
 
 private:
     void createActions();
@@ -45,6 +46,11 @@ private:
     QToolBar *toolBar;
     QAction *toolBarStateAction;
     QAction *statusBarStateAction;
+    QAction *clear_board_action;
+    QAction *run_once_action;
+    QAction *run_loop_action;
+
+    QTimer loop_timer;
 };
 
 #endif // MAINWINDOW_H

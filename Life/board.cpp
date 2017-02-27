@@ -130,3 +130,7 @@ quint32 Board::getHeight() const {
 const BoardSettings * Board::getSettings() const {
     return rules;
 }
+
+void Board::clear() {
+    memset(state.data(), 0, state.size() * sizeof(Cell));
+}
