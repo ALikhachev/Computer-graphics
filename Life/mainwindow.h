@@ -30,6 +30,8 @@ private slots:
     void toggleStatusBar();
     void toggleToolBar();
     void toggleLoopMode();
+    void setXorMode();
+    void setReplaceMode();
 
 private:
     void createActions();
@@ -49,6 +51,8 @@ private:
     QAction *clear_board_action;
     QAction *run_once_action;
     QAction *run_loop_action;
+    QAction *xor_mode_action;
+    QAction *replace_mode_action;
 
     QTimer loop_timer;
 };

@@ -9,5 +9,6 @@
         <file>icons/save.png</file>
         <file>icons/settings.png</file>
         <file>icons/about.png</file>
+        <file>icons/xor.png</file>
     </qresource>
 </RCC>

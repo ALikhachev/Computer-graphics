@@ -66,17 +66,20 @@ void MainWindow::createActions() {
 
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
-    QAction *xorModeAct = editMenu->addAction(tr("&XOR mode"), this, &QWidget::close);
-    xorModeAct->setCheckable(true);
-    xorModeAct->setChecked(true);
-    xorModeAct->setStatusTip("Switch XOR/Replace mode");
+    xor_mode_action = editMenu->addAction(tr("&XOR mode"), this, setXorMode);
+    xor_mode_action->setCheckable(true);
+    const QIcon xor_mode_icon = QIcon::fromTheme("replace-mode-switch", QIcon(":/icons/xor.png"));
+    xor_mode_action->setIcon(xor_mode_icon);
+    xor_mode_action->setStatusTip("Enable XOR cell state setting mode");
+    toolBar->addAction(xor_mode_action);
 
-    QAction *replaceModeAct = editMenu->addAction(tr("&Replace mode"), this, &QWidget::close);
-    replaceModeAct->setCheckable(true);
-    const QIcon replaceIcon = QIcon::fromTheme("replace-mode-switch", QIcon(":/icons/replace.png"));
-    replaceModeAct->setIcon(replaceIcon);
-    replaceModeAct->setStatusTip("Switch XOR/Replace mode");
-    toolBar->addAction(replaceModeAct);
+    replace_mode_action = editMenu->addAction(tr("&Replace mode"), this, setReplaceMode);
+    replace_mode_action->setCheckable(true);
+    replace_mode_action->setChecked(true);
+    const QIcon replace_mode_icon = QIcon::fromTheme("replace-mode-switch", QIcon(":/icons/replace.png"));
+    replace_mode_action->setIcon(replace_mode_icon);
+    replace_mode_action->setStatusTip("Enable replace cell state setting mode");
+    toolBar->addAction(replace_mode_action);
 
     editMenu->addSeparator();
     toolBar->addSeparator();
@@ -175,4 +178,16 @@ void MainWindow::toggleLoopMode() {
         loop_timer.start(1000);
         board_view.toggleEditing(false);
     }
+}
+
+void MainWindow::setXorMode() {
+    settings.isXorMode = true;
+    xor_mode_action->setChecked(true);
+    replace_mode_action->setChecked(false);
+}
+
+void MainWindow::setReplaceMode() {
+    settings.isXorMode = false;
+    xor_mode_action->setChecked(false);
+    replace_mode_action->setChecked(true);
 }
