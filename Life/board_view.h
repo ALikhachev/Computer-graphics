@@ -25,6 +25,8 @@ protected:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *) override;
     void mousePressEvent(QMouseEvent * event) override;
+    void mouseReleaseEvent(QMouseEvent * event) override;
+    void mouseMoveEvent(QMouseEvent * event) override;
 
 signals:
 
@@ -54,9 +56,10 @@ private:
     QTimer timer;
     Board *board;
 
-    uint hex_qrheight;
-    uint hex_semiwidth;
+    int hex_qrheight;
+    int hex_semiwidth;
     double top_coeff;
+    std::pair<int, int> lastChangedCell;
 };
 
 #endif // QCANVAS_H

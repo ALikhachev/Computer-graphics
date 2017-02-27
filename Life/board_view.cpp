@@ -8,7 +8,8 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     board(board),
     hex_qrheight(board->getSettings()->cellSize / 2),
     hex_semiwidth(board->getSettings()->cellSize * sqrt(3) / 2),
-    top_coeff((double)hex_qrheight/(double)hex_semiwidth)
+    top_coeff((double)hex_qrheight/(double)hex_semiwidth),
+    lastChangedCell(-1, -1)
 {
     resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
@@ -308,6 +309,9 @@ void BoardView::paintEvent(QPaintEvent *) {
 void BoardView::mousePressEvent(QMouseEvent * event) {
     int x = event->x();
     int y = event->y();
+    if (x > image.width() || y > image.height()) {
+        return;
+    }
     int row = static_cast<int>(y / (hex_qrheight * 3));
     bool rowIsOdd = row % 2 == 1;
     int column = rowIsOdd ? static_cast<int>((x - hex_semiwidth) / (hex_semiwidth * 2)) : static_cast<int>(x / (hex_semiwidth * 2));
@@ -319,20 +323,46 @@ void BoardView::mousePressEvent(QMouseEvent * event) {
     } else {
         relX = x - (column * hex_semiwidth * 2);
     }
-    printf("relx = %lf rely = %lf\n", relX, relY);
-    if (relY < (-top_coeff * relX) + hex_qrheight) {
+
+    static const double eps = 0.5;
+
+    if (relX < eps) {
+        return;
+    }
+
+    double k1 = (-top_coeff * relX) + hex_qrheight;
+    double k2 = (top_coeff * relX) - hex_qrheight;
+    if (fabs(relY - k1) < eps || fabs(relY - k2) < eps) {
+        return;
+    }
+    if (relY < k1) {
         // left triangle
         row--;
         if (!rowIsOdd) {
             column--;
         }
-    }
-    else if (relY < (top_coeff * relX) - hex_qrheight) {
+    } else if (relY < k2) {
         // right triangle
         row--;
         if (rowIsOdd) {
            column++;
         }
     }
-    board->invertCell(column, row);
+    if (!(lastChangedCell.first == column && lastChangedCell.second == row)) {
+        if (board->getSettings()->isXorMode) {
+            board->invertCell(column, row);
+        } else {
+               board->setCell(column, row, true);
+        }
+        lastChangedCell = std::make_pair(column, row);
+    }
+
+}
+
+void BoardView::mouseReleaseEvent(QMouseEvent *) {
+    lastChangedCell = std::make_pair(-1, -1);
+}
+
+void BoardView::mouseMoveEvent(QMouseEvent * event) {
+    emit mousePressEvent(event);
 }
