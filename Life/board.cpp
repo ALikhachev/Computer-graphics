@@ -12,7 +12,7 @@ Board::Board(const BoardSettings *rules,
     // count initial impacts
 }
 
-void Board::updateImpacts(quint32 x, quint32 y, bool born) {
+void Board::updateImpacts(int x, int y, bool born) {
     quint16 sign = born ? 1 : -1;
     if (y % 2 == 0) {
         // first order neighbors
@@ -23,13 +23,17 @@ void Board::updateImpacts(quint32 x, quint32 y, bool born) {
             if (x < width - 1) {
                 state[width * (y + 1) + x].external_impact += sign * rules->nearImpact;
             }
-            state[width * (y + 1) + x - 1].external_impact += sign * rules->nearImpact;
+            if (x > 0) {
+                state[width * (y + 1) + x - 1].external_impact += sign * rules->nearImpact;
+            }
         }
         if (x + 1 < width) {
             state[width * y + x + 1].external_impact += sign * rules->nearImpact;
         }
-        state[width * y + x - 1].external_impact += sign * rules->nearImpact;
-        state[width * (y - 1) + x - 1].external_impact += sign * rules->nearImpact;
+        if (x > 0) {
+            state[width * y + x - 1].external_impact += sign * rules->nearImpact;
+            state[width * (y - 1) + x - 1].external_impact += sign * rules->nearImpact;
+        }
         // second order neighbors
         state[width * (y - 2) + x].external_impact += sign * rules->futherImpact;
         if (y + 2 < height) {
@@ -41,13 +45,17 @@ void Board::updateImpacts(quint32 x, quint32 y, bool born) {
                 state[width * (y + 1) + x + 1].external_impact += sign * rules->futherImpact;
             }
         }
-        if (y + 1 < height) {
-            state[width * (y + 1) + x - 2].external_impact += sign * rules->futherImpact;
+        if (x > 1) {
+            if (y + 1 < height) {
+                state[width * (y + 1) + x - 2].external_impact += sign * rules->futherImpact;
+            }
+            state[width * (y - 1) + x - 2].external_impact += sign * rules->futherImpact;
         }
-        state[width * (y - 1) + x - 2].external_impact += sign * rules->futherImpact;
     } else {
         // first order neighbors
-        state[width * y + x - 1].external_impact += sign * rules->nearImpact;
+        if (x > 0) {
+            state[width * y + x - 1].external_impact += sign * rules->nearImpact;
+        }
         if (x + 1 < width - 1) {
             state[width * y + x + 1].external_impact += sign * rules->nearImpact;
         }
@@ -62,9 +70,13 @@ void Board::updateImpacts(quint32 x, quint32 y, bool born) {
         if (y + 2 < height) {
             state[width * (y + 2) + x].external_impact += sign * rules->futherImpact;
         }
-        state[width * (y - 1) + x - 1].external_impact += sign * rules->futherImpact;
+        if (x > 0) {
+            state[width * (y - 1) + x - 1].external_impact += sign * rules->futherImpact;
+        }
         if (y + 1 < height) {
-            state[width * (y + 1) + x - 1].external_impact += sign * rules->futherImpact;
+            if (x > 0) {
+                state[width * (y + 1) + x - 1].external_impact += sign * rules->futherImpact;
+            }
             if (x + 2 < width) {
                 state[width * (y + 1) + x + 2].external_impact += sign * rules->futherImpact;
             }
@@ -75,7 +87,7 @@ void Board::updateImpacts(quint32 x, quint32 y, bool born) {
     }
 }
 
-void Board::setCell(quint32 x, quint32 y, bool alive) {
+void Board::setCell(int x, int y, bool alive) {
     Cell &cell = state[width * y + x];
     if ((!cell.alive && alive) || (cell.alive && !alive)) {
         // only if value is changed
@@ -84,7 +96,7 @@ void Board::setCell(quint32 x, quint32 y, bool alive) {
     }
 }
 
-void Board::invertCell(quint32 x, quint32 y) {
+void Board::invertCell(int x, int y) {
     Cell &cell = state[width * y + x];
     cell.alive = !cell.alive;
     updateImpacts(x, y, cell.alive);
