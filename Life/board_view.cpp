@@ -15,7 +15,7 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(10);
+    timer.start(33);
 }
 
 void BoardView::fill(QRgb color) {
@@ -272,26 +272,37 @@ void BoardView::spanFill(QPoint start, QRgb color) {
     }
 }
 
-void BoardView::paint() {
+void BoardView::paint(QPainter &painter) {
     fill(WhiteColor);
     std::vector<Cell> &state = board->getState();
     int horizontal_offset = hex_semiwidth * 2;
     int vertical_offset = hex_qrheight * 3;
+    char impact[4];
     for (quint32 j = 0; j < board->getHeight(); ++j) {
         for (quint32 i = 0; i < board->getWidth(); ++i) {
+            Cell &cell = state[j * board->getWidth() + i];
+            sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
             if (j % 2 == 1) {
                 drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
-                if (state[j * board->getWidth() + i].alive) {
+                if (cell.alive) {
                     spanFill(QPoint(horizontal_offset / 2 + horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
                 }
+                painter.drawText(QRect(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j + hex_qrheight,
+                                       horizontal_offset, 2 * hex_qrheight),
+                                 Qt::AlignCenter,
+                                 tr(impact));
                 if (i == board->getWidth() - 2) {
                     break;
                 }
             } else {
                 drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j));
-                if (state[j * board->getWidth() + i].alive) {
+                if (cell.alive) {
                     spanFill(QPoint(horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
                 }
+                painter.drawText(QRect(horizontal_offset * i, vertical_offset * j + hex_qrheight,
+                                       horizontal_offset, 2 * hex_qrheight),
+                                 Qt::AlignCenter,
+                                 tr(impact));
             }
         }
     }
@@ -303,8 +314,9 @@ void BoardView::resizeEvent(QResizeEvent *) {
 
 void BoardView::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    paint();
     painter.drawImage(0, 0, image);
+    paint(painter);
+
 }
 
 void BoardView::mousePressEvent(QMouseEvent * event) {

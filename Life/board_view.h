@@ -35,7 +35,7 @@ signals:
 public slots:
 
 private:
-    void paint();
+    void paint(QPainter &painter);
     void drawLine(QPoint from, QPoint to, QRgb color);
     void drawHexagon(QPoint start);
     bool tryDrawSimpleLine(QPoint &from, QPoint &to, QRgb color);

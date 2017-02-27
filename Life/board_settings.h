@@ -4,8 +4,8 @@
 #include <QtGlobal>
 
 struct BoardSettings {
-    quint32 width = 30;
-    quint32 height = 30;
+    quint32 width = 24;
+    quint32 height = 24;
     quint8 cellSize = 17;
     quint8 nearImpact = 10;
     quint8 futherImpact = 3;
