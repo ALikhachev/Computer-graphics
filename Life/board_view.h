@@ -46,6 +46,7 @@ private:
     void drawVerticalLine(QPoint &from, QPoint &to, QRgb color);
     void fill(QRgb color);
     void spanFill(QPoint start, QRgb color);
+    void hexFill(QPoint start, QRgb color);
     void getSpans(int min_x, int max_x, int y, QRgb *pixels, QRgb oldValue, std::vector<SpanLine> &spans);
 
     static const QRgb RedColor = qRgb(255, 0, 0);

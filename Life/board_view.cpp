@@ -14,7 +14,7 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
     image = QImage(this->size(), QImage::Format_RGB32);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(33);
+    timer.start(16);
 }
 
 void BoardView::fill(QRgb color) {
@@ -271,6 +271,31 @@ void BoardView::spanFill(QPoint start, QRgb color) {
     }
 }
 
+void BoardView::hexFill(QPoint start, QRgb color) {
+    QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
+    int j;
+    int y;
+    for (y = start.y(); y <= start.y() + hex_qrheight * 2; ++y) {
+        for (j = start.x(); j < start.x() + hex_semiwidth * 2; ++j) {
+            pixels[y * image.width() + j] = color;
+        }
+    }
+    for (y = start.y(); y > start.y() - hex_qrheight; --y) {
+        int offset = (start.y() - y) * hex_semiwidth / hex_qrheight;
+        int end = ((y - start.y() + hex_qrheight) * hex_semiwidth + hex_qrheight * hex_semiwidth) / hex_qrheight;
+        for (j = start.x() + offset; j < start.x() + end; ++j) {
+            pixels[y * image.width() + j] = color;
+        }
+    }
+    for (y = start.y() + hex_qrheight * 2; y < start.y() + hex_qrheight * 3; ++y) {
+        int offset = ((y - start.y() - 2 * hex_qrheight) * hex_semiwidth) / hex_qrheight;
+        int end = ((3 * hex_qrheight - (y - start.y())) * hex_semiwidth + hex_qrheight * hex_semiwidth) / hex_qrheight;
+        for (j = start.x() + offset; j < start.x() + end; ++j) {
+            pixels[y * image.width() + j] = color;
+        }
+    }
+}
+
 void BoardView::paint(QPainter &painter) {
     fill(WhiteColor);
     std::vector<Cell> &state = board->getState();
@@ -281,10 +306,10 @@ void BoardView::paint(QPainter &painter) {
         for (quint32 i = 0; i < board->getWidth(); ++i) {
             Cell &cell = state[j * board->getWidth() + i];
             if (j % 2 == 1) {
-                drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
                 if (cell.alive) {
-                    spanFill(QPoint(horizontal_offset / 2 + horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
+                    hexFill(QPoint(horizontal_offset / 2 + horizontal_offset * i + 1, vertical_offset * j + hex_qrheight), qRgb(16, 202, 90));
                 }
+                drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
                 if (board->getSettings()->show_impacts) {
                     sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
                     painter.drawText(QRect(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j + hex_qrheight,
@@ -296,10 +321,10 @@ void BoardView::paint(QPainter &painter) {
                     break;
                 }
             } else {
-                drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j));
                 if (cell.alive) {
-                    spanFill(QPoint(horizontal_offset * i + 1, vertical_offset * j + hex_qrheight + 1), qRgb(16, 202, 90));
+                    hexFill(QPoint(horizontal_offset * i + 1, vertical_offset * j + hex_qrheight), qRgb(16, 202, 90));
                 }
+                drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j));
                 if (board->getSettings()->show_impacts) {
                     sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
                     painter.drawText(QRect(horizontal_offset * i, vertical_offset * j + hex_qrheight,
