@@ -2,8 +2,13 @@
 #define BOARDSETTINGS_H
 
 #include <QtGlobal>
+#include <QObject>
 
-struct BoardSettings {
+class BoardSettings : public QObject
+{
+    Q_OBJECT
+
+public:
     quint32 width = 24;
     quint32 height = 24;
     quint8 cellSize = 17;
@@ -13,6 +18,9 @@ struct BoardSettings {
     std::pair<quint8, quint8> birthdayImpactRange = std::make_pair(23, 29);
     bool isXorMode = false;
     bool show_impacts = false;
+
+    void update();
+
 };
 
 #endif // BOARDSETTINGS_H

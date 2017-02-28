@@ -7,7 +7,8 @@ SOURCES += main.cpp\
     board_view.cpp \
     board_settings_view.cpp \
     about_view.cpp \
-    board.cpp
+    board.cpp \
+    board_settings.cpp
 
 HEADERS  += mainwindow.h \
     board_view.h \

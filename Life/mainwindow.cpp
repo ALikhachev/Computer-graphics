@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     board(&settings, settings.width, settings.height, std::vector<Cell>(settings.width * settings.height)),
     about(this),
     board_view(&board, this),
-    settings_view(NULL, this),
+    settings_view(&settings, this),
     loop_timer(this)
 {
     setWindowTitle("Life");
