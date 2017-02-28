@@ -17,25 +17,27 @@ private:
     std::vector<Cell> state;
     std::vector<Cell> prev_state;
     const BoardSettings *rules;
-    qint32 width;
-    qint32 height;
-    qint32 ticks_passed;
+    int width;
+    int height;
+    int ticks_passed;
 
     // only call this method when cell state is changed
     void updateImpacts(qint32 x, qint32 y, bool born);
+    void recountImpacts();
 
 public slots:
     void tick();
 
 public:
-    Board(const BoardSettings *rules, const quint32 width, const quint32 height, std::vector<Cell> initial_state);
+    Board(const BoardSettings *rules, const int width, const int height, std::vector<Cell> initial_state);
 
     void setCell(qint32 x, qint32 y, bool alive);
     void invertCell(qint32 x, qint32 y);
     std::vector<Cell> & getState();
-    quint32 getWidth() const;
-    quint32 getHeight() const;
+    int getWidth() const;
+    int getHeight() const;
     const BoardSettings * getSettings() const;
+    void resize(int width, int height);
     void clear();
 };
 

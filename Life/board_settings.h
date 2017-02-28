@@ -21,6 +21,8 @@ public:
 
     void update();
 
+signals:
+    void settingsChanged();
 };
 
 #endif // BOARDSETTINGS_H

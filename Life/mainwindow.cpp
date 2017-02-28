@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(&scrollArea);
 
     connect(&loop_timer, SIGNAL(timeout()), &board, SLOT(tick()));
+    connect(&settings, SIGNAL(settingsChanged()), this, SLOT(settingsChanged()));
 }
 
 void MainWindow::createActions() {
@@ -203,4 +204,9 @@ void MainWindow::setReplaceMode() {
 void MainWindow::toggleShowImpacts() {
     settings.show_impacts = !settings.show_impacts;
     show_impacts_action->setChecked(settings.show_impacts);
+}
+
+void MainWindow::settingsChanged() {
+    board.resize(settings.width, settings.height);
+    board_view.recountBoard();
 }

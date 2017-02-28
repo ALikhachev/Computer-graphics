@@ -33,6 +33,7 @@ private slots:
     void toggleShowImpacts();
     void setXorMode();
     void setReplaceMode();
+    void settingsChanged();
 
 private:
     void createActions();

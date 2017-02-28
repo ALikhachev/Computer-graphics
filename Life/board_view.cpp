@@ -337,10 +337,6 @@ void BoardView::paint(QPainter &painter) {
     }
 }
 
-void BoardView::resizeEvent(QResizeEvent *) {
-    image = QImage(this->size(), QImage::Format_RGB32);
-}
-
 void BoardView::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     QPainter painter_text(&image);
@@ -418,4 +414,11 @@ void BoardView::mouseMoveEvent(QMouseEvent * event) {
 
 void BoardView::toggleEditing(bool allow) {
     editIsAllowed = allow;
+}
+
+void BoardView::recountBoard() {
+    hex_qrheight = board->getSettings()->cellSize / 2;
+    hex_semiwidth = board->getSettings()->cellSize * sqrt(3) / 2;
+    resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
+    image = QImage(this->size(), QImage::Format_RGB32);
 }

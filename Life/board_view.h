@@ -22,17 +22,13 @@ public:
     explicit BoardView(Board *board, QWidget *parent = 0);
 
     void toggleEditing(bool allow);
+    void recountBoard();
 
 protected:
     void paintEvent(QPaintEvent *) override;
-    void resizeEvent(QResizeEvent *) override;
     void mousePressEvent(QMouseEvent * event) override;
     void mouseReleaseEvent(QMouseEvent * event) override;
     void mouseMoveEvent(QMouseEvent * event) override;
-
-signals:
-
-public slots:
 
 private:
     void paint(QPainter &painter);

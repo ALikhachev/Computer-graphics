@@ -1,7 +1,7 @@
 #include "board.h"
 
 Board::Board(const BoardSettings *rules,
-             const quint32 width, const quint32 height, std::vector<Cell> initial_state) :
+             const int width, const int height, std::vector<Cell> initial_state) :
     state(initial_state),
     prev_state(width * height),
     rules(rules),
@@ -9,7 +9,7 @@ Board::Board(const BoardSettings *rules,
     height(height),
     ticks_passed(0)
 {
-    // count initial impacts
+    recountImpacts();
 }
 
 void Board::updateImpacts(int x, int y, bool born) {
@@ -131,12 +131,23 @@ std::vector<Cell> & Board::getState() {
     return state;
 }
 
-quint32 Board::getWidth() const {
+int Board::getWidth() const {
     return width;
 }
 
-quint32 Board::getHeight() const {
+int Board::getHeight() const {
     return height;
+}
+
+void Board::resize(int width, int height) {
+    std::vector<Cell> state(width * height);
+    for (int j = 0; j < std::min(height, this->height); ++j) {
+        memcpy(state.data() + j * width, this->state.data() + j * this->width, sizeof(Cell) * (std::min(width, this->width) - (1 & (j % 2 == 1))));
+    }
+    this->state = state;
+    this->width = width;
+    this->height = height;
+    recountImpacts();
 }
 
 const BoardSettings * Board::getSettings() const {
@@ -145,4 +156,19 @@ const BoardSettings * Board::getSettings() const {
 
 void Board::clear() {
     memset(state.data(), 0, state.size() * sizeof(Cell));
+}
+
+void Board::recountImpacts() {
+    for (int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
+            state[j * width + i].external_impact = 0;
+        }
+    }
+    for (int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
+            if (state[j * width + i].alive) {
+                updateImpacts(i, j, true);
+            }
+        }
+    }
 }
