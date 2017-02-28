@@ -123,6 +123,7 @@ void MainWindow::createActions() {
 
     run_once_action = simulationMenu->addAction(tr("&Run once"), &board, &Board::tick);
     const QIcon run_once_icon = QIcon::fromTheme("run-once", QIcon(":/icons/run-once.png"));
+    run_once_action->setShortcut(QString("Space"));
     run_once_action->setIcon(run_once_icon);
     run_once_action->setStatusTip("Run game loop once");
     toolbar->addAction(run_once_action);
