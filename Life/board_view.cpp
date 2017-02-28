@@ -385,6 +385,9 @@ void BoardView::mousePressEvent(QMouseEvent * event) {
         // left triangle
         row--;
         if (!rowIsOdd) {
+            if (x < hex_semiwidth) {
+                return;
+            }
             column--;
         }
     } else if (relY * hex_semiwidth < k2) {
