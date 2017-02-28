@@ -8,7 +8,6 @@ BoardView::BoardView(Board *board, QWidget *parent) :
     board(board),
     hex_qrheight(board->getSettings()->cellSize / 2),
     hex_semiwidth(board->getSettings()->cellSize * sqrt(3) / 2),
-    top_coeff((double)hex_qrheight/(double)hex_semiwidth),
     lastChangedCell(-1, -1),
     editIsAllowed(true)
 {
@@ -335,9 +334,12 @@ void BoardView::mousePressEvent(QMouseEvent * event) {
     }
     int row = static_cast<int>(y / (hex_qrheight * 3));
     bool rowIsOdd = row % 2 == 1;
+    if (rowIsOdd && x < hex_semiwidth) {
+        return;
+    }
     int column = rowIsOdd ? static_cast<int>((x - hex_semiwidth) / (hex_semiwidth * 2)) : static_cast<int>(x / (hex_semiwidth * 2));
-    double relY = y - (row * hex_qrheight * 3);
-    double relX;
+    int relY = y - (row * hex_qrheight * 3);
+    int relX;
 
     if (rowIsOdd) {
         relX = (x - (column * hex_semiwidth * 2)) - hex_semiwidth;
@@ -345,24 +347,22 @@ void BoardView::mousePressEvent(QMouseEvent * event) {
         relX = x - (column * hex_semiwidth * 2);
     }
 
-    static const double eps = 0.5;
-
-    if (relX < eps) {
+    if (relX == 0) {
         return;
     }
 
-    double k1 = (-top_coeff * relX) + hex_qrheight;
-    double k2 = (top_coeff * relX) - hex_qrheight;
-    if (fabs(relY - k1) < eps || fabs(relY - k2) < eps) {
+    int k1 = (-hex_qrheight * relX) + hex_qrheight * hex_semiwidth;
+    int k2 = (hex_qrheight * relX) - hex_qrheight * hex_qrheight;
+    if (abs(relY * hex_semiwidth - k1) <= 2 || abs(relY * hex_semiwidth - k2) <= 2) {
         return;
     }
-    if (relY < k1) {
+    if (relY * hex_semiwidth < k1) {
         // left triangle
         row--;
         if (!rowIsOdd) {
             column--;
         }
-    } else if (relY < k2) {
+    } else if (relY * hex_semiwidth < k2) {
         // right triangle
         row--;
         if (rowIsOdd) {

@@ -63,7 +63,6 @@ private:
 
     int hex_qrheight;
     int hex_semiwidth;
-    double top_coeff;
     std::pair<int, int> lastChangedCell;
     bool editIsAllowed;
 };
