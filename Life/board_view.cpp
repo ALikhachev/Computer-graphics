@@ -378,7 +378,7 @@ void BoardView::mousePressEvent(QMouseEvent * event) {
 
     int k1 = (-hex_qrheight * relX) + hex_qrheight * hex_semiwidth;
     int k2 = (hex_qrheight * relX) - hex_qrheight * hex_qrheight;
-    if (abs(relY * hex_semiwidth - k1) <= 2 || abs(relY * hex_semiwidth - k2) <= 2) {
+    if (relY * hex_semiwidth == k1 || relY * hex_semiwidth == k2) {
         return;
     }
     if (relY * hex_semiwidth < k1) {
