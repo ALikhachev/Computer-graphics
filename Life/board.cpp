@@ -104,8 +104,8 @@ void Board::invertCell(int x, int y) {
 
 void Board::tick() {
     prev_state = state;
-    for (quint32 j = 0; j < height; ++j) {
-        for (quint32 i = 0; i < width; ++i) {
+    for (int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
             Cell &prev_cell = prev_state[j * width + i];
             Cell &new_cell = state[j * width + i];
             if (prev_cell.alive) {

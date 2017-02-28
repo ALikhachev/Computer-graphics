@@ -301,7 +301,7 @@ void BoardView::paint(QPainter &painter) {
     std::vector<Cell> &state = board->getState();
     int horizontal_offset = hex_semiwidth * 2;
     int vertical_offset = hex_qrheight * 3;
-    char impact[4];
+    int intImpact, fractImpact, impactOffset;
     for (quint32 j = 0; j < board->getHeight(); ++j) {
         for (quint32 i = 0; i < board->getWidth(); ++i) {
             Cell &cell = state[j * board->getWidth() + i];
@@ -311,11 +311,11 @@ void BoardView::paint(QPainter &painter) {
                 }
                 drawHexagon(QPoint(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j));
                 if (board->getSettings()->show_impacts) {
-                    sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
-                    painter.drawText(QRect(horizontal_offset / 2 + horizontal_offset * i, vertical_offset * j + hex_qrheight,
-                                           horizontal_offset, 2 * hex_qrheight),
-                                     Qt::AlignCenter,
-                                     tr(impact));
+                    intImpact = cell.external_impact / 10;
+                    fractImpact = cell.external_impact % 10;
+                    impactOffset = fractImpact == 0 ? hex_semiwidth - 3 : hex_semiwidth - 8;
+                    painter.drawText(horizontal_offset / 2 + horizontal_offset * i + impactOffset, vertical_offset * j + 5 * hex_qrheight / 2 + 1,
+                                     fractImpact == 0 ? QString::number(intImpact) : QString("%1.%2").arg(intImpact).arg(fractImpact));
                 }
                 if (i == board->getWidth() - 2) {
                     break;
@@ -326,11 +326,11 @@ void BoardView::paint(QPainter &painter) {
                 }
                 drawHexagon(QPoint(horizontal_offset * i, vertical_offset * j));
                 if (board->getSettings()->show_impacts) {
-                    sprintf(impact, "%d.%d", cell.external_impact / 10, cell.external_impact % 10);
-                    painter.drawText(QRect(horizontal_offset * i, vertical_offset * j + hex_qrheight,
-                                           horizontal_offset, 2 * hex_qrheight),
-                                     Qt::AlignCenter,
-                                     tr(impact));
+                    intImpact = cell.external_impact / 10;
+                    fractImpact = cell.external_impact % 10;
+                    impactOffset = fractImpact == 0 ? hex_semiwidth - 3 : hex_semiwidth - 8;
+                    painter.drawText(horizontal_offset * i + impactOffset, vertical_offset * j + 5 * hex_qrheight / 2 + 1,
+                                     fractImpact == 0 ? QString::number(intImpact) : QString("%1.%2").arg(intImpact).arg(fractImpact));
                 }
             }
         }
@@ -343,9 +343,9 @@ void BoardView::resizeEvent(QResizeEvent *) {
 
 void BoardView::paintEvent(QPaintEvent *) {
     QPainter painter(this);
+    QPainter painter_text(&image);
+    paint(painter_text);
     painter.drawImage(0, 0, image);
-    paint(painter);
-
 }
 
 void BoardView::mousePressEvent(QMouseEvent * event) {
