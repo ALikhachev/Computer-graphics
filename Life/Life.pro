@@ -18,4 +18,5 @@ HEADERS  += mainwindow.h \
     board.h
 
 RESOURCES += \
-    toolbar.qrc
+    toolbar.qrc \
+    about.qrc

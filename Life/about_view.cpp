@@ -1,13 +1,20 @@
 #include <QString>
+#include <QPixmap>
+#include <QHBoxLayout>
+#include <QLabel>
 
 #include "about_view.h"
 
 AboutView::AboutView(QWidget *parent) : QDialog(parent)
 {
-    setMinimumSize(300, 200);
-    setMaximumSize(300, 200);
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QLabel *label = new QLabel(tr("FIT_14202_Likhachev_Life"), this);
-    layout->addWidget(label);
+    setMinimumSize(350, 200);
+    setMaximumSize(350, 200);
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    QLabel *photo = new QLabel(this);
+    QPixmap pixmap = QPixmap(":/photos/author.jpg");
+    photo->setPixmap(pixmap);
+    layout->addWidget(photo);
+    QLabel *description = new QLabel(tr("Conway's Game of Life\n\nАвтор: Александр Лихачев\nФИТ НГУ\nГруппа 14202"), this);
+    layout->addWidget(description);
     setLayout(layout);
 }

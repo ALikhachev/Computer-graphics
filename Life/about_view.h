@@ -2,9 +2,6 @@
 #define ABOUT_H
 
 #include <QDialog>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QScopedPointer>
 
 class AboutView : public QDialog
 {
