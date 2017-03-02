@@ -242,6 +242,9 @@ void MainWindow::newGame() {
 
 void MainWindow::loadGame() {
     QString filename = QFileDialog::getOpenFileName();
+    if (filename.length() == 0) {
+        return;
+    }
     QFile f(filename);
     if (!f.open(QIODevice::ReadOnly)) {
         showError(QString("Cannot open file %1 to load data").arg(filename));
@@ -255,6 +258,9 @@ void MainWindow::loadGame() {
 
 void MainWindow::saveGame() {
     QString filename = loadedFromFile ? this->filename : QFileDialog::getSaveFileName();
+    if (filename.length() == 0) {
+        return;
+    }
     QFile f(filename);
     if (!f.open(QIODevice::WriteOnly)) {
         showError(QString("Cannot open file %1 to save data").arg(filename));
@@ -266,6 +272,9 @@ void MainWindow::saveGame() {
 
 void MainWindow::saveGameAs() {
     QString filename = QFileDialog::getSaveFileName();
+    if (filename.length() == 0) {
+        return;
+    }
     QFile f(filename);
     if (!f.open(QIODevice::WriteOnly)) {
         showError(QString("Cannot open file %1 to save data").arg(filename));
