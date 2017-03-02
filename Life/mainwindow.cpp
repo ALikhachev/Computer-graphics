@@ -7,24 +7,22 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    scrollArea(this),
+    scrollArea(new QScrollArea(this)),
     board(&settings, settings.width, settings.height, std::vector<Cell>(settings.width * settings.height)),
-    about(this),
-    board_view(&board, this),
-    settings_view(&settings, this),
-    loop_timer(this)
+    board_view(new BoardView(&board, this)),
+    loop_timer(new QTimer(this))
 {
     setWindowTitle("Life");
 
     createActions();
 
-    scrollArea.setBackgroundRole(QPalette::Light);
+    scrollArea->setBackgroundRole(QPalette::Light);
 
-    scrollArea.setWidget(&board_view);
+    scrollArea->setWidget(board_view);
 
-    setCentralWidget(&scrollArea);
+    setCentralWidget(scrollArea);
 
-    connect(&loop_timer, SIGNAL(timeout()), &board, SLOT(tick()));
+    connect(loop_timer, SIGNAL(timeout()), &board, SLOT(tick()));
     connect(&settings, SIGNAL(settingsChanged()), this, SLOT(settingsChanged()));
 }
 
@@ -144,13 +142,17 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::showAbout() {
-    about.show();
-    about.activateWindow();
+    AboutView about_view;
+    about_view.setModal(true);
+    about_view.show();
+    about_view.exec();
 }
 
 void MainWindow::showSettings() {
+    BoardSettingsView settings_view(&settings);
+    settings_view.setModal(true);
     settings_view.show();
-    settings_view.activateWindow();
+    settings_view.exec();
 }
 
 void MainWindow::toggleStatusBar() {
@@ -174,18 +176,18 @@ void MainWindow::toggleToolBar() {
 }
 
 void MainWindow::toggleLoopMode() {
-    if (loop_timer.isActive()) {
+    if (loop_timer->isActive()) {
         run_loop_action->setChecked(false);
         run_once_action->setDisabled(false);
         clear_board_action->setDisabled(false);
-        loop_timer.stop();
-        board_view.toggleEditing(true);
+        loop_timer->stop();
+        board_view->toggleEditing(true);
     } else {
         run_loop_action->setChecked(true);
         run_once_action->setDisabled(true);
         clear_board_action->setDisabled(true);
-        loop_timer.start(1000);
-        board_view.toggleEditing(false);
+        loop_timer->start(1000);
+        board_view->toggleEditing(false);
     }
 }
 
@@ -208,5 +210,5 @@ void MainWindow::toggleShowImpacts() {
 
 void MainWindow::settingsChanged() {
     board.resize(settings.width, settings.height);
-    board_view.recountBoard();
+    board_view->recountBoard();
 }

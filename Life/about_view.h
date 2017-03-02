@@ -12,8 +12,6 @@ public:
     AboutView(QWidget * parent = 0);
 
 private:
-    QLabel label;
-    QVBoxLayout layout;
 };
 
 #endif // ABOUT_H

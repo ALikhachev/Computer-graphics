@@ -38,14 +38,12 @@ private slots:
 private:
     void createActions();
 
-    QScrollArea scrollArea;
+    QScrollArea *scrollArea;
 
     BoardSettings settings;
     Board board;
 
-    AboutView about;
-    BoardView board_view;
-    BoardSettingsView settings_view;
+    BoardView *board_view;
 
     QToolBar *toolbar;
     QAction *toolBarStateAction;
@@ -57,7 +55,7 @@ private:
     QAction *replace_mode_action;
     QAction *show_impacts_action;
 
-    QTimer loop_timer;
+    QTimer *loop_timer;
 };
 
 #endif // MAINWINDOW_H
