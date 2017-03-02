@@ -268,6 +268,8 @@ void MainWindow::saveGame() {
     }
     QTextStream out(&f);
     board.save(out);
+    loadedFromFile = true;
+    this->filename = filename;
 }
 
 void MainWindow::saveGameAs() {
@@ -282,6 +284,8 @@ void MainWindow::saveGameAs() {
     }
     QTextStream out(&f);
     board.save(out);
+    loadedFromFile = true;
+    this->filename = filename;
 }
 
 void MainWindow::showError(QString text) {
