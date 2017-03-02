@@ -192,6 +192,9 @@ void BoardSettingsView::save() {
     if (settings->cellSize != cell_size_slider->value()) {
         viewChanged = true;
     }
+    if (settings->nearImpact != near_impact || settings->futherImpact != further_impact) {
+        modelChanged = true;
+    }
     settings->cellSize = cell_size_slider->value();
     settings->height = height_slider->value();
     settings->width = width_slider->value();

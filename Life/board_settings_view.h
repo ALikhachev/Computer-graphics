@@ -52,7 +52,7 @@ private:
     QLineEdit *birth_impact_end_edit;
 
     static const int CellSizeMin = 2;
-    static const int CellSizeMax = 100;
+    static const int CellSizeMax = 60;
     static const int HeightMin = 1;
     static const int HeightMax = 100;
     static const int WidthMin = 1;
