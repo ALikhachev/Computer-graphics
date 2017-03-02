@@ -24,6 +24,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void showAbout();
     void showSettings();
@@ -43,6 +46,7 @@ private slots:
 private:
     void createActions();
     void showError(QString text);
+    void showSaveDialog();
 
     QScrollArea *scrollArea;
 

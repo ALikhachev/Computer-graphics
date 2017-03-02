@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 
+#include "save_view.h"
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -229,6 +230,9 @@ void MainWindow::viewSettingsChanged() {
 }
 
 void MainWindow::newGame() {
+    if (board.isStateChanged()) {
+        showSaveDialog();
+    }
     settings.resetToDefault();
     board.clear();
     settings.updateModel();
@@ -276,4 +280,20 @@ void MainWindow::showError(QString text) {
     error_message.setModal(true);
     error_message.showMessage(text);
     error_message.exec();
+}
+
+void MainWindow::showSaveDialog() {
+    SaveView save_view;
+    save_view.setModal(true);
+    save_view.show();
+    connect(&save_view, SIGNAL(saveRequested()), this, SLOT(saveGame()));
+    save_view.exec();
+    disconnect(&save_view, 0 ,0 ,0);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    if (board.isStateChanged()) {
+        showSaveDialog();
+    }
+    QMainWindow::closeEvent(event);
 }

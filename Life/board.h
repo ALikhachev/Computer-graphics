@@ -20,7 +20,7 @@ private:
     BoardSettings *rules;
     int width;
     int height;
-    int ticks_passed;
+    bool state_changed;
 
     // only call this method when cell state is changed
     void updateImpacts(qint32 x, qint32 y, bool born);
@@ -34,6 +34,7 @@ public:
 
     void save(QTextStream &out);
     void load(QTextStream &out);
+    bool isStateChanged();
 
     void setCell(qint32 x, qint32 y, bool alive);
     void invertCell(qint32 x, qint32 y);

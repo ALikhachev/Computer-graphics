@@ -7,7 +7,7 @@ Board::Board(BoardSettings *rules,
     rules(rules),
     width(width),
     height(height),
-    ticks_passed(0)
+    state_changed(false)
 {
     recountImpacts();
 }
@@ -94,12 +94,14 @@ void Board::setCell(int x, int y, bool alive) {
         updateImpacts(x, y, alive);
         cell.alive = alive;
     }
+    state_changed = true;
 }
 
 void Board::invertCell(int x, int y) {
     Cell &cell = state[width * y + x];
     cell.alive = !cell.alive;
     updateImpacts(x, y, cell.alive);
+    state_changed = true;
 }
 
 void Board::tick() {
@@ -124,7 +126,7 @@ void Board::tick() {
             }
         }
     }
-    ++ticks_passed;
+    state_changed = true;
 }
 
 std::vector<Cell> & Board::getState() {
@@ -156,6 +158,7 @@ const BoardSettings * Board::getSettings() const {
 
 void Board::clear() {
     memset(state.data(), 0, state.size() * sizeof(Cell));
+    state_changed = false;
 }
 
 void Board::recountImpacts() {
@@ -185,6 +188,7 @@ void Board::load(QTextStream &in) {
         in >> x >> y;
         state[y * width + x].alive = true;
     }
+    state_changed = false;
     recountImpacts();
     rules->updateView();
 }
@@ -206,4 +210,8 @@ void Board::save(QTextStream &out) {
             out << i % width << " " << (i / width) << '\n';
         }
     }
+}
+
+bool Board::isStateChanged() {
+    return state_changed;
 }
