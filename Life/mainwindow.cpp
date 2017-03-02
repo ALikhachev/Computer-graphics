@@ -2,6 +2,9 @@
 #include <QMenuBar>
 #include <QShortcut>
 #include <QStatusBar>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
 
 #include "mainwindow.h"
 
@@ -10,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     scrollArea(new QScrollArea(this)),
     board(&settings, settings.width, settings.height, std::vector<Cell>(settings.width * settings.height)),
     board_view(new BoardView(&board, this)),
-    loop_timer(new QTimer(this))
+    loop_timer(new QTimer(this)),
+    loadedFromFile(false)
 {
     setWindowTitle("Life");
 
@@ -31,28 +35,28 @@ void MainWindow::createActions() {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     toolbar = addToolBar(tr("Toolbar"));
 
-    QAction *newAct = fileMenu->addAction(tr("&New"), this, &QWidget::close);
+    QAction *newAct = fileMenu->addAction(tr("&New"), this, newGame);
     newAct->setShortcut(tr("Ctrl+N"));
     const QIcon newIcon = QIcon::fromTheme("board-new", QIcon(":/icons/new.png"));
     newAct->setIcon(newIcon);
     newAct->setStatusTip("Create a new Convey's Life game board");
     toolbar->addAction(newAct);
 
-    QAction *openAct = fileMenu->addAction(tr("&Open..."), this, &QWidget::close);
+    QAction *openAct = fileMenu->addAction(tr("&Open..."), this, loadGame);
     openAct->setShortcut(tr("Ctrl+O"));
     const QIcon openIcon = QIcon::fromTheme("board-open", QIcon(":/icons/open.png"));
     openAct->setIcon(openIcon);
     openAct->setStatusTip("Load Convey's Life game board from file");
     toolbar->addAction(openAct);
 
-    QAction *saveAct = fileMenu->addAction(tr("&Save"), this, &QWidget::close);
+    QAction *saveAct = fileMenu->addAction(tr("&Save"), this, saveGame);
     saveAct->setShortcut(tr("Ctrl+S"));
     const QIcon saveIcon = QIcon::fromTheme("board-save", QIcon(":/icons/save.png"));
     saveAct->setIcon(saveIcon);
     saveAct->setStatusTip("Save current game board to the file");
     toolbar->addAction(saveAct);
 
-    QAction *saveAsAct = fileMenu->addAction(tr("&Save as..."), this, &QWidget::close);
+    QAction *saveAsAct = fileMenu->addAction(tr("&Save as..."), this, saveGameAs);
     saveAsAct->setStatusTip("Save current game board to specific file");
     saveAsAct->setShortcut(tr("Ctrl+Shift+S"));
 
@@ -219,14 +223,50 @@ void MainWindow::viewSettingsChanged() {
 
 void MainWindow::newGame() {
     settings.resetToDefault();
+    board.clear();
     settings.updateModel();
     settings.updateView();
+    loadedFromFile = false;
 }
 
 void MainWindow::loadGame() {
-
+    QString filename = QFileDialog::getOpenFileName();
+    QFile f(filename);
+    if (!f.open(QIODevice::ReadOnly)) {
+        showError(QString("Cannot open file %1 to load data").arg(filename));
+        return;
+    }
+    QTextStream in(&f);
+    board.load(in);
+    loadedFromFile = true;
+    this->filename = filename;
 }
 
 void MainWindow::saveGame() {
+    QString filename = loadedFromFile ? this->filename : QFileDialog::getSaveFileName();
+    QFile f(filename);
+    if (!f.open(QIODevice::WriteOnly)) {
+        showError(QString("Cannot open file %1 to save data").arg(filename));
+        return;
+    }
+    QTextStream out(&f);
+    board.save(out);
+}
 
+void MainWindow::saveGameAs() {
+    QString filename = QFileDialog::getSaveFileName();
+    QFile f(filename);
+    if (!f.open(QIODevice::WriteOnly)) {
+        showError(QString("Cannot open file %1 to save data").arg(filename));
+        return;
+    }
+    QTextStream out(&f);
+    board.save(out);
+}
+
+void MainWindow::showError(QString text) {
+    QErrorMessage error_message;
+    error_message.setModal(true);
+    error_message.showMessage(text);
+    error_message.exec();
 }

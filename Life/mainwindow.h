@@ -38,9 +38,11 @@ private slots:
     void newGame();
     void loadGame();
     void saveGame();
+    void saveGameAs();
 
 private:
     void createActions();
+    void showError(QString text);
 
     QScrollArea *scrollArea;
 
@@ -60,6 +62,9 @@ private:
     QAction *show_impacts_action;
 
     QTimer *loop_timer;
+
+    bool loadedFromFile;
+    QString filename;
 };
 
 #endif // MAINWINDOW_H

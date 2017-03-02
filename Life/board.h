@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include <QSharedPointer>
+#include <QTextStream>
 
 #include "board_settings.h"
 
@@ -16,7 +17,7 @@ class Board : public QObject
 private:
     std::vector<Cell> state;
     std::vector<Cell> prev_state;
-    const BoardSettings *rules;
+    BoardSettings *rules;
     int width;
     int height;
     int ticks_passed;
@@ -29,7 +30,10 @@ public slots:
     void tick();
 
 public:
-    Board(const BoardSettings *rules, const int width, const int height, std::vector<Cell> initial_state);
+    Board(BoardSettings *rules, const int width, const int height, std::vector<Cell> initial_state);
+
+    void save(QTextStream &out);
+    void load(QTextStream &out);
 
     void setCell(qint32 x, qint32 y, bool alive);
     void invertCell(qint32 x, qint32 y);

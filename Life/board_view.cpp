@@ -302,8 +302,8 @@ void BoardView::paint(QPainter &painter) {
     int horizontal_offset = hex_semiwidth * 2;
     int vertical_offset = hex_qrheight * 3;
     int intImpact, fractImpact, impactOffset;
-    for (quint32 j = 0; j < board->getHeight(); ++j) {
-        for (quint32 i = 0; i < board->getWidth(); ++i) {
+    for (int j = 0; j < board->getHeight(); ++j) {
+        for (int i = 0; i < board->getWidth(); ++i) {
             Cell &cell = state[j * board->getWidth() + i];
             if (j % 2 == 1) {
                 if (cell.alive) {

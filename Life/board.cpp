@@ -1,6 +1,6 @@
 #include "board.h"
 
-Board::Board(const BoardSettings *rules,
+Board::Board(BoardSettings *rules,
              const int width, const int height, std::vector<Cell> initial_state) :
     state(initial_state),
     prev_state(width * height),
@@ -169,6 +169,41 @@ void Board::recountImpacts() {
             if (state[j * width + i].alive) {
                 updateImpacts(i, j, true);
             }
+        }
+    }
+}
+
+void Board::load(QTextStream &in) {
+    int tmp;
+    in >> width >> height;
+    in >> tmp;
+    in >> rules->cellSize;
+    in >> tmp;
+    state = std::vector<Cell>(width * height);
+    int x, y;
+    for (int i = 0; i < tmp; ++i) {
+        in >> x >> y;
+        state[y * width + x].alive = true;
+    }
+    recountImpacts();
+    rules->updateView();
+}
+
+void Board::save(QTextStream &out) {
+    out << width << " " << height << '\n';
+    out << 1 << '\n';
+    out << rules->cellSize << '\n';
+    int count = 0;
+    for (auto it = state.begin(); it < state.end(); ++it) {
+        if ((*it).alive) {
+            ++count;
+        }
+    }
+    out << count << '\n';
+    int i = 0;
+    for (auto it = state.begin(); it < state.end(); ++it, ++i) {
+        if ((*it).alive) {
+            out << i % width << " " << (i / width) << '\n';
         }
     }
 }
