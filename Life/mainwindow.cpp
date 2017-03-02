@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(scrollArea);
 
     connect(loop_timer, SIGNAL(timeout()), &board, SLOT(tick()));
-    connect(&settings, SIGNAL(settingsChanged()), this, SLOT(settingsChanged()));
+    connect(&settings, SIGNAL(viewSettingsChanged()), this, SLOT(viewSettingsChanged()));
+    connect(&settings, SIGNAL(modelSettingsChanged()), this, SLOT(modelSettingsChanged()));
 }
 
 void MainWindow::createActions() {
@@ -208,7 +209,24 @@ void MainWindow::toggleShowImpacts() {
     show_impacts_action->setChecked(settings.show_impacts);
 }
 
-void MainWindow::settingsChanged() {
+void MainWindow::modelSettingsChanged() {
     board.resize(settings.width, settings.height);
+}
+
+void MainWindow::viewSettingsChanged() {
     board_view->recountBoard();
+}
+
+void MainWindow::newGame() {
+    settings.resetToDefault();
+    settings.updateModel();
+    settings.updateView();
+}
+
+void MainWindow::loadGame() {
+
+}
+
+void MainWindow::saveGame() {
+
 }

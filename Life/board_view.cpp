@@ -419,6 +419,6 @@ void BoardView::toggleEditing(bool allow) {
 void BoardView::recountBoard() {
     hex_qrheight = board->getSettings()->cellSize / 2;
     hex_semiwidth = board->getSettings()->cellSize * sqrt(3) / 2;
-    resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight);
+    resize(hex_semiwidth * 2 * board->getWidth() + 1, board->getHeight() * hex_qrheight * 3 + hex_qrheight + 1);
     image = QImage(this->size(), QImage::Format_RGB32);
 }

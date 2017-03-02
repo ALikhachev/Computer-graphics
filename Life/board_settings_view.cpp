@@ -183,7 +183,15 @@ void BoardSettingsView::save() {
         showError(QString("BIRTH_END must be lesser or equal to LIVE_END"));
         return;
     }
-
+    bool modelChanged = false;
+    bool viewChanged = false;
+    if (settings->height != height_slider->value() || settings->width != width_slider->value()) {
+        modelChanged = true;
+        viewChanged = true;
+    }
+    if (settings->cellSize != cell_size_slider->value()) {
+        viewChanged = true;
+    }
     settings->cellSize = cell_size_slider->value();
     settings->height = height_slider->value();
     settings->width = width_slider->value();
@@ -191,6 +199,11 @@ void BoardSettingsView::save() {
     settings->futherImpact = further_impact;
     settings->liveImpactRange = std::make_pair(live_impact_start, live_impact_end);
     settings->birthdayImpactRange = std::make_pair(birth_impact_start, birth_impact_end);
-    settings->update();
-    hide();
+    if (modelChanged) {
+        settings->updateModel();
+    }
+    if (viewChanged) {
+        settings->updateView();
+    }
+    close();
 }

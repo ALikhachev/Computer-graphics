@@ -10,8 +10,6 @@ class AboutView : public QDialog
 {
 public:
     AboutView(QWidget * parent = 0);
-
-private:
 };
 
 #endif // ABOUT_H

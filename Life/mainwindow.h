@@ -33,7 +33,11 @@ private slots:
     void toggleShowImpacts();
     void setXorMode();
     void setReplaceMode();
-    void settingsChanged();
+    void modelSettingsChanged();
+    void viewSettingsChanged();
+    void newGame();
+    void loadGame();
+    void saveGame();
 
 private:
     void createActions();

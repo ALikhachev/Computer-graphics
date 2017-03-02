@@ -9,20 +9,23 @@ class BoardSettings : public QObject
     Q_OBJECT
 
 public:
-    quint32 width = 24;
-    quint32 height = 24;
-    quint8 cellSize = 17;
-    quint8 nearImpact = 10;
-    quint8 futherImpact = 3;
-    std::pair<quint8, quint8> liveImpactRange = std::make_pair(20, 33);
-    std::pair<quint8, quint8> birthdayImpactRange = std::make_pair(23, 29);
+    int width = 24;
+    int height = 24;
+    int cellSize = 17;
+    int nearImpact = 10;
+    int futherImpact = 3;
+    std::pair<int, int> liveImpactRange = std::make_pair(20, 33);
+    std::pair<int, int> birthdayImpactRange = std::make_pair(23, 29);
     bool isXorMode = false;
     bool show_impacts = false;
 
-    void update();
+    void updateView();
+    void updateModel();
+    void resetToDefault();
 
 signals:
-    void settingsChanged();
+    void viewSettingsChanged();
+    void modelSettingsChanged();
 };
 
 #endif // BOARDSETTINGS_H
