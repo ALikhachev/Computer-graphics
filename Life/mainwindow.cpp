@@ -219,6 +219,13 @@ void MainWindow::modelSettingsChanged() {
 
 void MainWindow::viewSettingsChanged() {
     board_view->recountBoard();
+    if (settings.cellSize < 13) {
+        show_impacts_action->setEnabled(false);
+        show_impacts_action->setChecked(false);
+        settings.show_impacts = false;
+    } else {
+        show_impacts_action->setEnabled(true);
+    }
 }
 
 void MainWindow::newGame() {
