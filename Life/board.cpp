@@ -177,15 +177,23 @@ void Board::recountImpacts() {
 }
 
 void Board::load(QTextStream &in) {
-    int tmp;
-    in >> width >> height;
-    in >> tmp;
-    in >> rules->cellSize;
-    in >> tmp;
+    QString line = in.readLine();
+    QTextStream str(&line);
+    str >> width >> height;
+    line = in.readLine(); // ignore line weight
+    line = in.readLine();
+    QTextStream str2(&line);
+    str2 >> rules->cellSize;
+    line = in.readLine();
+    QTextStream str3(&line);
+    int count;
+    str3 >> count;
     state = std::vector<Cell>(width * height);
     int x, y;
-    for (int i = 0; i < tmp; ++i) {
-        in >> x >> y;
+    for (int i = 0; i < count; ++i) {
+        line = in.readLine();
+        QTextStream str4(&line);
+        str4 >> x >> y;
         state[y * width + x].alive = true;
     }
     state_changed = false;
