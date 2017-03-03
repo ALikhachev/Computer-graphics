@@ -46,7 +46,7 @@ private slots:
 private:
     void createActions();
     void showError(QString text);
-    void showSaveDialog();
+    int showSaveDialog();
 
     QScrollArea *scrollArea;
 

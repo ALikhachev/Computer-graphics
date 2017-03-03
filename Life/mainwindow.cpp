@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QTextStream>
+#include <QMessageBox>
 
 #include "save_view.h"
 #include "mainwindow.h"
@@ -231,7 +232,9 @@ void MainWindow::viewSettingsChanged() {
 
 void MainWindow::newGame() {
     if (board.isStateChanged()) {
-        showSaveDialog();
+        if (QMessageBox::Cancel == showSaveDialog()) {
+            return;
+        }
     }
     settings.resetToDefault();
     board.clear();
@@ -295,18 +298,25 @@ void MainWindow::showError(QString text) {
     error_message.exec();
 }
 
-void MainWindow::showSaveDialog() {
-    SaveView save_view;
-    save_view.setModal(true);
-    save_view.show();
-    connect(&save_view, SIGNAL(saveRequested()), this, SLOT(saveGame()));
-    save_view.exec();
-    disconnect(&save_view, 0 ,0 ,0);
+int MainWindow::showSaveDialog() {
+    QMessageBox msg_box;
+    msg_box.setText("The document has been modified.");
+    msg_box.setInformativeText("Do you want to save your changes?");
+    msg_box.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    msg_box.setDefaultButton(QMessageBox::Save);
+    int ret = msg_box.exec();
+    if (ret == QMessageBox::Save) {
+        saveGame();
+    }
+    return ret;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (board.isStateChanged()) {
-        showSaveDialog();
+        if (QMessageBox::Cancel == showSaveDialog()) {
+            event->ignore();
+            return;
+        }
     }
     QMainWindow::closeEvent(event);
 }
