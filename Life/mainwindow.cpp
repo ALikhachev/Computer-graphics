@@ -231,12 +231,18 @@ void MainWindow::viewSettingsChanged() {
 }
 
 void MainWindow::newGame() {
+    if (loop_timer->isActive()) {
+        toggleLoopMode();
+    }
     if (board.isStateChanged()) {
         if (QMessageBox::Cancel == showSaveDialog()) {
             return;
         }
     }
     settings.resetToDefault();
+    show_impacts_action->setChecked(false);
+    xor_mode_action->setChecked(false);
+    replace_mode_action->setChecked(true);
     board.clear();
     settings.updateModel();
     settings.updateView();
