@@ -13,6 +13,7 @@ Board::Board(BoardSettings *rules,
 }
 
 void Board::updateImpacts(int x, int y, bool born) {
+    state_changed = true;
     quint16 sign = born ? 1 : -1;
     if (y % 2 == 0) {
         // first order neighbors
@@ -94,14 +95,12 @@ void Board::setCell(int x, int y, bool alive) {
         updateImpacts(x, y, alive);
         cell.alive = alive;
     }
-    state_changed = true;
 }
 
 void Board::invertCell(int x, int y) {
     Cell &cell = state[width * y + x];
     cell.alive = !cell.alive;
     updateImpacts(x, y, cell.alive);
-    state_changed = true;
 }
 
 void Board::tick() {
@@ -126,7 +125,6 @@ void Board::tick() {
             }
         }
     }
-    state_changed = true;
 }
 
 std::vector<Cell> & Board::getState() {
