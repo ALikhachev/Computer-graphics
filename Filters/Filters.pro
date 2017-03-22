@@ -27,9 +27,7 @@ SOURCES += main.cpp\
     filter_zone.cpp \
     main_window.cpp \
     zone_container.cpp \
-    selection.cpp \
-    filter.cpp \
-    filter_parameters.cpp
+    selection.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -37,7 +35,7 @@ HEADERS  += \
     zone_container.h \
     selection.h \
     filter.h \
-    filter_parameters.h
+    filter_parameters_widget.h
 
 RESOURCES += \
     icons.qrc
