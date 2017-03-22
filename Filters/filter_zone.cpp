@@ -25,6 +25,7 @@ void FilterZone::setImage(QImage &image) {
     this->depth_bytes = this->image.depth() / 8;
     this->offsetImage();
     this->drawBorder();
+    this->update();
 }
 
 void FilterZone::paintEvent(QPaintEvent *) {
