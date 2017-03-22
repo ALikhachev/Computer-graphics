@@ -1,5 +1,5 @@
-#ifndef FILTERZONE_H
-#define FILTERZONE_H
+#ifndef FILTER_ZONE_H
+#define FILTER_ZONE_H
 
 #include <QWidget>
 
@@ -27,4 +27,4 @@ private:
     const int DashPeriods = 176;
 };
 
-#endif // FILTERZONE_H
+#endif // FILTER_ZONE_H

@@ -1,5 +1,5 @@
 #ifndef ZONE_CONTAIINER_H
-#define ZONE_CONTAIINER_H
+#define ZONE_CONTAINER_H
 
 #include <QWidget>
 
@@ -19,4 +19,4 @@ private:
     FilterZone *zone_c;
 };
 
-#endif // ZONE_CONTAIINER_H
+#endif // ZONE_CONTAINER_H
