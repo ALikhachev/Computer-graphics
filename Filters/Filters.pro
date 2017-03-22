@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     filter_zone.cpp \
     main_window.cpp \
     zone_container.cpp \
-    selection.cpp
+    selection.cpp \
+    filter.cpp
 
 HEADERS  += \
     filter_zone.h \
