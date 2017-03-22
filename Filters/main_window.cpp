@@ -58,7 +58,7 @@ void MainWindow::openImage() {
         return;
     }
     QImage image = reader.read();
-    if (image.isNull()) {
+    if (image.isNull() || image.depth() != 24) {
         showError(tr("Cannot decode image!"));
         return;
     }
