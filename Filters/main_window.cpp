@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMinimumSize(200, 200);
     this->zone_container = new ZoneContainer(this);
     QScrollArea *scroll_area = new QScrollArea(this);
+    scroll_area->setBackgroundRole(QPalette::Light);
     scroll_area->setWidget(this->zone_container);
     this->setCentralWidget(scroll_area);
     this->setupActions();
