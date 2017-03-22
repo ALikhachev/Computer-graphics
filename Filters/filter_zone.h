@@ -17,8 +17,13 @@ protected:
 private:
     void drawLine(QPoint, QPoint, QRgb);
     void offsetImage();
+    void drawBorder();
+    static void emptyImage(QImage &);
 
     QImage image;
+    int depth_bytes;
+
+    const int DashPeriods = 176;
 };
 
 #endif // FILTERZONE_H
