@@ -26,12 +26,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
     filter_zone.cpp \
     main_window.cpp \
-    zone_container.cpp
+    zone_container.cpp \
+    selection.cpp \
+    filter.cpp \
+    filter_parameters.cpp
 
 HEADERS  += \
     filter_zone.h \
     main_window.h \
-    zone_container.h
+    zone_container.h \
+    selection.h \
+    filter.h \
+    filter_parameters.h
 
 RESOURCES += \
     icons.qrc
