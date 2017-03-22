@@ -16,6 +16,7 @@ protected:
 
 private:
     void drawLine(QPoint, QPoint, QRgb);
+    void offsetImage();
 
     QImage image;
 };

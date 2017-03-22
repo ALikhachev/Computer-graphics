@@ -4,7 +4,7 @@
 
 ZoneContainer::ZoneContainer(QWidget *parent) : QWidget(parent)
 {
-    this->resize(350 * 3 + 10 * 5, 350);
+    this->resize(352 * 3 + 10 * 5, 352);
     QHBoxLayout *layout = new QHBoxLayout(this);
     this->zone_a = new FilterZone(this);
     this->zone_b = new FilterZone(this);
