@@ -10,6 +10,7 @@ public:
     explicit FilterZone(QWidget *parent = 0);
 
     void setImage(QImage &);
+    void clear();
 
 protected:
     void paintEvent(QPaintEvent *) override;

@@ -14,6 +14,7 @@ public:
     void setupActions();
 
 public slots:
+    void clearZones();
     void openImage();
 
 private:

@@ -11,6 +11,7 @@ class ZoneContainer : public QWidget
 public:
     explicit ZoneContainer(QWidget *parent = 0);
     void setSourceImage(QImage);
+    void clear();
 
 private:
     FilterZone *zone_a;

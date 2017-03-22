@@ -19,3 +19,9 @@ ZoneContainer::ZoneContainer(QWidget *parent) : QWidget(parent)
 void ZoneContainer::setSourceImage(QImage image) {
     this->zone_a->setImage(image);
 }
+
+void ZoneContainer::clear() {
+    this->zone_a->clear();
+    this->zone_b->clear();
+    this->zone_c->clear();
+}

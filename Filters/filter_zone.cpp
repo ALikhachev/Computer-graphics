@@ -9,8 +9,13 @@ FilterZone::FilterZone(QWidget *parent) : QWidget(parent),
     depth_bytes(4)
 {
     this->setFixedSize(352, 352);
+    this->clear();
+}
+
+void FilterZone::clear() {
     emptyImage(this->image);
     this->drawBorder();
+    this->update();
 }
 
 void FilterZone::setImage(QImage &image) {

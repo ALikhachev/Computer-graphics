@@ -28,7 +28,7 @@ void MainWindow::setupActions() {
 
     QMenu *file_menu = this->menuBar()->addMenu(tr("&File"));
 
-    QAction *new_act = file_menu->addAction(tr("&New"), this, close);
+    QAction *new_act = file_menu->addAction(tr("&New"), this, clearZones);
     new_act->setShortcut(tr("Ctrl+N"));
     const QIcon new_icon = QIcon::fromTheme("document-new", QIcon(":/icons/new.png"));
     new_act->setIcon(new_icon);
@@ -72,4 +72,9 @@ void MainWindow::showError(QString text) {
     error_message.setModal(true);
     error_message.showMessage(text);
     error_message.exec();
+}
+
+void MainWindow::clearZones() {
+    this->opened_from_file_name = QString();
+    this->zone_container->clear();
 }
