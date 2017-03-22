@@ -10,6 +10,7 @@ class ZoneContainer : public QWidget
     Q_OBJECT
 public:
     explicit ZoneContainer(QWidget *parent = 0);
+    void setSourceImage(QImage);
 
 private:
     FilterZone *zone_a;

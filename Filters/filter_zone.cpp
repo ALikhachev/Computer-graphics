@@ -1,5 +1,6 @@
 #include <QImage>
 #include <QPainter>
+#include <QDebug>
 
 #include "filter_zone.h"
 
@@ -8,9 +9,14 @@ FilterZone::FilterZone(QWidget *parent) : QWidget(parent)
     this->setFixedSize(350, 350);
 }
 
+void FilterZone::setImage(QImage &image) {
+    this->image = (image.width() > this->width() || image.height() > this->height()) ?
+                      image.scaled(this->size(), Qt::KeepAspectRatio) :
+                      image;
+    qDebug() << this->image.size() << "\n";
+}
+
 void FilterZone::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    QImage image(this->size(), QImage::Format_RGB32);
-    image.fill(qRgb(120, 0, 0));
-    painter.drawImage(0, 0, image);
+    painter.drawImage(0, 0, this->image);
 }

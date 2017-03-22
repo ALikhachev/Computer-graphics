@@ -32,3 +32,6 @@ HEADERS  += \
     filter_zone.h \
     main_window.h \
     zone_container.h
+
+RESOURCES += \
+    icons.qrc

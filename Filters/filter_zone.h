@@ -9,8 +9,15 @@ class FilterZone : public QWidget
 public:
     explicit FilterZone(QWidget *parent = 0);
 
+    void setImage(QImage &);
+
 protected:
     void paintEvent(QPaintEvent *) override;
+
+private:
+    void drawLine(QPoint, QPoint, QRgb);
+
+    QImage image;
 };
 
 #endif // FILTERZONE_H
