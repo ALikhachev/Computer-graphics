@@ -2,6 +2,7 @@
 #define FILTER_ZONE_H
 
 #include <QWidget>
+#include <QMouseEvent>
 
 class FilterZone : public QWidget
 {
@@ -17,12 +18,34 @@ protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
-    static void emptyImage(QImage &);
-
     QImage image;
-    int depth_bytes;
+};
 
-    const int DashPeriods = 176;
+struct Selection {
+    int x;
+    int y;
+    int width;
+    int height;
+    bool empty;
+};
+
+class SourceZone : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit SourceZone(QWidget *parent = 0);
+    void setSourceImage(QImage);
+    void clear();
+signals:
+    void zoneSelected(QImage);
+protected:
+    void paintEvent(QPaintEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
+private:
+    Selection selection;
+    QImage source_image;
+    QImage image;
 };
 
 #endif // FILTER_ZONE_H

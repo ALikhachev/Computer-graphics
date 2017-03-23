@@ -20,7 +20,7 @@ signals:
     void filterImage(Filter *f, QImage image);
 
 private:
-    FilterZone *zone_a;
+    SourceZone *zone_a;
     FilterZone *zone_b;
     FilterZone *zone_c;
     std::vector<QSharedPointer<Filter>> &filters;
