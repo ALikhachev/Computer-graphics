@@ -9,7 +9,8 @@ class FilterZone : public QWidget
 public:
     explicit FilterZone(QWidget *parent = 0);
 
-    void setImage(QImage &);
+    QImage getImage();
+    void setImage(QImage);
     void clear();
 
 protected:

@@ -2,7 +2,8 @@
 
 #include "zone_container.h"
 
-ZoneContainer::ZoneContainer(QWidget *parent) : QWidget(parent)
+ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidget *parent) : QWidget(parent),
+    filters(filters)
 {
     this->resize(352 * 3 + 10 * 5, 352 + 2 * 10);
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -14,6 +15,12 @@ ZoneContainer::ZoneContainer(QWidget *parent) : QWidget(parent)
     layout->addWidget(zone_c);
     layout->setSpacing(10);
     this->setLayout(layout);
+    for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
+        Filter *f = (*it).data();
+        this->connect(f, &Filter::requested, [this, f]{
+            this->zone_c->setImage(f->applyFilter(this->zone_a->getImage()));
+        });
+    }
 }
 
 void ZoneContainer::setSourceImage(QImage image) {

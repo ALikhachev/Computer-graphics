@@ -14,13 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->resize(1280, 720);
     this->setMinimumSize(200, 200);
-    this->zone_container = new ZoneContainer(this);
+    this->filters.push_back(QSharedPointer<Filter>(new GrayscaleFilter));
+    this->zone_container = new ZoneContainer(this->filters, this);
     QScrollArea *scroll_area = new QScrollArea(this);
     scroll_area->setBackgroundRole(QPalette::Light);
     scroll_area->setWidget(this->zone_container);
     this->setCentralWidget(scroll_area);
     this->setupActions();
-    this->filters.push_back(QSharedPointer<Filter>(new GrayscaleFilter));
     this->initFilters();
 }
 
@@ -28,7 +28,7 @@ void MainWindow::initFilters() {
     QToolBar *filters_toolbar = this->addToolBar(tr("Filters"));
     QMenu *filters_menu = this->menuBar()->addMenu(tr("F&ilters"));
     for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
-        QAction *action = filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, []{});
+        QAction *action = filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, [it]{(*it)->request();});
         filters_toolbar->addAction(action);
         action->setStatusTip(tr("Apply %1").arg((*it)->getName()));
     }

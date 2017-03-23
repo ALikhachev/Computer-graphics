@@ -12,17 +12,23 @@ class Filter : public QObject
 {
     Q_OBJECT
 public:
-    virtual QImage applyFilter(QImage &) = 0;
+    virtual QImage applyFilter(QImage) = 0;
     virtual FilterParametersWidget *getParametersWidget(QWidget *parent = 0) = 0;
     virtual QIcon getIcon() = 0;
     virtual QString getName() = 0;
+
+public slots:
+    void request();
+
+signals:
+    void requested();
 };
 
 class GrayscaleFilter : public Filter
 {
 public:
     GrayscaleFilter();
-    QImage applyFilter(QImage &);
+    QImage applyFilter(QImage);
     FilterParametersWidget *getParametersWidget(QWidget *parent = 0);
     QIcon getIcon();
     QString getName();

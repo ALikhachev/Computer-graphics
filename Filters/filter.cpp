@@ -1,10 +1,14 @@
 #include "filter.h"
 
+void Filter::request() {
+    emit requested();
+}
+
 GrayscaleFilter::GrayscaleFilter() {
 
 }
 
-QImage GrayscaleFilter::applyFilter(QImage &image) {
+QImage GrayscaleFilter::applyFilter(QImage image) {
     QImage filtered_image(image.size(), QImage::Format_Grayscale8);
     for (int j = 0; j < filtered_image.height(); ++j) {
         for (int i = 0; i < filtered_image.width(); ++i) {

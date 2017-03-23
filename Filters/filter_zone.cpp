@@ -18,7 +18,7 @@ void FilterZone::clear() {
     this->update();
 }
 
-void FilterZone::setImage(QImage &image) {
+void FilterZone::setImage(QImage image) {
     this->image = (image.width() > 350 || image.height() > 350) ?
                       image.scaled(350, 350, Qt::KeepAspectRatio) :
                       image;
@@ -26,6 +26,10 @@ void FilterZone::setImage(QImage &image) {
     this->offsetImage();
     this->drawBorder();
     this->update();
+}
+
+QImage FilterZone::getImage() {
+    return this->image;
 }
 
 void FilterZone::paintEvent(QPaintEvent *) {
