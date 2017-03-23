@@ -20,11 +20,23 @@ MainWindow::MainWindow(QWidget *parent)
     scroll_area->setWidget(this->zone_container);
     this->setCentralWidget(scroll_area);
     this->setupActions();
+    this->filters.push_back(QSharedPointer<Filter>(new GrayscaleFilter));
+    this->initFilters();
+}
+
+void MainWindow::initFilters() {
+    QToolBar *filters_toolbar = this->addToolBar(tr("Filters"));
+    QMenu *filters_menu = this->menuBar()->addMenu(tr("F&ilters"));
+    for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
+        QAction *action = filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, []{});
+        filters_toolbar->addAction(action);
+        action->setStatusTip(tr("Apply %1").arg((*it)->getName()));
+    }
 }
 
 void MainWindow::setupActions() {
     this->statusBar()->show();
-    QToolBar *toolbar = this->addToolBar(tr("Toolbar"));
+    QToolBar *toolbar = this->addToolBar(tr("Main"));
 
     QMenu *file_menu = this->menuBar()->addMenu(tr("&File"));
 

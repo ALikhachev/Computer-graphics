@@ -2,8 +2,10 @@
 #define MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <QSharedPointer>
 
 #include "zone_container.h"
+#include "filter.h"
 
 class MainWindow : public QMainWindow
 {
@@ -19,9 +21,11 @@ public slots:
 
 private:
     void showError(QString text);
+    void initFilters();
 
     QString opened_from_file_name;
     ZoneContainer *zone_container;
+    std::vector<QSharedPointer<Filter>> filters;
 };
 
 #endif // MAIN_WINDOW_H
