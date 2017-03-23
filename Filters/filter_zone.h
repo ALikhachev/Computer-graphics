@@ -17,9 +17,6 @@ protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
-    void drawLine(QPoint, QPoint, QRgb);
-    void offsetImage();
-    void drawBorder();
     static void emptyImage(QImage &);
 
     QImage image;
