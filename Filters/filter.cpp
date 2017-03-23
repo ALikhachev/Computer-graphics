@@ -1,7 +1,11 @@
 #include "filter.h"
 
+void FilterWorker::doFilter(Filter *f, QImage image) {
+    emit resultReady(f->applyFilter(image));
+}
+
 void Filter::request() {
-    emit requested();
+    emit requested(this);
 }
 
 GrayscaleFilter::GrayscaleFilter() {

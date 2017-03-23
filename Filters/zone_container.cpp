@@ -15,16 +15,31 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
     layout->addWidget(zone_c);
     layout->setSpacing(10);
     this->setLayout(layout);
+    FilterWorker *worker = new FilterWorker;
+    worker->moveToThread(&this->worker_thread);
+    this->connect(&this->worker_thread, &QThread::finished, worker, QObject::deleteLater);
+    this->connect(worker, &FilterWorker::resultReady, [this](QImage image){
+       this->zone_c->setImage(image);
+    });
+    this->connect(this, filterImage, worker, FilterWorker::doFilter);
     for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
         Filter *f = (*it).data();
-        this->connect(f, &Filter::requested, [this, f]{
-            this->zone_c->setImage(f->applyFilter(this->zone_a->getImage()));
+        this->connect(f, &Filter::requested, [this, f] {
+             emit filterImage(f, this->zone_b->getImage());
         });
     }
+    worker_thread.start();
+}
+
+ZoneContainer::~ZoneContainer() {
+    worker_thread.quit();
+    worker_thread.wait();
 }
 
 void ZoneContainer::setSourceImage(QImage image) {
     this->zone_a->setImage(image);
+    // TODO: add zone B selection
+    this->zone_b->setImage(image);
 }
 
 void ZoneContainer::clear() {

@@ -5,8 +5,20 @@
 #include <QImage>
 #include <QString>
 #include <QIcon>
+#include <QThread>
 
 #include "filter_parameters_widget.h"
+
+class Filter;
+
+class FilterWorker : public QObject
+{
+    Q_OBJECT
+public slots:
+    void doFilter(Filter *, QImage);
+signals:
+    void resultReady(QImage);
+};
 
 class Filter : public QObject
 {
@@ -21,7 +33,7 @@ public slots:
     void request();
 
 signals:
-    void requested();
+    void requested(Filter *f);
 };
 
 class GrayscaleFilter : public Filter
