@@ -19,3 +19,11 @@ QImage GrayscaleFilter::applyFilter(QImage &image) {
 FilterParametersWidget *GrayscaleFilter::getParametersWidget(QWidget *parent) {
     return NULL;
 }
+
+QIcon GrayscaleFilter::getIcon() {
+    return QIcon(":/icons/grayscale.png");
+}
+
+QString GrayscaleFilter::getName() {
+    return tr("Grayscale filter");
+}
