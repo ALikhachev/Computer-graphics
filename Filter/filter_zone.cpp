@@ -6,6 +6,8 @@
 #include "utils.h"
 
 using FilterUtils::emptyImage;
+using FilterUtils::drawDashedRect;
+using FilterUtils::RgbaDepth;
 
 FilterZone::FilterZone(QWidget *parent) : QWidget(parent),
     image(0, 0, QImage::Format_RGBA8888),
@@ -38,23 +40,7 @@ QImage FilterZone::getImage() {
 }
 
 void FilterZone::drawBorder() {
-    int periods = this->canvas.width() / BorderDashLength;
-    for (int i = 0; i < periods; i += 2) {
-        // top border
-        memset(this->canvas.bits() + i * BorderDashLength * RgbaDepth, 0, BorderDashLength * RgbaDepth);
-        // bottom border
-        memset(this->canvas.bits() + (this->canvas.height() - 1) * this->canvas.bytesPerLine() + i * BorderDashLength * RgbaDepth, 0, BorderDashLength * RgbaDepth);
-        for (int j = i * BorderDashLength; j < (i + 1) * BorderDashLength; ++j) {
-            this->canvas.bits()[j * RgbaDepth + 3] = 0xFF; // top
-            this->canvas.bits()[(this->canvas.height() - 1) * this->canvas.bytesPerLine() + j * RgbaDepth + 3] = 0xFF; // bottom
-            // right border
-            memset(this->canvas.bits() + j * this->canvas.bytesPerLine() + (this->canvas.width() - 1) * RgbaDepth, 0, RgbaDepth - 1);
-            this->canvas.bits()[j * this->canvas.bytesPerLine() + (this->canvas.width() - 1) * RgbaDepth + 3] = 0xFF;
-            // left border
-            memset(this->canvas.bits() + j * this->canvas.bytesPerLine(), 0, RgbaDepth - 1);
-            this->canvas.bits()[j * this->canvas.bytesPerLine() + 3] = 0xFF;
-        }
-    }
+    drawDashedRect(this->canvas, 0, 0, this->canvas.width(), this->canvas.height());
 }
 
 void FilterZone::paintEvent(QPaintEvent *) {
@@ -84,6 +70,7 @@ void SourceZone::setImage(QImage image) {
     for (int i = 0; i < scaled.height(); ++i) {
         memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, scaled.bits() + i * scaled.bytesPerLine(), scaled.width() * RgbaDepth);
     }
+    this->saveCanvas();
     this->scaled_width = scaled.width();
     this->scaled_height = scaled.height();
     this->update();
@@ -92,10 +79,6 @@ void SourceZone::setImage(QImage image) {
 void SourceZone::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.drawImage(0, 0, this->canvas);
-    if (this->selection.empty) {
-        return;
-    }
-    painter.drawRect(this->selection.x + 1, this->selection.y + 1, this->selection.width, this->selection.height); // selection
 }
 
 void SourceZone::mousePressEvent(QMouseEvent *event) {
@@ -138,11 +121,21 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
                this->image.bits() + (scaled_y + i) * this->image.bytesPerLine() + scaled_x * this->image.depth() / 8,
                width * this->image.depth() / 8);
     }
+    this->restoreCanvas();
+    drawDashedRect(this->canvas, this->selection.x + 1, this->selection.y + 1, this->selection.width, this->selection.height);
     this->update();
     emit zoneSelected(selection);
 }
 
 void SourceZone::mouseMoveEvent(QMouseEvent *event) {
     this->mousePressEvent(event);
+}
+
+void SourceZone::saveCanvas() {
+    this->canvas_without_selection = this->canvas;
+}
+
+void SourceZone::restoreCanvas() {
+    this->canvas = this->canvas_without_selection;
 }
 

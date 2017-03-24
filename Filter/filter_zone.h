@@ -20,11 +20,8 @@ protected:
     QImage image;
     QImage canvas;
     bool has_image;
-    static const int RgbaDepth = 4;
 private:
     void drawBorder();
-
-    static const int BorderDashLength = 3;
 };
 
 struct Selection {
@@ -52,9 +49,13 @@ protected:
     void mouseMoveEvent(QMouseEvent *) override;
 
 private:
+    void saveCanvas();
+    void restoreCanvas();
+
     Selection selection;
     int scaled_width;
     int scaled_height;
+    QImage canvas_without_selection;
 };
 
 #endif // FILTER_ZONE_H
