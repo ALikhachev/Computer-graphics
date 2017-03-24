@@ -6,6 +6,7 @@
 #include <QMenuBar>
 #include <QImageReader>
 #include <QErrorMessage>
+#include <QDebug>
 
 #include "main_window.h"
 
@@ -75,7 +76,12 @@ void MainWindow::openImage() {
         showError(tr("Cannot decode image!"));
         return;
     }
+    if (image.format() != QImage::Format_RGBA8888) {
+        image = image.convertToFormat(QImage::Format_RGBA8888);
+        qDebug() << "Image converted to RGBA";
+    }
     this->zone_container->setSourceImage(image);
+    qDebug() << "Image" << filename << "loaded.";
     this->opened_from_file_name = filename;
 }
 

@@ -13,12 +13,17 @@ GrayscaleFilter::GrayscaleFilter() {
 }
 
 QImage GrayscaleFilter::applyFilter(QImage image) {
-    QImage filtered_image(image.size(), QImage::Format_Grayscale8);
+    QImage filtered_image(image.size(), QImage::Format_RGBA8888);
     for (int j = 0; j < filtered_image.height(); ++j) {
         for (int i = 0; i < filtered_image.width(); ++i) {
-            int src_index = j * image.bytesPerLine() + i * image.depth() / 8;
-            filtered_image.bits()[j * filtered_image.bytesPerLine() + i] =
-                    0.2126 * (double)image.bits()[src_index] + 0.7152 * (double)image.bits()[src_index + 1] + 0.0722 * (double)image.bits()[src_index + 2];
+            int index = j * image.bytesPerLine() + i * image.depth() / 8;
+            filtered_image.bits()[index] =
+                    0.2126 * (double)image.bits()[index] + 0.7152 * (double)image.bits()[index + 1] + 0.0722 * (double)image.bits()[index + 2];
+            filtered_image.bits()[index + 1] =
+                    0.2126 * (double)image.bits()[index] + 0.7152 * (double)image.bits()[index + 1] + 0.0722 * (double)image.bits()[index + 2];
+            filtered_image.bits()[index + 2] =
+                    0.2126 * (double)image.bits()[index] + 0.7152 * (double)image.bits()[index + 1] + 0.0722 * (double)image.bits()[index + 2];
+            filtered_image.bits()[index + 3] = image.bits()[index + 3];
         }
     }
     return filtered_image;

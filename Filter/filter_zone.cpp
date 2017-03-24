@@ -8,7 +8,7 @@
 using FilterUtils::emptyImage;
 
 FilterZone::FilterZone(QWidget *parent) : QWidget(parent),
-    image(350, 350, QImage::Format_RGB32)
+    image(350, 350, QImage::Format_RGBA8888)
 {
     this->setFixedSize(352, 352);
     this->clear();
@@ -38,8 +38,8 @@ void FilterZone::paintEvent(QPaintEvent *) {
 
 SourceZone::SourceZone(QWidget *parent) : QWidget(parent),
     selection({0, 0, 0, 0, true}),
-    source_image(350, 350, QImage::Format_RGB32),
-    image(350, 350, QImage::Format_RGB32)
+    source_image(350, 350, QImage::Format_RGBA8888),
+    image(350, 350, QImage::Format_RGBA8888)
 {
     this->setFixedSize(352, 352);
     this->clear();
