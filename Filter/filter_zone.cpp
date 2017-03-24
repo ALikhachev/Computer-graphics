@@ -104,7 +104,7 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
         y = this->scaled_height - height * this->scaled_height / this->image.height();
         scaled_y = this->image.height() - height;
     }
-    QImage selection(350, 350, this->image.format());
+    QImage selection(width, height, this->image.format());
     emptyImage(selection);
     for (int i = 0; i < height; ++i) {
         memcpy(selection.bits() + i * selection.bytesPerLine(),
