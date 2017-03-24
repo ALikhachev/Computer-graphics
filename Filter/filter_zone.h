@@ -10,19 +10,19 @@ class FilterZone : public QWidget
 public:
     explicit FilterZone(QWidget *parent = 0);
 
-    QImage getImage();
-    void setImage(QImage);
-    void clear();
+    virtual QImage getImage();
+    virtual void setImage(QImage);
+    virtual void clear();
 
 protected:
     void paintEvent(QPaintEvent *) override;
 
+    QImage image;
+    QImage canvas;
+    bool has_image;
     static const int RgbaDepth = 4;
 private:
     void drawBorder();
-
-    QImage image;
-    QImage canvas;
 
     static const int BorderDashLength = 3;
 };
@@ -35,24 +35,24 @@ struct Selection {
     bool empty;
 };
 
-class SourceZone : public QWidget
+class SourceZone : public FilterZone
 {
     Q_OBJECT
 public:
     explicit SourceZone(QWidget *parent = 0);
-    void setSourceImage(QImage);
-    void clear();
+    void setImage(QImage) override;
+    void clear() override;
+
 signals:
     void zoneSelected(QImage);
+
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
+
 private:
     Selection selection;
-    QImage source_image;
-    QImage canvas;
-    bool clean;
     int scaled_width;
     int scaled_height;
 };

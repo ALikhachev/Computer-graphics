@@ -36,7 +36,7 @@ ZoneContainer::~ZoneContainer() {
 }
 
 void ZoneContainer::setSourceImage(QImage image) {
-    this->zone_a->setSourceImage(image);
+    this->zone_a->setImage(image);
 }
 
 void ZoneContainer::clear() {
