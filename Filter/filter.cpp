@@ -40,7 +40,7 @@ QString GrayscaleFilter::getName() {
 NegativeFilter::NegativeFilter() {
 
 }
-#include <QDebug>
+
 QImage NegativeFilter::applyFilter(QImage image) {
     QImage filtered_image(image.size(), QImage::Format_RGBA8888);
     for (int j = 0; j < filtered_image.height(); ++j) {
@@ -52,7 +52,6 @@ QImage NegativeFilter::applyFilter(QImage image) {
             filtered_image.bits()[index + 3] = image.bits()[index + 3];
         }
     }
-    qDebug() << image.size();
     return filtered_image;
 }
 
