@@ -45,8 +45,10 @@ protected:
 private:
     Selection selection;
     QImage source_image;
-    QImage image;
+    QImage canvas;
     bool clean;
+    int scaled_width;
+    int scaled_height;
 };
 
 #endif // FILTER_ZONE_H

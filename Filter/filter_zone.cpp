@@ -39,7 +39,7 @@ void FilterZone::paintEvent(QPaintEvent *) {
 SourceZone::SourceZone(QWidget *parent) : QWidget(parent),
     selection({0, 0, 0, 0, true}),
     source_image(350, 350, QImage::Format_RGBA8888),
-    image(350, 350, QImage::Format_RGBA8888),
+    canvas(352, 352, QImage::Format_RGBA8888),
     clean(true)
 {
     this->setFixedSize(352, 352);
@@ -47,7 +47,7 @@ SourceZone::SourceZone(QWidget *parent) : QWidget(parent),
 }
 
 void SourceZone::clear() {
-    emptyImage(this->image);
+    emptyImage(this->canvas);
     emptyImage(this->source_image);
     this->selection.empty = true;
     this->clean = true;
@@ -58,25 +58,27 @@ void SourceZone::setSourceImage(QImage image) {
     this->clean = false;
     this->selection.empty = true;
     this->source_image = image;
-    this->image = (image.width() > 350 || image.height() > 350) ?
-                      image.scaled(350, 350, Qt::KeepAspectRatio) :
-                      image;
+    // TODO: own scale function
+    QImage scaled = (image.width() > 350 || image.height() > 350) ?
+                    image.scaled(350, 350, Qt::KeepAspectRatio) :
+                    image;
+    for (int i = 0; i < scaled.height(); ++i) {
+        memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, scaled.bits() + i * scaled.bytesPerLine(), image.width() * RgbaDepth);
+    }
+    this->scaled_width = scaled.width();
+    this->scaled_height = scaled.height();
     this->update();
 }
 
 void SourceZone::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawImage(1, 1, this->image);
+    painter.drawImage(1, 1, this->canvas);
     QPen pen(Qt::black, 1, Qt::DashLine);
     painter.setPen(pen);
     painter.drawRect(0, 0, 351, 351); // border
-
     if (this->selection.empty) {
         return;
     }
-    QVector<qreal> pattern = {5, 5};
-    pen.setDashPattern(pattern);
-    painter.setPen(pen);
     painter.drawRect(this->selection.x + 1, this->selection.y + 1, this->selection.width, this->selection.height); // selection
 }
 
@@ -84,10 +86,10 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
     if (this->clean) {
         return;
     }
-    int x = event->x() - 175 * this->image.width() / this->source_image.width();
-    int y = event->y() - 175 * this->image.height() / this->source_image.height();
-    int scaled_x = event->x() * this->source_image.width() / this->image.width() - 175;
-    int scaled_y = event->y() * this->source_image.height() / this->image.height() - 175;
+    int x = event->x() - 175 * this->scaled_width / this->source_image.width();
+    int y = event->y() - 175 * this->scaled_height / this->source_image.height();
+    int scaled_x = event->x() * this->source_image.width() / this->scaled_width - 175;
+    int scaled_y = event->y() * this->source_image.height() / this->scaled_height - 175;
     int width = std::min(350, this->source_image.width());
     int height = std::min(350, this->source_image.height());
     if (scaled_x < 0) {
@@ -95,7 +97,7 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
         scaled_x = 0;
     }
     if (scaled_x + width > this->source_image.width()) {
-        x = this->image.width() - width * this->image.width() / this->source_image.width();
+        x = this->scaled_width - width * this->scaled_width / this->source_image.width();
         scaled_x = this->source_image.width() - width;
     }
     if (scaled_y < 0) {
@@ -103,14 +105,14 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
         scaled_y = 0;
     }
     if (scaled_y + height > this->source_image.height()) {
-        y = this->image.height() - height * this->image.height() / this->source_image.height();
+        y = this->scaled_height - height * this->scaled_height / this->source_image.height();
         scaled_y = this->source_image.height() - height;
     }
     this->selection = {
         .x = x,
         .y = y,
-        .width = width * this->image.width() / this->source_image.width(),
-        .height = height * this->image.height() / this->source_image.height(),
+        .width = width * this->scaled_width / this->source_image.width(),
+        .height = height * this->scaled_height / this->source_image.height(),
         .empty = false
     };
     QImage selection(350, 350, this->source_image.format());
