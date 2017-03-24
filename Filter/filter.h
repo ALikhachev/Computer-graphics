@@ -53,4 +53,13 @@ public:
     QString getName();
 };
 
+class BlurFilter : public Filter
+{
+public:
+    BlurFilter();
+    QImage applyFilter(QImage);
+    QIcon getIcon();
+    QString getName();
+};
+
 #endif // FILTER_H
