@@ -46,6 +46,7 @@ private:
     Selection selection;
     QImage source_image;
     QImage image;
+    bool clean;
 };
 
 #endif // FILTER_ZONE_H

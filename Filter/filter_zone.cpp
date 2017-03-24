@@ -39,7 +39,8 @@ void FilterZone::paintEvent(QPaintEvent *) {
 SourceZone::SourceZone(QWidget *parent) : QWidget(parent),
     selection({0, 0, 0, 0, true}),
     source_image(350, 350, QImage::Format_RGBA8888),
-    image(350, 350, QImage::Format_RGBA8888)
+    image(350, 350, QImage::Format_RGBA8888),
+    clean(true)
 {
     this->setFixedSize(352, 352);
     this->clear();
@@ -49,10 +50,12 @@ void SourceZone::clear() {
     emptyImage(this->image);
     emptyImage(this->source_image);
     this->selection.empty = true;
+    this->clean = true;
     this->update();
 }
 
 void SourceZone::setSourceImage(QImage image) {
+    this->clean = false;
     this->selection.empty = true;
     this->source_image = image;
     this->image = (image.width() > 350 || image.height() > 350) ?
@@ -78,6 +81,9 @@ void SourceZone::paintEvent(QPaintEvent *) {
 }
 
 void SourceZone::mousePressEvent(QMouseEvent *event) {
+    if (this->clean) {
+        return;
+    }
     int x = event->x() - 175 * this->image.width() / this->source_image.width();
     int y = event->y() - 175 * this->image.height() / this->source_image.height();
     int scaled_x = event->x() * this->source_image.width() / this->image.width() - 175;
