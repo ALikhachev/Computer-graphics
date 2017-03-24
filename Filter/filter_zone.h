@@ -24,14 +24,6 @@ private:
     void drawBorder();
 };
 
-struct Selection {
-    int x;
-    int y;
-    int width;
-    int height;
-    bool empty;
-};
-
 class SourceZone : public FilterZone
 {
     Q_OBJECT
@@ -51,8 +43,8 @@ protected:
 private:
     void saveCanvas();
     void restoreCanvas();
+    void drawSelectionBox(int x, int y, int width, int height);
 
-    Selection selection;
     int scaled_width;
     int scaled_height;
     QImage canvas_without_selection;

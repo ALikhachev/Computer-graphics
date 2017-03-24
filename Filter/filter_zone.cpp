@@ -48,14 +48,11 @@ void FilterZone::paintEvent(QPaintEvent *) {
     painter.drawImage(0, 0, this->canvas);
 }
 
-SourceZone::SourceZone(QWidget *parent) : FilterZone(parent),
-    selection({0, 0, 0, 0, true})
+SourceZone::SourceZone(QWidget *parent) : FilterZone(parent)
 {
-    this->setFixedSize(352, 352);
 }
 
 void SourceZone::clear() {
-    this->selection.empty = true;
     FilterZone::clear();
 }
 
@@ -107,13 +104,6 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
         y = this->scaled_height - height * this->scaled_height / this->image.height();
         scaled_y = this->image.height() - height;
     }
-    this->selection = {
-        .x = x,
-        .y = y,
-        .width = width * this->scaled_width / this->image.width(),
-        .height = height * this->scaled_height / this->image.height(),
-        .empty = false
-    };
     QImage selection(350, 350, this->image.format());
     emptyImage(selection);
     for (int i = 0; i < height; ++i) {
@@ -121,10 +111,14 @@ void SourceZone::mousePressEvent(QMouseEvent *event) {
                this->image.bits() + (scaled_y + i) * this->image.bytesPerLine() + scaled_x * this->image.depth() / 8,
                width * this->image.depth() / 8);
     }
-    this->restoreCanvas();
-    drawDashedRect(this->canvas, this->selection.x + 1, this->selection.y + 1, this->selection.width, this->selection.height);
-    this->update();
+    drawSelectionBox(x, y, width * this->scaled_width / this->image.width(), height * this->scaled_height / this->image.height());
     emit zoneSelected(selection);
+}
+
+void SourceZone::drawSelectionBox(int x, int y, int width, int height) {
+    this->restoreCanvas();
+    drawDashedRect(this->canvas, x + 1, y + 1, width, height);
+    this->update();
 }
 
 void SourceZone::mouseMoveEvent(QMouseEvent *event) {
