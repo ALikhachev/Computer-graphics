@@ -17,8 +17,14 @@ public:
 protected:
     void paintEvent(QPaintEvent *) override;
 
+    static const int RgbaDepth = 4;
 private:
+    void drawBorder();
+
     QImage image;
+    QImage canvas;
+
+    static const int BorderDashLength = 3;
 };
 
 struct Selection {

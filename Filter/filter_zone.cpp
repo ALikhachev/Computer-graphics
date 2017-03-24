@@ -8,19 +8,23 @@
 using FilterUtils::emptyImage;
 
 FilterZone::FilterZone(QWidget *parent) : QWidget(parent),
-    image(350, 350, QImage::Format_RGBA8888)
+    image(0, 0, QImage::Format_RGBA8888),
+    canvas(352, 352, QImage::Format_RGBA8888)
 {
     this->setFixedSize(352, 352);
-    this->clear();
+    this->drawBorder();
 }
 
 void FilterZone::clear() {
-    emptyImage(this->image);
+    emptyImage(this->canvas);
     this->update();
 }
 
 void FilterZone::setImage(QImage image) {
     this->image = image;
+    for (int i = 0; i < image.height(); ++i) {
+        memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, image.bits() + i * image.bytesPerLine(), image.width() * RgbaDepth);
+    }
     this->update();
 }
 
@@ -28,12 +32,29 @@ QImage FilterZone::getImage() {
     return this->image;
 }
 
+void FilterZone::drawBorder() {
+    int periods = this->canvas.width() / BorderDashLength;
+    for (int i = 0; i < periods; i += 2) {
+        // top border
+        memset(this->canvas.bits() + i * BorderDashLength * RgbaDepth, 0, BorderDashLength * RgbaDepth);
+        // bottom border
+        memset(this->canvas.bits() + (this->canvas.height() - 1) * this->canvas.bytesPerLine() + i * BorderDashLength * RgbaDepth, 0, BorderDashLength * RgbaDepth);
+        for (int j = i * BorderDashLength; j < (i + 1) * BorderDashLength; ++j) {
+            this->canvas.bits()[j * RgbaDepth + 3] = 0xFF; // top
+            this->canvas.bits()[(this->canvas.height() - 1) * this->canvas.bytesPerLine() + j * RgbaDepth + 3] = 0xFF; // bottom
+            // right border
+            memset(this->canvas.bits() + j * this->canvas.bytesPerLine() + (this->canvas.width() - 1) * RgbaDepth, 0, RgbaDepth - 1);
+            this->canvas.bits()[j * this->canvas.bytesPerLine() + (this->canvas.width() - 1) * RgbaDepth + 3] = 0xFF;
+            // left border
+            memset(this->canvas.bits() + j * this->canvas.bytesPerLine(), 0, RgbaDepth - 1);
+            this->canvas.bits()[j * this->canvas.bytesPerLine() + 3] = 0xFF;
+        }
+    }
+}
+
 void FilterZone::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawImage(1, 1, this->image);
-    QPen pen(Qt::black, 1, Qt::DashLine);
-    painter.setPen(pen);
-    painter.drawRect(0, 0, 351, 351);
+    painter.drawImage(0, 0, this->canvas);
 }
 
 SourceZone::SourceZone(QWidget *parent) : QWidget(parent),
@@ -63,7 +84,7 @@ void SourceZone::setSourceImage(QImage image) {
                     image.scaled(350, 350, Qt::KeepAspectRatio) :
                     image;
     for (int i = 0; i < scaled.height(); ++i) {
-        memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, scaled.bits() + i * scaled.bytesPerLine(), image.width() * RgbaDepth);
+        memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, scaled.bits() + i * scaled.bytesPerLine(), scaled.width() * RgbaDepth);
     }
     this->scaled_width = scaled.width();
     this->scaled_height = scaled.height();
