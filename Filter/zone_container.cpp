@@ -44,3 +44,11 @@ void ZoneContainer::clear() {
     this->zone_b->clear();
     this->zone_c->clear();
 }
+
+void ZoneContainer::copyBToC() {
+    this->zone_c->setImage(this->zone_b->getImage());
+}
+
+void ZoneContainer::copyCToB() {
+    this->zone_b->setImage(this->zone_c->getImage());
+}

@@ -16,6 +16,10 @@ public:
     void setSourceImage(QImage);
     void clear();
 
+public slots:
+    void copyBToC();
+    void copyCToB();
+
 signals:
     void filterImage(Filter *f, QImage image);
 

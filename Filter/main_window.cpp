@@ -57,6 +57,18 @@ void MainWindow::setupActions() {
     open_act->setStatusTip("Open an image");
     toolbar->addAction(open_act);
 
+    QAction *c_to_b_act = file_menu->addAction(tr("&Copy C to B"), this->zone_container, &ZoneContainer::copyCToB);
+    const QIcon c_to_b_icon = QIcon(":/icons/left.png");
+    c_to_b_act->setIcon(c_to_b_icon);
+    c_to_b_act->setStatusTip("Copy image from zone C to zone B");
+    toolbar->addAction(c_to_b_act);
+
+    QAction *b_to_c_act = file_menu->addAction(tr("&Copy B to C"), this->zone_container, &ZoneContainer::copyBToC);
+    const QIcon b_to_c_icon = QIcon(":/icons/right.png");
+    b_to_c_act->setIcon(b_to_c_icon);
+    b_to_c_act->setStatusTip("Copy image from zone B to zone C");
+    toolbar->addAction(b_to_c_act);
+
     file_menu->addSeparator();
     QAction *exit_Act = file_menu->addAction(tr("&Quit..."), this, close);
     exit_Act->setStatusTip("Quit application");

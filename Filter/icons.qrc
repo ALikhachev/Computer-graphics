@@ -6,5 +6,7 @@
         <file>icons/grayscale.png</file>
         <file>icons/negative.png</file>
         <file>icons/blur.png</file>
+        <file>icons/left.png</file>
+        <file>icons/right.png</file>
     </qresource>
 </RCC>

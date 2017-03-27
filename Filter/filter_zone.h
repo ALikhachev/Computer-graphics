@@ -10,7 +10,7 @@ class FilterZone : public QWidget
 public:
     explicit FilterZone(QWidget *parent = 0);
 
-    virtual QImage getImage();
+    virtual QImage &getImage();
     virtual void setImage(QImage);
     virtual void clear();
 

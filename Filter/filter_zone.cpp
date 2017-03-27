@@ -35,7 +35,7 @@ void FilterZone::setImage(QImage image) {
     this->update();
 }
 
-QImage FilterZone::getImage() {
+QImage &FilterZone::getImage() {
     return this->image;
 }
 
