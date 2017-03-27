@@ -7,8 +7,6 @@
 #include <QIcon>
 #include <QRunnable>
 
-#include "filter_parameters_widget.h"
-
 class Filter;
 
 class FilterWorker : public QObject, public QRunnable

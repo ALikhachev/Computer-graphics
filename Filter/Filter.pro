@@ -34,7 +34,6 @@ HEADERS  += \
     main_window.h \
     zone_container.h \
     filter.h \
-    filter_parameters_widget.h \
     utils.h
 
 RESOURCES += \
