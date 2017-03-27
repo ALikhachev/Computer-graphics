@@ -1,7 +1,13 @@
 #include "filter.h"
 
-void FilterWorker::doFilter(Filter *f, QImage image) {
-    emit resultReady(f->applyFilter(image));
+FilterWorker::FilterWorker(Filter *filter, QImage image) :
+  f(filter),
+  image(image)
+{
+}
+
+void FilterWorker::run() {
+    emit imageReady(this->f->applyFilter(image));
 }
 
 void Filter::request() {

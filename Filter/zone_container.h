@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSharedPointer>
+#include <QThreadPool>
 
 #include "filter.h"
 #include "filter_zone.h"
@@ -28,7 +29,8 @@ private:
     FilterZone *zone_b;
     FilterZone *zone_c;
     std::vector<QSharedPointer<Filter>> &filters;
-    QThread worker_thread;
+    QThreadPool *thread_pool;
+    bool clean;
 };
 
 #endif // ZONE_CONTAINER_H

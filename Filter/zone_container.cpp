@@ -3,46 +3,54 @@
 #include "zone_container.h"
 
 ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidget *parent) : QWidget(parent),
-    filters(filters)
+    filters(filters),
+    thread_pool(new QThreadPool(this)),
+    clean(true)
 {
+    this->thread_pool->setMaxThreadCount(1);
     this->resize(352 * 3 + 10 * 5, 352 + 2 * 10);
     QHBoxLayout *layout = new QHBoxLayout(this);
     this->zone_a = new SourceZone(this);
     this->zone_b = new FilterZone(this);
     this->zone_c = new FilterZone(this);
-    layout->addWidget(zone_a);
-    layout->addWidget(zone_b);
-    layout->addWidget(zone_c);
+    layout->addWidget(this->zone_a);
+    layout->addWidget(this->zone_b);
+    layout->addWidget(this->zone_c);
     layout->setSpacing(10);
     this->setLayout(layout);
-    FilterWorker *filter_worker = new FilterWorker;
-    filter_worker->moveToThread(&this->worker_thread);
-    this->connect(&this->worker_thread, &QThread::finished, filter_worker, QObject::deleteLater);
-    this->connect(filter_worker, &FilterWorker::resultReady, this->zone_c, &FilterZone::setImage);
-    this->connect(this, filterImage, filter_worker, FilterWorker::doFilter);
     for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
-        Filter *f = (*it).data();
+        Filter *f = it->data();
         this->connect(f, &Filter::requested, [this, f] {
-             emit filterImage(f, this->zone_b->getImage());
+            FilterWorker *worker = new FilterWorker(f, this->zone_b->getImage());
+            worker->setAutoDelete(true);
+            connect(worker, &FilterWorker::imageReady, [this] (QImage image) {
+                if (!this->clean) {
+                    this->zone_c->setImage(image);
+                }
+            });
+            this->thread_pool->clear();
+            this->thread_pool->start(worker);
         });
     }
     this->connect(zone_a, &SourceZone::zoneSelected, this->zone_b, FilterZone::setImage);
-    worker_thread.start();
 }
 
 ZoneContainer::~ZoneContainer() {
-    worker_thread.quit();
-    worker_thread.wait();
+    this->thread_pool->clear();
+    this->thread_pool->waitForDone();
 }
 
 void ZoneContainer::setSourceImage(QImage image) {
     this->zone_a->setImage(image);
+    this->clean = false;
 }
 
 void ZoneContainer::clear() {
     this->zone_a->clear();
     this->zone_b->clear();
     this->zone_c->clear();
+    this->thread_pool->clear();
+    this->clean = true;
 }
 
 void ZoneContainer::copyBToC() {

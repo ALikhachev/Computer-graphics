@@ -5,19 +5,25 @@
 #include <QImage>
 #include <QString>
 #include <QIcon>
-#include <QThread>
+#include <QRunnable>
 
 #include "filter_parameters_widget.h"
 
 class Filter;
 
-class FilterWorker : public QObject
+class FilterWorker : public QObject, public QRunnable
 {
     Q_OBJECT
-public slots:
-    void doFilter(Filter *, QImage);
+public:
+    FilterWorker(Filter *filter, QImage image);
+    void run() override;
+
 signals:
-    void resultReady(QImage);
+    void imageReady(QImage);
+
+private:
+    Filter *f;
+    QImage image;
 };
 
 class Filter : public QObject
