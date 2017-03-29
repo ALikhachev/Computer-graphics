@@ -18,6 +18,9 @@ SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent),
 
 void SettingsWidget::showFilterWidget(Filter *f) {
     if (f != this->last_filter) {
+        if (this->scroll_area->widget()) {
+            delete this->scroll_area->widget();
+        }
         this->scroll_area->setWidget(FilterRegistry::getInstance().getWidget(f, this->scroll_area));
         this->last_filter = f;
     }
