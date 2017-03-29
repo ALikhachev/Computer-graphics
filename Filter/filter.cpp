@@ -1,4 +1,5 @@
 #include "filter.h"
+#include "utils.h"
 
 FilterWorker::FilterWorker(Filter *filter, QImage image) :
   f(filter),
@@ -119,4 +120,20 @@ QIcon BlurFilter::getIcon() {
 
 QString BlurFilter::getName() {
     return tr("Blur filter");
+}
+
+ScaleFilter::ScaleFilter() {
+
+}
+
+QImage ScaleFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
+    return FilterUtils::scaleImage(image, 2);
+}
+
+QIcon ScaleFilter::getIcon() {
+    return QIcon(":/icons/scale.png");
+}
+
+QString ScaleFilter::getName() {
+    return tr("Scale filter");
 }

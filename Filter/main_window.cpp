@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     this->filters.push_back(QSharedPointer<Filter>(new GrayscaleFilter));
     this->filters.push_back(QSharedPointer<Filter>(new NegativeFilter));
     this->filters.push_back(QSharedPointer<Filter>(new BlurFilter));
+    this->filters.push_back(QSharedPointer<Filter>(new ScaleFilter));
     this->zone_container = new ZoneContainer(this->filters, this);
     QScrollArea *scroll_area = new QScrollArea(this);
     scroll_area->setBackgroundRole(QPalette::Light);

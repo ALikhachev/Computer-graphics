@@ -8,5 +8,6 @@
         <file>icons/blur.png</file>
         <file>icons/left.png</file>
         <file>icons/right.png</file>
+        <file>icons/scale.png</file>
     </qresource>
 </RCC>

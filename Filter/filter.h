@@ -69,4 +69,13 @@ public:
     QString getName();
 };
 
+class ScaleFilter : public Filter
+{
+public:
+    ScaleFilter();
+    QImage applyFilter(QImage, std::function<void(int)>);
+    QIcon getIcon();
+    QString getName();
+};
+
 #endif // FILTER_H
