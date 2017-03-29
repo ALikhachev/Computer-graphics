@@ -1,7 +1,7 @@
 #include <QFormLayout>
 #include <QSlider>
 
-#include "widgets/Roberts_filter_widget.h"
+#include "widgets/roberts_filter_widget.h"
 #include "filter_registry.h"
 #include "qsliderbox.h"
 

@@ -49,7 +49,11 @@ SOURCES += main.cpp\
     filters/roberts_filter.cpp \
     widgets/roberts_filter_widget.cpp \
     filters/edge_filter.cpp \
-    widgets/edge_filter_widget.cpp
+    widgets/edge_filter_widget.cpp \
+    filters/ordered_dithering_filter.cpp \
+    filters/floyd_steinberg_filter.cpp \
+    widgets/ordered_dithering_filter_widget.cpp \
+    widgets/floyd_steinberg_filter_widget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -78,7 +82,11 @@ HEADERS  += \
     filters/roberts_filter.h \
     widgets/roberts_filter_widget.h \
     filters/edge_filter.h \
-    widgets/edge_filter_widget.h
+    widgets/edge_filter_widget.h \
+    filters/ordered_dithering_filter.h \
+    filters/floyd_steinberg_filter.h \
+    widgets/ordered_dithering_filter_widget.h \
+    widgets/floyd_steinberg_filter_widget.h
 
 RESOURCES += \
     icons.qrc

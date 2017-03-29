@@ -2,7 +2,7 @@
 #define ROBERTS_FILTER_WIDGET_H
 
 #include "filter_widget.h"
-#include "filters/Roberts_filter.h"
+#include "filters/roberts_filter.h"
 
 class RobertsFilterWidget : public FilterWidget
 {
