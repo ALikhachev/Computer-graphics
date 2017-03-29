@@ -60,9 +60,8 @@ void SourceZone::setImage(QImage image) {
     this->image = image;
     this->clear();
     this->has_image = true;
-    // TODO: own scale function
     QImage scaled = (image.width() > 350 || image.height() > 350) ?
-                    image.scaled(350, 350, Qt::KeepAspectRatio) :
+                    FilterUtils::scaleImageToFit(image, 350, 350) :
                     image;
     for (int i = 0; i < scaled.height(); ++i) {
         memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, scaled.bits() + i * scaled.bytesPerLine(), scaled.width() * RgbaDepth);
