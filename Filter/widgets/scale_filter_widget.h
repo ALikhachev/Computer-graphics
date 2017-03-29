@@ -13,6 +13,7 @@ public:
 
 private:
     ScaleFilter *filter;
+    ScaleFilterSettings settings;
 };
 
 #endif // BLUR_FILTER_WIDGET_H

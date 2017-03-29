@@ -3,9 +3,10 @@
 
 #include "filter.h"
 
-class ScaleFilterSettings : public FilterSettings {
+class ScaleFilterSettings {
 public:
-    float scale_factor = 2;
+    int scale_factor = 2;
+    bool invert = false;
 };
 
 class ScaleFilter : public Filter
@@ -15,6 +16,11 @@ public:
     QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
+    ScaleFilterSettings getSettings();
+    void setSettings(ScaleFilterSettings &);
+
+private:
+    ScaleFilterSettings settings;
 };
 
 #endif // SCALE_FILTER_H

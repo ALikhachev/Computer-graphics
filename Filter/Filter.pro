@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     filters/negative_filter.cpp \
     filters/blur_filter.cpp \
     filter_widget.cpp \
-    widgets/scale_filter_wdget.cpp
+    widgets/scale_filter_wdget.cpp \
+    qsliderbox.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -48,7 +49,8 @@ HEADERS  += \
     filters/negative_filter.h \
     filters/blur_filter.h \
     filter_widget.h \
-    widgets/scale_filter_widget.h
+    widgets/scale_filter_widget.h \
+    qsliderbox.h
 
 RESOURCES += \
     icons.qrc
