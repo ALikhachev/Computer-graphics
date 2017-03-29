@@ -30,6 +30,7 @@ public:
     ~ZoneContainer();
     void setSourceImage(QImage);
     void clear();
+    bool saveResultImage(QString filename);
 
 public slots:
     void copyBToC();

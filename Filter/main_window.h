@@ -19,6 +19,7 @@ public:
 public slots:
     void clearZones();
     void openImage();
+    void saveImage();
 
 private:
     void showError(QString text);

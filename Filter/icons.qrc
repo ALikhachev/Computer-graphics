@@ -12,5 +12,6 @@
         <file>icons/gamma.png</file>
         <file>icons/sharpness.png</file>
         <file>icons/emboss.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>

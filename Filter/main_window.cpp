@@ -1,3 +1,5 @@
+#include "main_window.h"
+
 #include <QToolBar>
 #include <QFile>
 #include <QFileDialog>
@@ -6,9 +8,7 @@
 #include <QMenuBar>
 #include <QImageReader>
 #include <QErrorMessage>
-#include <QDebug>
 
-#include "main_window.h"
 #include "filter_registry.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
@@ -70,6 +70,13 @@ void MainWindow::setupActions() {
     open_act->setStatusTip("Open an image");
     toolbar->addAction(open_act);
 
+    QAction *save_act = file_menu->addAction(tr("&Save"), this, saveImage);
+    save_act->setShortcut(tr("Ctrl+S"));
+    const QIcon save_icon = QIcon::fromTheme("document-save", QIcon(":/icons/save.png"));
+    save_act->setIcon(save_icon);
+    save_act->setStatusTip("Save an image");
+    toolbar->addAction(save_act);
+
     QAction *c_to_b_act = file_menu->addAction(tr("&Copy C to B"), this->zone_container, &ZoneContainer::copyCToB);
     const QIcon c_to_b_icon = QIcon(":/icons/left.png");
     c_to_b_act->setIcon(c_to_b_icon);
@@ -105,11 +112,19 @@ void MainWindow::openImage() {
     }
     if (image.format() != QImage::Format_RGBA8888) {
         image = image.convertToFormat(QImage::Format_RGBA8888);
-        qDebug() << "Image converted to RGBA";
     }
     this->zone_container->setSourceImage(image);
-    qDebug() << "Image" << filename << "loaded.";
     this->opened_from_file_name = filename;
+}
+
+void MainWindow::saveImage() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Open image"), QDir::currentPath(), tr("Images (*.png *.bmp)"));
+    if (filename.length() == 0) {
+        return;
+    }
+    if (!this->zone_container->saveResultImage(filename)) {
+        this->showError(tr("Cannot save result image!"));
+    }
 }
 
 void MainWindow::showError(QString text) {

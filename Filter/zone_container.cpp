@@ -77,6 +77,10 @@ void ZoneContainer::setSourceImage(QImage image) {
     this->clean = false;
 }
 
+bool ZoneContainer::saveResultImage(QString filename) {
+    return this->zone_c->getImage().save(filename);
+}
+
 void ZoneContainer::clear() {
     this->zone_a->clear();
     this->zone_b->clear();
