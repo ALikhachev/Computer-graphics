@@ -3,6 +3,11 @@
 
 #include "filter.h"
 
+class GammaCorrectionFilterSettings {
+public:
+    float gamma = 1;
+};
+
 class GammaCorrectionFilter : public Filter
 {
 public:
@@ -10,6 +15,10 @@ public:
     QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
+    GammaCorrectionFilterSettings *getSettings();
+
+private:
+    GammaCorrectionFilterSettings settings;
 };
 
 #endif // GAMMA_CORRECTION_FILTER_H

@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     qsliderbox.cpp \
     filters/convolution_filter.cpp \
     widgets/blur_filter_widget.cpp \
-    filters/gamma_correction_filter.cpp
+    filters/gamma_correction_filter.cpp \
+    widgets/gamma_correction_filter_widget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -56,7 +57,8 @@ HEADERS  += \
     qsliderbox.h \
     filters/convolution_filter.h \
     widgets/blur_filter_widget.h \
-    filters/gamma_correction_filter.h
+    filters/gamma_correction_filter.h \
+    widgets/gamma_correction_filter_widget.h
 
 RESOURCES += \
     icons.qrc
