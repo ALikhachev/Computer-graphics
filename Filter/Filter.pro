@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     filters/gamma_correction_filter.cpp \
     widgets/gamma_correction_filter_widget.cpp \
     filters/sharpness_filter.cpp \
-    filters/embossing_filter.cpp
+    filters/embossing_filter.cpp \
+    filters/watercolor_filter.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -62,7 +63,8 @@ HEADERS  += \
     filters/gamma_correction_filter.h \
     widgets/gamma_correction_filter_widget.h \
     filters/sharpness_filter.h \
-    filters/embossing_filter.h
+    filters/embossing_filter.h \
+    filters/watercolor_filter.h
 
 RESOURCES += \
     icons.qrc
