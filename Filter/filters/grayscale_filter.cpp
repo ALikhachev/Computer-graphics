@@ -18,7 +18,7 @@ QImage GrayscaleFilter::applyFilter(QImage image, std::function<void(int)> updat
                     0.2126 * (double)image.bits()[index] + 0.7152 * (double)image.bits()[index + 1] + 0.0722 * (double)image.bits()[index + 2];
             filtered_image.bits()[index + 3] = image.bits()[index + 3];
         }
-        updateProgress(j / filtered_image.height());
+        updateProgress(100 * j / filtered_image.height());
     }
     return filtered_image;
 }

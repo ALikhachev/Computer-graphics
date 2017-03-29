@@ -36,6 +36,7 @@ QImage BlurFilter::applyFilter(QImage image, std::function<void(int)> updateProg
             filtered_image.bits()[index + 2] = (uchar) b;
             filtered_image.bits()[index + 3] = (uchar) a;
         }
+        updateProgress(100 * j / filtered_image.height());
     }
     return filtered_image;
 }

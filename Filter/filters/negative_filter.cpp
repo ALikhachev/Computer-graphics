@@ -15,6 +15,7 @@ QImage NegativeFilter::applyFilter(QImage image, std::function<void(int)> update
             filtered_image.bits()[index + 2] = 0xFF - image.bits()[index + 2];
             filtered_image.bits()[index + 3] = image.bits()[index + 3];
         }
+        updateProgress(100 * j / filtered_image.height());
     }
     return filtered_image;
 }

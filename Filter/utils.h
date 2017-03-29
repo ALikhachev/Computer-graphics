@@ -2,6 +2,8 @@
 #define UTILS_H
 
 #include <QImage>
+#include <QThread>
+#include <functional>
 
 namespace FilterUtils {
     const int RgbaDepth = 4;
@@ -65,7 +67,7 @@ namespace FilterUtils {
         return rgba_union.packed;
     }
 
-    QImage inline scaleImage(QImage &image, float scale_factor) {
+    QImage inline scaleImage(QImage &image, float scale_factor, std::function<void(int)> *updateProgress = 0) {
         QImage scaled(scale_factor > 1 ? image.width() : image.width() * scale_factor,
                       scale_factor > 1 ? image.height() : image.height() * scale_factor,
                       QImage::Format_RGBA8888);
@@ -77,6 +79,9 @@ namespace FilterUtils {
                 float x_norm = (i + x_offset * scale_factor) / (image.width() * scale_factor);
                 float y_norm = (j + y_offset * scale_factor) / (image.height() * scale_factor);
                 bits[j * scaled.width() + i] = getBilinearInterpolatedPixel(image, x_norm, y_norm);
+            }
+            if (updateProgress) {
+                (*updateProgress)(100 * j / scaled.height());
             }
         }
         return scaled;
