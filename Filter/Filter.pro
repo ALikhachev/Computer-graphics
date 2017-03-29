@@ -47,7 +47,9 @@ SOURCES += main.cpp\
     filters/sobel_filter.cpp \
     widgets/sobel_filter_widget.cpp \
     filters/roberts_filter.cpp \
-    widgets/roberts_filter_widget.cpp
+    widgets/roberts_filter_widget.cpp \
+    filters/edge_filter.cpp \
+    widgets/edge_filter_widget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -74,7 +76,9 @@ HEADERS  += \
     filters/sobel_filter.h \
     widgets/sobel_filter_widget.h \
     filters/roberts_filter.h \
-    widgets/roberts_filter_widget.h
+    widgets/roberts_filter_widget.h \
+    filters/edge_filter.h \
+    widgets/edge_filter_widget.h
 
 RESOURCES += \
     icons.qrc
