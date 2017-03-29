@@ -15,6 +15,7 @@ FilterZone::FilterZone(QWidget *parent) : QWidget(parent),
     has_image(false)
 {
     this->setFixedSize(352, 352);
+    memset(this->canvas.bits(), 0, this->canvas.bytesPerLine() * this->canvas.height());
     this->drawBorder();
 }
 
