@@ -81,6 +81,15 @@ namespace FilterUtils {
         }
         return scaled;
     }
+
+    QImage inline scaleImageToFit(QImage &image, int width, int height) {
+        if (image.width() < width && image.height() < height) {
+            return image;
+        }
+        float x_factor = (float) width / (float) image.width();
+        float y_factor = (float) height / (float) image.height();
+        return scaleImage(image, std::min(x_factor, y_factor));
+    }
 }
 
 #endif // UTILS_H
