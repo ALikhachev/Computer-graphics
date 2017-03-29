@@ -27,14 +27,24 @@ SOURCES += main.cpp\
     filter_zone.cpp \
     main_window.cpp \
     zone_container.cpp \
-    filter.cpp
+    filter.cpp \
+    filter_registry.cpp \
+    filters/scale_filter.cpp \
+    filters/grayscale_filter.cpp \
+    filters/negative_filter.cpp \
+    filters/blur_filter.cpp
 
 HEADERS  += \
     filter_zone.h \
     main_window.h \
     zone_container.h \
     filter.h \
-    utils.h
+    utils.h \
+    filter_registry.h \
+    filters/scale_filter.h \
+    filters/grayscale_filter.h \
+    filters/negative_filter.h \
+    filters/blur_filter.h
 
 RESOURCES += \
     icons.qrc

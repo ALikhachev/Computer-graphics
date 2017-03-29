@@ -6,7 +6,6 @@
 #include <QString>
 #include <QIcon>
 #include <QRunnable>
-
 #include <functional>
 
 class Filter;
@@ -52,47 +51,6 @@ protected:
 
 signals:
     void requested(Filter *f);
-};
-
-class GrayscaleFilter : public Filter
-{
-public:
-    GrayscaleFilter();
-    QImage applyFilter(QImage, std::function<void(int)>);
-    QIcon getIcon();
-    QString getName();
-};
-
-class NegativeFilter : public Filter
-{
-public:
-    NegativeFilter();
-    QImage applyFilter(QImage, std::function<void(int)>);
-    QIcon getIcon();
-    QString getName();
-};
-
-class BlurFilter : public Filter
-{
-public:
-    BlurFilter();
-    QImage applyFilter(QImage, std::function<void(int)>);
-    QIcon getIcon();
-    QString getName();
-};
-
-class ScaleFilterSettings : public FilterSettings {
-public:
-    float scale_factor = 2;
-};
-
-class ScaleFilter : public Filter
-{
-public:
-    ScaleFilter();
-    QImage applyFilter(QImage, std::function<void(int)>);
-    QIcon getIcon();
-    QString getName();
 };
 
 #endif // FILTER_H

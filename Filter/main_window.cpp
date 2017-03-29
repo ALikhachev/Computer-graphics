@@ -9,6 +9,7 @@
 #include <QDebug>
 
 #include "main_window.h"
+#include "filter_registry.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     progress_bar(new QProgressBar(this)),
@@ -16,11 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 {
     this->resize(1280, 720);
     this->setMinimumSize(200, 200);
-    this->filters.push_back(QSharedPointer<Filter>(new GrayscaleFilter));
-    this->filters.push_back(QSharedPointer<Filter>(new NegativeFilter));
-    this->filters.push_back(QSharedPointer<Filter>(new BlurFilter));
-    this->filters.push_back(QSharedPointer<Filter>(new ScaleFilter));
-    this->zone_container = new ZoneContainer(this->filters, this);
+    this->zone_container = new ZoneContainer(FilterRegistry::getInstance().getFilters(), this);
     QScrollArea *scroll_area = new QScrollArea(this);
     scroll_area->setBackgroundRole(QPalette::Light);
     scroll_area->setWidget(this->zone_container);
@@ -38,10 +35,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 void MainWindow::initFilters() {
     QToolBar *filters_toolbar = this->addToolBar(tr("Filters"));
     QMenu *filters_menu = this->menuBar()->addMenu(tr("F&ilters"));
-    for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
+    for (auto it = FilterRegistry::getInstance().getFilters().begin(); it < FilterRegistry::getInstance().getFilters().end(); ++it) {
         QAction *action = filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, [it]{(*it)->request();});
         filters_toolbar->addAction(action);
-        action->setStatusTip(tr("Apply %1").arg((*it)->getName()));
+        action->setStatusTip(tr("Apply %1 filter").arg((*it)->getName()));
     }
     this->connect(this->zone_container, &ZoneContainer::progressChanged, this, [this] (int value) {
         this->progress_bar->show();

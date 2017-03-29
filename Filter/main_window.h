@@ -7,7 +7,6 @@
 #include <QTimer>
 
 #include "zone_container.h"
-#include "filter.h"
 
 class MainWindow : public QMainWindow
 {
