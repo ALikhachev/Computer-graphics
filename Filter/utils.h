@@ -55,12 +55,12 @@ namespace FilterUtils {
         uchar *channel = &rgba_union.rgba.r;
         for (int i = 0; i < 4; ++i) {
             channel[i] = image.bits()[y       * image.bytesPerLine() + x       * FilterUtils::RgbaDepth + i] * (1.0 - x_diff) * (1.0 - y_diff)
-                  + (x >= image.width() ?  0 :
-                    image.bits()[y       * image.bytesPerLine() + (x + 1) * FilterUtils::RgbaDepth + i] * x_diff * (1.0 - y_diff))
-                  + (y >= image.height() ? 0 :
-                    image.bits()[(y + 1) * image.bytesPerLine() + x       * FilterUtils::RgbaDepth + i] * y_diff * (1.0 - x_diff))
-                  + (y >= image.height() || x >= image.width() ? 0 :
-                    image.bits()[(y + 1) * image.bytesPerLine() + (x + 1) * FilterUtils::RgbaDepth + i] * x_diff * y_diff);
+                       + (x >= image.width() ?  0 :
+                         image.bits()[y       * image.bytesPerLine() + (x + 1) * FilterUtils::RgbaDepth + i] * x_diff * (1.0 - y_diff))
+                       + (y >= image.height() ? 0 :
+                         image.bits()[(y + 1) * image.bytesPerLine() + x       * FilterUtils::RgbaDepth + i] * y_diff * (1.0 - x_diff))
+                       + (y >= image.height() || x >= image.width() ? 0 :
+                         image.bits()[(y + 1) * image.bytesPerLine() + (x + 1) * FilterUtils::RgbaDepth + i] * x_diff * y_diff);
         }
         return rgba_union.packed;
     }
