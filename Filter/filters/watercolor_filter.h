@@ -3,6 +3,11 @@
 
 #include "convolution_filter.h"
 
+class WatercolorFilterSettings {
+public:
+    int radius = 1;
+};
+
 class WatercolorFilter : public ConvolutionFilter
 {
 public:
@@ -12,8 +17,10 @@ public:
     int getMatrixSize();
     QIcon getIcon();
     QString getName();
+    WatercolorFilterSettings *getSettings();
 
 private:
+    WatercolorFilterSettings settings;
     std::vector<float> matrix;
 };
 

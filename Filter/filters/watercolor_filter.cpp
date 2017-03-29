@@ -57,6 +57,10 @@ QString WatercolorFilter::getName() {
     return tr("Watercolor");
 }
 
+WatercolorFilterSettings *WatercolorFilter::getSettings() {
+    return &this->settings;
+}
+
 namespace {
     bool reg = FilterRegistry::getInstance().registerFilter(new WatercolorFilter);
 }
