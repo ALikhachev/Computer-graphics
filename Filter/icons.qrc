@@ -9,5 +9,6 @@
         <file>icons/left.png</file>
         <file>icons/right.png</file>
         <file>icons/scale.png</file>
+        <file>icons/gamma.png</file>
     </qresource>
 </RCC>
