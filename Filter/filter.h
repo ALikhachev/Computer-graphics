@@ -7,6 +7,8 @@
 #include <QIcon>
 #include <QRunnable>
 
+#include <functional>
+
 class Filter;
 
 class FilterWorker : public QObject, public QRunnable
@@ -18,6 +20,7 @@ public:
 
 signals:
     void imageReady(QImage);
+    void progressChanged(int);
 
 private:
     Filter *f;
@@ -28,7 +31,7 @@ class Filter : public QObject
 {
     Q_OBJECT
 public:
-    virtual QImage applyFilter(QImage) = 0;
+    virtual QImage applyFilter(QImage, std::function<void(int)>) = 0;
     virtual QIcon getIcon() = 0;
     virtual QString getName() = 0;
 
@@ -43,7 +46,7 @@ class GrayscaleFilter : public Filter
 {
 public:
     GrayscaleFilter();
-    QImage applyFilter(QImage);
+    QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
 };
@@ -52,7 +55,7 @@ class NegativeFilter : public Filter
 {
 public:
     NegativeFilter();
-    QImage applyFilter(QImage);
+    QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
 };
@@ -61,7 +64,7 @@ class BlurFilter : public Filter
 {
 public:
     BlurFilter();
-    QImage applyFilter(QImage);
+    QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
 };

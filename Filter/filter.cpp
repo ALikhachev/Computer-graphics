@@ -7,7 +7,11 @@ FilterWorker::FilterWorker(Filter *filter, QImage image) :
 }
 
 void FilterWorker::run() {
-    emit imageReady(this->f->applyFilter(image));
+    emit progressChanged(0);
+    emit imageReady(this->f->applyFilter(image, [this] (int progress) {
+        emit progressChanged(progress);
+    }));
+    emit progressChanged(100);
 }
 
 void Filter::request() {
@@ -18,7 +22,7 @@ GrayscaleFilter::GrayscaleFilter() {
 
 }
 
-QImage GrayscaleFilter::applyFilter(QImage image) {
+QImage GrayscaleFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
     QImage filtered_image(image.size(), QImage::Format_RGBA8888);
     for (int j = 0; j < filtered_image.height(); ++j) {
         for (int i = 0; i < filtered_image.width(); ++i) {
@@ -31,6 +35,7 @@ QImage GrayscaleFilter::applyFilter(QImage image) {
                     0.2126 * (double)image.bits()[index] + 0.7152 * (double)image.bits()[index + 1] + 0.0722 * (double)image.bits()[index + 2];
             filtered_image.bits()[index + 3] = image.bits()[index + 3];
         }
+        updateProgress(j / filtered_image.height());
     }
     return filtered_image;
 }
@@ -47,7 +52,7 @@ NegativeFilter::NegativeFilter() {
 
 }
 
-QImage NegativeFilter::applyFilter(QImage image) {
+QImage NegativeFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
     QImage filtered_image(image.size(), QImage::Format_RGBA8888);
     for (int j = 0; j < filtered_image.height(); ++j) {
         for (int i = 0; i < filtered_image.width(); ++i) {
@@ -73,7 +78,7 @@ BlurFilter::BlurFilter() {
 
 }
 
-QImage BlurFilter::applyFilter(QImage image) {
+QImage BlurFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
     QImage filtered_image(image.size(), QImage::Format_RGBA8888);
     for (int j = 1; j < filtered_image.height() - 1; ++j) {
         for (int i = 1; i < filtered_image.width() - 1; ++i) {

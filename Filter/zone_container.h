@@ -23,6 +23,7 @@ public slots:
 
 signals:
     void filterImage(Filter *f, QImage image);
+    void progressChanged(int);
 
 private:
     SourceZone *zone_a;

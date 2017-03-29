@@ -10,8 +10,9 @@
 
 #include "main_window.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+    progress_bar(new QProgressBar(this)),
+    progress_bar_hide_timer(new QTimer(this))
 {
     this->resize(1280, 720);
     this->setMinimumSize(200, 200);
@@ -25,6 +26,12 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(scroll_area);
     this->setupActions();
     this->initFilters();
+    this->statusBar()->addWidget(this->progress_bar);
+    this->progress_bar->hide();
+    this->progress_bar_hide_timer->setSingleShot(true);
+    this->connect(this->progress_bar_hide_timer, &QTimer::timeout, this, [this] {
+        this->progress_bar->hide();
+    });
 }
 
 void MainWindow::initFilters() {
@@ -35,6 +42,13 @@ void MainWindow::initFilters() {
         filters_toolbar->addAction(action);
         action->setStatusTip(tr("Apply %1").arg((*it)->getName()));
     }
+    this->connect(this->zone_container, &ZoneContainer::progressChanged, this, [this] (int value) {
+        this->progress_bar->show();
+        this->progress_bar->setValue(value);
+        if (value == 100) {
+            this->progress_bar_hide_timer->start(1500);
+        }
+    });
 }
 
 void MainWindow::setupActions() {

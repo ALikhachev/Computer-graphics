@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QSharedPointer>
+#include <QProgressBar>
+#include <QTimer>
 
 #include "zone_container.h"
 #include "filter.h"
@@ -26,6 +28,8 @@ private:
     QString opened_from_file_name;
     ZoneContainer *zone_container;
     std::vector<QSharedPointer<Filter>> filters;
+    QProgressBar *progress_bar;
+    QTimer *progress_bar_hide_timer;
 };
 
 #endif // MAIN_WINDOW_H

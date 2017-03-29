@@ -28,6 +28,9 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
                     this->zone_c->setImage(image);
                 }
             });
+            this->connect(worker, &FilterWorker::progressChanged, this, [this](int progress) {
+                emit progressChanged(progress);
+            });
             this->thread_pool->clear();
             this->thread_pool->start(worker);
         });
