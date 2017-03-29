@@ -16,8 +16,7 @@ public:
     QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
-    ScaleFilterSettings getSettings();
-    void setSettings(ScaleFilterSettings &);
+    ScaleFilterSettings *getSettings();
 
 private:
     ScaleFilterSettings settings;

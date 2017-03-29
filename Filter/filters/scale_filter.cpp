@@ -18,13 +18,8 @@ QString ScaleFilter::getName() {
     return tr("Scale");
 }
 
-ScaleFilterSettings ScaleFilter::getSettings() {
-    return this->settings;
-}
-
-void ScaleFilter::setSettings(ScaleFilterSettings &settings) {
-    this->settings = settings;
-    emit requested(this);
+ScaleFilterSettings *ScaleFilter::getSettings() {
+    return &this->settings;
 }
 
 namespace {

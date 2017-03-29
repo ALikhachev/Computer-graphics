@@ -1,7 +1,6 @@
 #include <QFormLayout>
 #include <QSlider>
 #include <QCheckBox>
-#include <QDebug>
 
 #include "widgets/scale_filter_widget.h"
 #include "filter_registry.h"
@@ -14,20 +13,19 @@ ScaleFilterWidget::ScaleFilterWidget(ScaleFilter *f, QWidget *parent) : FilterWi
 {
     QFormLayout *layout = new QFormLayout(this);
     QSliderBox *scale_slider = new QSliderBox(1, 10, this);
-    scale_slider->setValue(this->settings.scale_factor);
+    scale_slider->setValue(this->settings->scale_factor);
     QCheckBox *invert_scale_checkbox = new QCheckBox(this);
-    invert_scale_checkbox->setChecked(this->settings.invert);
+    invert_scale_checkbox->setChecked(this->settings->invert);
     layout->addRow(tr("Scale factor"), scale_slider);
     layout->addRow(tr("Downscale?"), invert_scale_checkbox);
     connect(scale_slider, &QSliderBox::valueChanged, [this] (int i) {
-        this->settings.scale_factor = i;
-        this->filter->setSettings(this->settings);
+        this->settings->scale_factor = i;
+        this->filter->request();
     });
     connect(invert_scale_checkbox, &QCheckBox::stateChanged, [this] (int i) {
-        this->settings.invert = i;
-        this->filter->setSettings(this->settings);
+        this->settings->invert = i;
+        this->filter->request();
     });
-    qDebug() << "Scale filter initialized";
 }
 
 namespace {
