@@ -48,6 +48,13 @@ namespace FilterUtils {
         } rgba;
     };
 
+    struct PixelFloat {
+        float r = 0.0;
+        float g = 0.0;
+        float b = 0.0;
+        float a = 0.0;
+    };
+
     uint32_t inline getBilinearInterpolatedPixel(QImage &image, float x_norm, float y_norm) {
         PixelUnion rgba_union;
         int x = x_norm * image.width();
@@ -101,7 +108,7 @@ namespace FilterUtils {
             return - c - 1;
         }
         if (c >= max) {
-            return 2 * max - x - 1;
+            return 2 * max - c - 1;
         }
         return c;
     }

@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     filter_widget.cpp \
     widgets/scale_filter_wdget.cpp \
     qsliderbox.cpp \
-    filters/convolution_filter.cpp
+    filters/convolution_filter.cpp \
+    widgets/blur_filter_widget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -52,7 +53,8 @@ HEADERS  += \
     filter_widget.h \
     widgets/scale_filter_widget.h \
     qsliderbox.h \
-    filters/convolution_filter.h
+    filters/convolution_filter.h \
+    widgets/blur_filter_widget.h
 
 RESOURCES += \
     icons.qrc
