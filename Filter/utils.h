@@ -95,6 +95,16 @@ namespace FilterUtils {
         float y_factor = (float) height / (float) image.height();
         return scaleImage(image, std::min(x_factor, y_factor));
     }
+
+    int inline reflect(int max, int c) {
+        if (c < 0) {
+            return - c - 1;
+        }
+        if (c >= max) {
+            return 2 * max - x - 1;
+        }
+        return c;
+    }
 }
 
 #endif // UTILS_H
