@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     filters/convolution_filter.cpp \
     widgets/blur_filter_widget.cpp \
     filters/gamma_correction_filter.cpp \
-    widgets/gamma_correction_filter_widget.cpp
+    widgets/gamma_correction_filter_widget.cpp \
+    filters/sharpness_filter.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -58,7 +59,8 @@ HEADERS  += \
     filters/convolution_filter.h \
     widgets/blur_filter_widget.h \
     filters/gamma_correction_filter.h \
-    widgets/gamma_correction_filter_widget.h
+    widgets/gamma_correction_filter_widget.h \
+    filters/sharpness_filter.h
 
 RESOURCES += \
     icons.qrc

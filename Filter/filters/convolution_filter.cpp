@@ -27,7 +27,14 @@ QImage ConvolutionFilter::applyFilter(QImage image, std::function<void(int)> upd
                 }
             }
             for (int i1 = 0; i1 < 4; ++i1) {
-                ((uchar *) &(pixels[j * filtered_image.width() + i].rgba.r))[i1] = (uchar) ((float *) &(sum.r))[i1];
+                int v = (int) ((float *) &(sum.r))[i1];
+                if (v < 0) {
+                    v = 0;
+                }
+                if (v > 255) {
+                    v = 255;
+                }
+                ((uchar *) &(pixels[j * filtered_image.width() + i].rgba.r))[i1] = v;
             }
         }
         updateProgress(100 * j / filtered_image.height());

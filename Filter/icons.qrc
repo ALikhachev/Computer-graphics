@@ -10,5 +10,6 @@
         <file>icons/right.png</file>
         <file>icons/scale.png</file>
         <file>icons/gamma.png</file>
+        <file>icons/sharpness.png</file>
     </qresource>
 </RCC>
