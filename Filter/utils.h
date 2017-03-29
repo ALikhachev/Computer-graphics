@@ -50,9 +50,6 @@ namespace FilterUtils {
         PixelUnion rgba_union;
         int x = x_norm * image.width();
         int y = y_norm * image.height();
-        if (x >= image.width() || y >= image.height()) {
-            return 0;
-        }
         float x_diff = x_norm * image.width() - x;
         float y_diff = y_norm * image.height() - y;
         uchar *channel = &rgba_union.rgba.r;
@@ -69,7 +66,9 @@ namespace FilterUtils {
     }
 
     QImage inline scaleImage(QImage &image, float scale_factor) {
-        QImage scaled(image.size(), QImage::Format_RGBA8888);
+        QImage scaled(scale_factor > 1 ? image.width() : image.width() * scale_factor,
+                      scale_factor > 1 ? image.height() : image.height() * scale_factor,
+                      QImage::Format_RGBA8888);
         uint32_t *bits = (uint32_t *) scaled.bits();
         int x_offset = scale_factor > 1 ? (image.width() - image.width() / scale_factor) / 2 : 0;
         int y_offset = scale_factor > 1 ? (image.height() - image.height() / scale_factor) / 2 : 0;
