@@ -35,6 +35,50 @@ namespace FilterUtils {
             }
         }
     }
+
+    union PixelUnion {
+        uint32_t packed;
+        struct {
+            uchar r;
+            uchar g;
+            uchar b;
+            uchar a;
+        } rgba;
+    };
+
+    uint32_t inline getBilinearInterpolatedPixel(QImage &image, float x_norm, float y_norm) {
+        PixelUnion rgba_union;
+        int x = x_norm * image.width();
+        int y = y_norm * image.height();
+        float x_diff = x_norm * image.width() - x;
+        float y_diff = y_norm * image.height() - y;
+        uchar *channel = &rgba_union.rgba.r;
+        for (int i = 0; i < 4; ++i) {
+            channel[i] = image.bits()[y       * image.bytesPerLine() + x       * FilterUtils::RgbaDepth + i] * (1.0 - x_diff) * (1.0 - y_diff)
+                  + (x >= image.width() ?  0 :
+                    image.bits()[y       * image.bytesPerLine() + (x + 1) * FilterUtils::RgbaDepth + i] * x_diff * (1.0 - y_diff))
+                  + (y >= image.height() ? 0 :
+                    image.bits()[(y + 1) * image.bytesPerLine() + x       * FilterUtils::RgbaDepth + i] * y_diff * (1.0 - x_diff))
+                  + (y >= image.height() || x >= image.width() ? 0 :
+                    image.bits()[(y + 1) * image.bytesPerLine() + (x + 1) * FilterUtils::RgbaDepth + i] * x_diff * y_diff);
+        }
+        return rgba_union.packed;
+    }
+
+    QImage inline scaleImage(QImage &image, float scale_factor) {
+        QImage scaled(image.size(), QImage::Format_RGBA8888);
+        uint32_t *bits = (uint32_t *) scaled.bits();
+        int x_offset = (image.width() - image.width() / scale_factor) / 2;
+        int y_offset = (image.height() - image.height() / scale_factor) / 2;
+        for (int j = 0; j < scaled.height(); ++j) {
+            for (int i = 0; i < scaled.width(); ++i) {
+                float x_norm = (i + x_offset * scale_factor) / (image.width() * scale_factor);
+                float y_norm = (j + y_offset * scale_factor) / (image.height() * scale_factor);
+                bits[j * scaled.width() + i] = getBilinearInterpolatedPixel(image, x_norm, y_norm);
+            }
+        }
+        return scaled;
+    }
 }
 
 #endif // UTILS_H
