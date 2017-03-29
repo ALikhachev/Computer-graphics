@@ -2,11 +2,25 @@
 #define ZONE_CONTAINER_H
 
 #include <QWidget>
+#include <QScrollArea>
 #include <QSharedPointer>
 #include <QThreadPool>
 
 #include "filter.h"
 #include "filter_zone.h"
+
+class SettingsWidget : public QWidget {
+    Q_OBJECT
+public:
+    explicit SettingsWidget(QWidget *parent = 0);
+
+public slots:
+    void showFilterWidget(Filter *f);
+
+private:
+    Filter *last_filter;
+    QScrollArea *scroll_area;
+};
 
 class ZoneContainer : public QWidget
 {
@@ -32,8 +46,7 @@ private:
     std::vector<QSharedPointer<Filter>> &filters;
     QThreadPool *thread_pool;
     bool clean;
-    QWidget *settings_widget;
-    Filter *last_filter;
+    SettingsWidget *settings_widget;
 };
 
 #endif // ZONE_CONTAINER_H

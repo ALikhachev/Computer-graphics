@@ -1,6 +1,7 @@
 #include <QVBoxLayout>
 #include <QSlider>
 #include <QCheckBox>
+#include <QDebug>
 
 #include "widgets/scale_filter_widget.h"
 #include "filter_registry.h"
@@ -15,6 +16,7 @@ ScaleFilterWidget::ScaleFilterWidget(ScaleFilter *f, QWidget *parent) : FilterWi
     layout->addWidget(scale_slider);
     QCheckBox *invert_scale_checkbox = new QCheckBox(this);
     layout->addWidget(invert_scale_checkbox);
+    qDebug() << "Scale filter initialized";
 }
 
 namespace {

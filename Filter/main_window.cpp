@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     QScrollArea *scroll_area = new QScrollArea(this);
     scroll_area->setBackgroundRole(QPalette::Light);
     scroll_area->setWidget(this->zone_container);
+    scroll_area->setWidgetResizable(true);
     this->setCentralWidget(scroll_area);
     this->setupActions();
     this->initFilters();

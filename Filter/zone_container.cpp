@@ -1,41 +1,52 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QLabel>
 
 #include "zone_container.h"
 #include "filter_registry.h"
+
+SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent),
+    last_filter(NULL),
+    scroll_area(new QScrollArea(this))
+{
+    this->scroll_area->setFrameShape(QFrame::NoFrame);
+    this->scroll_area->setWidget(new QWidget(this));
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(new QLabel(tr("<b><font size=\"5\">Filter settings</font></b>")));
+    layout->addWidget(scroll_area);
+}
+
+void SettingsWidget::showFilterWidget(Filter *f) {
+    if (f != this->last_filter) {
+        this->scroll_area->setWidget(FilterRegistry::getInstance().getWidget(f, this->scroll_area));
+        this->last_filter = f;
+    }
+}
 
 ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidget *parent) : QWidget(parent),
     filters(filters),
     thread_pool(new QThreadPool(this)),
     clean(true),
-    settings_widget(NULL),
-    last_filter(NULL)
+    settings_widget(new SettingsWidget(this))
 {
     this->thread_pool->setMaxThreadCount(1);
-    this->setMaximumWidth(352 * 3 + 10 * 5);
+    this->setMinimumSize(352 * 3 + 10 * 5, 352 + 2 * 10 + 145);
     QVBoxLayout *main_layout = new QVBoxLayout(this);
     QHBoxLayout *layout = new QHBoxLayout();
     main_layout->addLayout(layout);
+    main_layout->addWidget(this->settings_widget);
     this->zone_a = new SourceZone(this);
     this->zone_b = new FilterZone(this);
     this->zone_c = new FilterZone(this);
-    layout->addWidget(this->zone_a);
-    layout->addWidget(this->zone_b);
-    layout->addWidget(this->zone_c);
+    layout->addWidget(this->zone_a, 0, Qt::AlignTop | Qt::AlignLeft);
+    layout->addWidget(this->zone_b, 0, Qt::AlignTop | Qt::AlignLeft);
+    layout->addWidget(this->zone_c, 0, Qt::AlignTop | Qt::AlignLeft);
+    layout->addStretch();
     layout->setSpacing(10);
     for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
         Filter *f = it->data();
         this->connect(f, &Filter::requested, [this, f, main_layout] {
-            if (f != this->last_filter) {
-                if (this->settings_widget) {
-                    delete this->settings_widget;
-                }
-                this->settings_widget = FilterRegistry::getInstance().getWidget(f, this);
-                if (this->settings_widget) {
-                    main_layout->addWidget(this->settings_widget);
-                }
-                this->last_filter = f;
-            }
+            this->settings_widget->showFilterWidget(f);
             FilterWorker *worker = new FilterWorker(f, this->zone_b->getImage());
             worker->setAutoDelete(true);
             connect(worker, &FilterWorker::imageReady, [this] (QImage image) {
