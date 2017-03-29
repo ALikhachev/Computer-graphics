@@ -74,13 +74,29 @@ namespace FilterUtils {
         return rgba_union.packed;
     }
 
-    QImage inline scaleImage(QImage &image, float scale_factor, std::function<void(int)> *updateProgress = 0) {
-        QImage scaled(scale_factor > 1 ? image.width() : image.width() * scale_factor,
-                      scale_factor > 1 ? image.height() : image.height() * scale_factor,
-                      QImage::Format_RGBA8888);
+    QImage inline scaleImage(QImage &image, float scale_factor, int width_max = 0, int height_max = 0, std::function<void(int)> *updateProgress = 0) {
+        if (scale_factor == 1) {
+            return QImage(image);
+        }
+        int width;
+        int height;
+        if (scale_factor > 1) {
+            width = image.width() * scale_factor;
+            height = image.height() * scale_factor;
+            if (width > width_max) {
+                width = width_max;
+            }
+            if (height > height_max) {
+                height = height_max;
+            }
+        } else {
+            width = image.width() * scale_factor;
+            height = image.height() * scale_factor;
+        }
+        QImage scaled(width, height, QImage::Format_RGBA8888);
         uint32_t *bits = (uint32_t *) scaled.bits();
-        int x_offset = scale_factor > 1 ? (image.width() - image.width() / scale_factor) / 2 : 0;
-        int y_offset = scale_factor > 1 ? (image.height() - image.height() / scale_factor) / 2 : 0;
+        int x_offset = scale_factor > 1 && image.width() * scale_factor >= width_max ? (image.width() - image.width() / scale_factor) / 2 : 0;
+        int y_offset = scale_factor > 1 && image.height() * scale_factor >= height_max ? (image.height() - image.height() / scale_factor) / 2 : 0;
         for (int j = 0; j < scaled.height(); ++j) {
             for (int i = 0; i < scaled.width(); ++i) {
                 float x_norm = (i + x_offset * scale_factor) / (image.width() * scale_factor);

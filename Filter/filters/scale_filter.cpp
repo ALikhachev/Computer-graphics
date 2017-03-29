@@ -7,7 +7,7 @@ ScaleFilter::ScaleFilter()
 }
 
 QImage ScaleFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
-    return FilterUtils::scaleImage(image, this->settings.invert ? 1.0 / settings.scale_factor : settings.scale_factor, &updateProgress);
+    return FilterUtils::scaleImage(image, this->settings.invert ? 1.0 / settings.scale_factor : settings.scale_factor, 350, 350, &updateProgress);
 }
 
 QIcon ScaleFilter::getIcon() {
