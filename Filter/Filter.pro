@@ -45,7 +45,9 @@ SOURCES += main.cpp\
     filters/watercolor_filter.cpp \
     widgets/watercolor_filter_widget.cpp \
     filters/sobel_filter.cpp \
-    widgets/sobel_filter_widget.cpp
+    widgets/sobel_filter_widget.cpp \
+    filters/roberts_filter.cpp \
+    widgets/roberts_filter_widget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -70,7 +72,9 @@ HEADERS  += \
     filters/watercolor_filter.h \
     widgets/watercolor_filter_widget.h \
     filters/sobel_filter.h \
-    widgets/sobel_filter_widget.h
+    widgets/sobel_filter_widget.h \
+    filters/roberts_filter.h \
+    widgets/roberts_filter_widget.h
 
 RESOURCES += \
     icons.qrc
