@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     widgets/blur_filter_widget.cpp \
     filters/gamma_correction_filter.cpp \
     widgets/gamma_correction_filter_widget.cpp \
-    filters/sharpness_filter.cpp
+    filters/sharpness_filter.cpp \
+    filters/embossing_filter.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -60,7 +61,8 @@ HEADERS  += \
     widgets/blur_filter_widget.h \
     filters/gamma_correction_filter.h \
     widgets/gamma_correction_filter_widget.h \
-    filters/sharpness_filter.h
+    filters/sharpness_filter.h \
+    filters/embossing_filter.h
 
 RESOURCES += \
     icons.qrc
