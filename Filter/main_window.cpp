@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     progress_bar(new QProgressBar(this)),
     progress_bar_hide_timer(new QTimer(this))
 {
+    FilterRegistry::getInstance().unqueueBindWidgets();
     this->resize(1280, 720);
     this->setMinimumSize(200, 200);
     this->zone_container = new ZoneContainer(FilterRegistry::getInstance().getFilters(), this);

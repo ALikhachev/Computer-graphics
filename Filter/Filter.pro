@@ -32,7 +32,9 @@ SOURCES += main.cpp\
     filters/scale_filter.cpp \
     filters/grayscale_filter.cpp \
     filters/negative_filter.cpp \
-    filters/blur_filter.cpp
+    filters/blur_filter.cpp \
+    filter_widget.cpp \
+    widgets/scale_filter_wdget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -44,7 +46,9 @@ HEADERS  += \
     filters/scale_filter.h \
     filters/grayscale_filter.h \
     filters/negative_filter.h \
-    filters/blur_filter.h
+    filters/blur_filter.h \
+    filter_widget.h \
+    widgets/scale_filter_widget.h
 
 RESOURCES += \
     icons.qrc
