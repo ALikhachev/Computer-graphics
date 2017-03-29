@@ -29,8 +29,9 @@ QImage WatercolorFilter::applyFilter(QImage image, std::function<void(int)> upda
                 }
             }
             for (int i1 = 0; i1 < 4; ++i1) {
-                std::sort(neighbors[i1].begin(), neighbors[i1].end());
-                ((uchar *) &(pixels[j * filtered_image.width() + i].rgba.r))[i1] = neighbors[i1][neighbors[i1].size() / 2];
+                auto median = neighbors[i1].begin() + (neighbors[i1].end() - neighbors[i1].begin()) / 2;
+                std::nth_element(neighbors[i1].begin(), median, neighbors[i1].end());
+                ((uchar *) &(pixels[j * filtered_image.width() + i].rgba.r))[i1] = *median;
                 neighbors[i1].clear();
             }
         }
