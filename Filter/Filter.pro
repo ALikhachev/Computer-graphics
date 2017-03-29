@@ -43,7 +43,9 @@ SOURCES += main.cpp\
     filters/sharpness_filter.cpp \
     filters/embossing_filter.cpp \
     filters/watercolor_filter.cpp \
-    widgets/watercolor_filter_widget.cpp
+    widgets/watercolor_filter_widget.cpp \
+    filters/sobel_filter.cpp \
+    widgets/sobel_filter_widget.cpp
 
 HEADERS  += \
     filter_zone.h \
@@ -66,7 +68,9 @@ HEADERS  += \
     filters/sharpness_filter.h \
     filters/embossing_filter.h \
     filters/watercolor_filter.h \
-    widgets/watercolor_filter_widget.h
+    widgets/watercolor_filter_widget.h \
+    filters/sobel_filter.h \
+    widgets/sobel_filter_widget.h
 
 RESOURCES += \
     icons.qrc

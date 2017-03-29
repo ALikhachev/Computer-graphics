@@ -55,6 +55,13 @@ namespace FilterUtils {
         float a = 0.0;
     };
 
+    struct PixelInt {
+        int r = 0;
+        int g = 0;
+        int b = 0;
+        int a = 0;
+    };
+
     uint32_t inline getBilinearInterpolatedPixel(QImage &image, float x_norm, float y_norm) {
         PixelUnion rgba_union;
         int x = x_norm * image.width();
