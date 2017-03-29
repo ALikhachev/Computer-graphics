@@ -13,8 +13,7 @@ class FilterRegistry
 private:
     std::vector<QSharedPointer<Filter>> filters;
     std::map<QString, QSharedPointer<Filter>> name_to_filter;
-    std::map<QString, QSharedPointer<FilterWidget>> filter_to_widget;
-    std::vector<std::function<void(void)>> widget_register_queue;
+    std::map<QString, std::function<FilterWidget *(Filter *, QWidget *)>> filter_to_widget;
 
     FilterRegistry() {}
 public:
@@ -22,12 +21,10 @@ public:
     void operator=(FilterRegistry const&) = delete;
     static FilterRegistry &getInstance();
     bool registerFilter(Filter *);
-    bool queueBindWidget(std::function<void(void)>);
-    void unqueueBindWidgets();
-    bool bindWidget(QString, FilterWidget *);
+    bool registerWidgetBuilder(QString, std::function<FilterWidget *(Filter *, QWidget *)>);
     std::vector<QSharedPointer<Filter>> &getFilters();
     QSharedPointer<Filter> getFilter(QString);
-    QSharedPointer<FilterWidget> getWidget(Filter *);
+    FilterWidget *getWidget(Filter *, QWidget *parent = 0);
 };
 
 #endif // FILTER_REGISTRY_H

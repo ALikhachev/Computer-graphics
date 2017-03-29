@@ -7,19 +7,8 @@ bool FilterRegistry::registerFilter(Filter *f) {
     return true;
 }
 
-bool FilterRegistry::queueBindWidget(std::function<void(void)> fun) {
-    this->widget_register_queue.push_back(fun);
-}
-
-void FilterRegistry::unqueueBindWidgets() {
-    for (auto it = this->widget_register_queue.begin(); it < this->widget_register_queue.end(); ++it) {
-        (*it)();
-        this->widget_register_queue.erase(it);
-    }
-}
-
-bool FilterRegistry::bindWidget(QString name, FilterWidget *widget) {
-    this->filter_to_widget[name] = QSharedPointer<FilterWidget>(widget);
+bool FilterRegistry::registerWidgetBuilder(QString name, std::function<FilterWidget *(Filter *, QWidget *)> widgetConstructor) {
+    this->filter_to_widget[name] = widgetConstructor;
     return true;
 }
 
@@ -31,8 +20,9 @@ QSharedPointer<Filter> FilterRegistry::getFilter(QString name) {
     return this->name_to_filter[name];
 }
 
-QSharedPointer<FilterWidget> FilterRegistry::getWidget(Filter *f) {
-    return this->filter_to_widget[f->getName()];
+FilterWidget *FilterRegistry::getWidget(Filter *f, QWidget *parent) {
+    return this->filter_to_widget.find(f->getName()) != this->filter_to_widget.end() ? this->filter_to_widget[f->getName()](f, parent)
+            : NULL;
 }
 
 FilterRegistry &FilterRegistry::getInstance() {

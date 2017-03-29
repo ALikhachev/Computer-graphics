@@ -32,6 +32,8 @@ private:
     std::vector<QSharedPointer<Filter>> &filters;
     QThreadPool *thread_pool;
     bool clean;
+    QWidget *settings_widget;
+    Filter *last_filter;
 };
 
 #endif // ZONE_CONTAINER_H

@@ -9,10 +9,10 @@
 class ScaleFilterWidget : public FilterWidget
 {
 public:
-    ScaleFilterWidget(QSharedPointer<ScaleFilter> f, QWidget *parent = 0);
+    ScaleFilterWidget(ScaleFilter *f, QWidget *parent = 0);
 
 private:
-    QSharedPointer<ScaleFilter> filter;
+    ScaleFilter *filter;
 };
 
 #endif // BLUR_FILTER_WIDGET_H

@@ -37,6 +37,7 @@ class Filter : public QObject
 public:
     Filter();
     Filter(FilterSettings *);
+    virtual ~Filter() {}
     virtual QImage applyFilter(QImage, std::function<void(int)>) = 0;
     virtual QIcon getIcon() = 0;
     virtual QString getName() = 0;
