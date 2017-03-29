@@ -15,7 +15,25 @@ void FilterWorker::run() {
     emit progressChanged(100);
 }
 
+Filter::Filter()
+{
+}
+
+Filter::Filter(FilterSettings *settings) :
+  settings(settings)
+{
+}
+
 void Filter::request() {
+    emit requested(this);
+}
+
+FilterSettings *Filter::getSettings() const {
+    return this->settings;
+}
+
+void Filter::setSettings(FilterSettings *settings) {
+    this->settings = settings;
     emit requested(this);
 }
 
@@ -122,12 +140,13 @@ QString BlurFilter::getName() {
     return tr("Blur filter");
 }
 
-ScaleFilter::ScaleFilter() {
-
+ScaleFilter::ScaleFilter() : Filter(new ScaleFilterSettings)
+{
 }
 
 QImage ScaleFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
-    return FilterUtils::scaleImage(image, 2);
+    ScaleFilterSettings *settings = dynamic_cast<ScaleFilterSettings *>(this->settings);
+    return FilterUtils::scaleImage(image, settings->scale_factor);
 }
 
 QIcon ScaleFilter::getIcon() {

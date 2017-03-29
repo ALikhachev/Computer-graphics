@@ -27,16 +27,28 @@ private:
     QImage image;
 };
 
+class FilterSettings {
+public:
+    virtual ~FilterSettings() {}
+};
+
 class Filter : public QObject
 {
     Q_OBJECT
 public:
+    Filter();
+    Filter(FilterSettings *);
     virtual QImage applyFilter(QImage, std::function<void(int)>) = 0;
     virtual QIcon getIcon() = 0;
     virtual QString getName() = 0;
+    virtual FilterSettings *getSettings() const;
+    virtual void setSettings(FilterSettings *);
 
 public slots:
     void request();
+
+protected:
+    FilterSettings *settings;
 
 signals:
     void requested(Filter *f);
@@ -67,6 +79,11 @@ public:
     QImage applyFilter(QImage, std::function<void(int)>);
     QIcon getIcon();
     QString getName();
+};
+
+class ScaleFilterSettings : public FilterSettings {
+public:
+    float scale_factor = 2;
 };
 
 class ScaleFilter : public Filter
