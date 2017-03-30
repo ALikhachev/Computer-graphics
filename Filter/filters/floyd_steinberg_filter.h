@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class FloydSteinbergFilterSettings {
+class FloydSteinbergFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int red = 2;
     int green = 2;
     int blue = 2;
@@ -19,6 +22,7 @@ public:
     QIcon getIcon();
     QString getName();
     FloydSteinbergFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     static uchar getClosestColor(uchar color, int shades);

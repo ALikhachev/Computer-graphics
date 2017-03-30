@@ -18,3 +18,10 @@ void FilterWorker::run() {
 void Filter::request() {
     emit requested(this);
 }
+
+FilterSettings *Filter::getSettings() {
+    return NULL;
+}
+
+void Filter::setSettings(FilterSettings *) {
+}

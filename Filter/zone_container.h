@@ -17,6 +17,10 @@ public:
 public slots:
     void showFilterWidget(Filter *f);
 
+signals:
+    void saveFilterRequested(Filter *f);
+    void restoreFilterRequested();
+
 private:
     Filter *last_filter;
     QScrollArea *scroll_area;
@@ -36,6 +40,10 @@ public slots:
     void copyBToC();
     void copyCToB();
 
+private slots:
+    void saveFilterWithSettings(Filter *f);
+    void restoreFilterWithSettings();
+
 signals:
     void filterImage(Filter *f, QImage image);
     void progressChanged(int);
@@ -48,6 +56,8 @@ private:
     QThreadPool *thread_pool;
     bool clean;
     SettingsWidget *settings_widget;
+    Filter *saved_filter;
+    FilterSettings *saved_filter_settings;
 };
 
 #endif // ZONE_CONTAINER_H

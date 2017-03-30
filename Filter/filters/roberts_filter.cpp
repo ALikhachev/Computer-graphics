@@ -7,6 +7,10 @@ using FilterUtils::PixelUnion;
 using FilterUtils::PixelInt;
 using FilterUtils::reflect;
 
+FilterSettings *RobertsFilterSettings::clone() {
+    return new RobertsFilterSettings(*this);
+}
+
 RobertsFilter::RobertsFilter()
 {
 }
@@ -67,6 +71,13 @@ QString RobertsFilter::getName() {
 
 RobertsFilterSettings *RobertsFilter::getSettings() {
     return &this->settings;
+}
+
+void RobertsFilter::setSettings(FilterSettings *settings) {
+    RobertsFilterSettings *w_settings = dynamic_cast<RobertsFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

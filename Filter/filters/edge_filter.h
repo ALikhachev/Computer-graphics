@@ -3,8 +3,11 @@
 
 #include "convolution_filter.h"
 
-class EdgeFilterSettings {
+class EdgeFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int threshold = 17;
 };
 
@@ -18,6 +21,7 @@ public:
     QIcon getIcon();
     QString getName();
     EdgeFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     EdgeFilterSettings settings;

@@ -1,6 +1,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 #include "zone_container.h"
 #include "filter_registry.h"
@@ -11,9 +12,22 @@ SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent),
 {
     this->scroll_area->setFrameShape(QFrame::NoFrame);
     this->scroll_area->setWidget(new QWidget(this));
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(tr("<b><font size=\"5\">Filter settings</font></b>")));
-    layout->addWidget(scroll_area);
+    QVBoxLayout *main_layout = new QVBoxLayout(this);
+    QPushButton *ok_button = new QPushButton(tr("OK"), this);
+    QPushButton *cancel_button = new QPushButton(tr("Cancel"), this);
+    QHBoxLayout *layout = new QHBoxLayout();
+    main_layout->addWidget(new QLabel(tr("<b><font size=\"5\">Filter settings</font></b>")));
+    main_layout->addWidget(scroll_area);
+    layout->addWidget(ok_button);
+    layout->addWidget(cancel_button);
+    main_layout->addLayout(layout);
+
+    connect(ok_button, &QPushButton::released, this, [this] {
+        emit saveFilterRequested(this->last_filter);
+    });
+    connect(cancel_button, &QPushButton::released, this, [this] {
+        emit restoreFilterRequested();
+    });
 }
 
 void SettingsWidget::showFilterWidget(Filter *f) {
@@ -65,6 +79,8 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
         });
     }
     this->connect(zone_a, &SourceZone::zoneSelected, this->zone_b, FilterZone::setImage);
+    connect(this->settings_widget, &SettingsWidget::saveFilterRequested, this, &ZoneContainer::saveFilterWithSettings);
+    connect(this->settings_widget, &SettingsWidget::restoreFilterRequested, this, &ZoneContainer::restoreFilterWithSettings);
 }
 
 ZoneContainer::~ZoneContainer() {
@@ -95,4 +111,15 @@ void ZoneContainer::copyBToC() {
 
 void ZoneContainer::copyCToB() {
     this->zone_b->setImage(this->zone_c->getImage());
+}
+
+void ZoneContainer::saveFilterWithSettings(Filter *f) {
+    this->saved_filter = f;
+    this->saved_filter_settings = f->getSettings()->clone();
+}
+
+void ZoneContainer::restoreFilterWithSettings() {
+    this->saved_filter->setSettings(this->saved_filter_settings);
+    delete this->saved_filter_settings;
+    this->saved_filter->request();
 }

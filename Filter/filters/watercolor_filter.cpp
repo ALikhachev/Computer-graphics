@@ -5,6 +5,10 @@
 using FilterUtils::PixelUnion;
 using FilterUtils::reflect;
 
+FilterSettings *WatercolorFilterSettings::clone() {
+    return new WatercolorFilterSettings(*this);
+}
+
 WatercolorFilter::WatercolorFilter() :
     matrix({ 0.0, -1.0,  0.0,
             -1.0,  5.0, -1.0,
@@ -60,6 +64,13 @@ QString WatercolorFilter::getName() {
 
 WatercolorFilterSettings *WatercolorFilter::getSettings() {
     return &this->settings;
+}
+
+void WatercolorFilter::setSettings(FilterSettings *settings) {
+    WatercolorFilterSettings *w_settings = dynamic_cast<WatercolorFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

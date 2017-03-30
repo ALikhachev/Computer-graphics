@@ -5,8 +5,11 @@
 
 #include <QSharedPointer>
 
-class BlurFilterSettings {
+class BlurFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int matrix_index = 0;
 };
 
@@ -19,6 +22,7 @@ public:
     QIcon getIcon();
     QString getName();
     BlurFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     BlurFilterSettings settings;

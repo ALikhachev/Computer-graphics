@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class ScaleFilterSettings {
+class ScaleFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int scale_factor = 2;
     bool invert = false;
 };
@@ -17,6 +20,7 @@ public:
     QIcon getIcon();
     QString getName();
     ScaleFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     ScaleFilterSettings settings;

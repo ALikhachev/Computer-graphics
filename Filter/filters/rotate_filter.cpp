@@ -5,6 +5,10 @@
 using FilterUtils::getBilinearInterpolatedPixel;
 using FilterUtils::PixelUnion;
 
+FilterSettings *RotateFilterSettings::clone() {
+    return new RotateFilterSettings(*this);
+}
+
 RotateFilter::RotateFilter()
 {
 
@@ -40,6 +44,13 @@ QString RotateFilter::getName() {
 
 RotateFilterSettings *RotateFilter::getSettings() {
     return &this->settings;
+}
+
+void RotateFilter::setSettings(FilterSettings *settings) {
+    RotateFilterSettings *w_settings = dynamic_cast<RotateFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

@@ -4,6 +4,10 @@
 
 using FilterUtils::PixelUnion;
 
+FilterSettings *OrderedDitheringFilterSettings::clone() {
+    return new OrderedDitheringFilterSettings(*this);
+}
+
 OrderedDitheringFilter::OrderedDitheringFilter()
 {
 
@@ -40,6 +44,13 @@ QString OrderedDitheringFilter::getName() {
 
 OrderedDitheringFilterSettings *OrderedDitheringFilter::getSettings() {
     return &this->settings;
+}
+
+void OrderedDitheringFilter::setSettings(FilterSettings *settings) {
+    OrderedDitheringFilterSettings *w_settings = dynamic_cast<OrderedDitheringFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 std::vector<float> OrderedDitheringFilter::buildMatrix(int size) {

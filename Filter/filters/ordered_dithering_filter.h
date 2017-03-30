@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class OrderedDitheringFilterSettings {
+class OrderedDitheringFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int matrix_size = 16;
 };
 
@@ -16,6 +19,7 @@ public:
     QIcon getIcon();
     QString getName();
     OrderedDitheringFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     static std::vector<float> buildMatrix(int size);

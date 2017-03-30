@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class GammaCorrectionFilterSettings {
+class GammaCorrectionFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     float gamma = 1;
 };
 
@@ -16,6 +19,7 @@ public:
     QIcon getIcon();
     QString getName();
     GammaCorrectionFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     GammaCorrectionFilterSettings settings;

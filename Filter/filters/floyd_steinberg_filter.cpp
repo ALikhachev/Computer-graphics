@@ -5,6 +5,10 @@
 using FilterUtils::PixelUnion;
 using FilterUtils::validateColor;
 
+FilterSettings *FloydSteinbergFilterSettings::clone() {
+    return new FloydSteinbergFilterSettings(*this);
+}
+
 FloydSteinbergFilter::FloydSteinbergFilter()
 {
 
@@ -50,6 +54,13 @@ QString FloydSteinbergFilter::getName() {
 
 FloydSteinbergFilterSettings *FloydSteinbergFilter::getSettings() {
     return &this->settings;
+}
+
+void FloydSteinbergFilter::setSettings(FilterSettings *settings) {
+    FloydSteinbergFilterSettings *w_settings = dynamic_cast<FloydSteinbergFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

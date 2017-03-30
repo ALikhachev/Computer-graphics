@@ -1,6 +1,10 @@
 #include "gamma_correction_filter.h"
 #include "filter_registry.h"
 
+FilterSettings *GammaCorrectionFilterSettings::clone() {
+    return new GammaCorrectionFilterSettings(*this);
+}
+
 GammaCorrectionFilter::GammaCorrectionFilter() {
 
 }
@@ -31,6 +35,13 @@ QString GammaCorrectionFilter::getName() {
 
 GammaCorrectionFilterSettings *GammaCorrectionFilter::getSettings() {
     return &this->settings;
+}
+
+void GammaCorrectionFilter::setSettings(FilterSettings *settings) {
+    GammaCorrectionFilterSettings *w_settings = dynamic_cast<GammaCorrectionFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

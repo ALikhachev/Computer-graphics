@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class SobelFilterSettings {
+class SobelFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int threshold = 127;
 };
 
@@ -16,6 +19,7 @@ public:
     QIcon getIcon();
     QString getName();
     SobelFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     SobelFilterSettings settings;

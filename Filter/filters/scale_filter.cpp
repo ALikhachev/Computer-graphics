@@ -2,6 +2,10 @@
 #include "filter_registry.h"
 #include "utils.h"
 
+FilterSettings *ScaleFilterSettings::clone() {
+    return new ScaleFilterSettings(*this);
+}
+
 ScaleFilter::ScaleFilter()
 {
 }
@@ -20,6 +24,13 @@ QString ScaleFilter::getName() {
 
 ScaleFilterSettings *ScaleFilter::getSettings() {
     return &this->settings;
+}
+
+void ScaleFilter::setSettings(FilterSettings *settings) {
+    ScaleFilterSettings *w_settings = dynamic_cast<ScaleFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

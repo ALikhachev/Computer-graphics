@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class RotateFilterSettings {
+class RotateFilterSettings : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int angle = 0;
 };
 
@@ -16,6 +19,7 @@ public:
     QIcon getIcon();
     QString getName();
     RotateFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     RotateFilterSettings settings;

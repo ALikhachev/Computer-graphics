@@ -3,8 +3,11 @@
 
 #include "filter.h"
 
-class RobertsFilterSettings {
+class RobertsFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int threshold = 42;
 };
 
@@ -16,6 +19,7 @@ public:
     QIcon getIcon();
     QString getName();
     RobertsFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     RobertsFilterSettings settings;

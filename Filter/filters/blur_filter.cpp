@@ -1,6 +1,10 @@
 #include "blur_filter.h"
 #include "filter_registry.h"
 
+FilterSettings *BlurFilterSettings::clone() {
+    return new BlurFilterSettings(*this);
+}
+
 BlurFilter::BlurFilter() :
     matrices({{0,       1.0/6.0, 0,
                1.0/6.0, 2.0/6.0, 1.0/6.0,
@@ -47,6 +51,13 @@ int BlurFilter::getMatrixSize() {
 
 BlurFilterSettings *BlurFilter::getSettings() {
     return &this->settings;
+}
+
+void BlurFilter::setSettings(FilterSettings *settings) {
+    BlurFilterSettings *w_settings = dynamic_cast<BlurFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

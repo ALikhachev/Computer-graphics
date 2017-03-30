@@ -3,8 +3,11 @@
 
 #include "convolution_filter.h"
 
-class WatercolorFilterSettings {
+class WatercolorFilterSettings  : public FilterSettings
+{
 public:
+    FilterSettings *clone() override;
+
     int radius = 1;
 };
 
@@ -18,6 +21,7 @@ public:
     QIcon getIcon();
     QString getName();
     WatercolorFilterSettings *getSettings();
+    void setSettings(FilterSettings *) override;
 
 private:
     WatercolorFilterSettings settings;

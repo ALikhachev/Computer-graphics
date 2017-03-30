@@ -26,6 +26,12 @@ private:
     QImage image;
 };
 
+class FilterSettings {
+public:
+    virtual ~FilterSettings() {}
+    virtual FilterSettings * clone() = 0;
+};
+
 class Filter : public QObject
 {
     Q_OBJECT
@@ -34,6 +40,8 @@ public:
     virtual QImage applyFilter(QImage, std::function<void(int)>) = 0;
     virtual QIcon getIcon() = 0;
     virtual QString getName() = 0;
+    virtual FilterSettings *getSettings();
+    virtual void setSettings(FilterSettings *);
 
 public slots:
     void request();

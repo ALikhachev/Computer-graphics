@@ -7,6 +7,10 @@ using FilterUtils::PixelUnion;
 using FilterUtils::PixelInt;
 using FilterUtils::reflect;
 
+FilterSettings *SobelFilterSettings::clone() {
+    return new SobelFilterSettings(*this);
+}
+
 SobelFilter::SobelFilter()
 {
 }
@@ -69,6 +73,13 @@ QString SobelFilter::getName() {
 
 SobelFilterSettings *SobelFilter::getSettings() {
     return &this->settings;
+}
+
+void SobelFilter::setSettings(FilterSettings *settings) {
+    SobelFilterSettings *w_settings = dynamic_cast<SobelFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {

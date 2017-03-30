@@ -7,6 +7,10 @@ using FilterUtils::PixelUnion;
 using FilterUtils::PixelInt;
 using FilterUtils::reflect;
 
+FilterSettings *EdgeFilterSettings::clone() {
+    return new EdgeFilterSettings(*this);
+}
+
 EdgeFilter::EdgeFilter() :
     matrix({ 0.0, -1.0,  0.0,
             -1.0,  4.0, -1.0,
@@ -68,6 +72,13 @@ int EdgeFilter::getMatrixSize() {
 
 EdgeFilterSettings *EdgeFilter::getSettings() {
     return &this->settings;
+}
+
+void EdgeFilter::setSettings(FilterSettings *settings) {
+    EdgeFilterSettings *w_settings = dynamic_cast<EdgeFilterSettings *>(settings);
+    if (w_settings) {
+        this->settings = *w_settings;
+    }
 }
 
 namespace {
