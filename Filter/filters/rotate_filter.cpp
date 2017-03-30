@@ -19,9 +19,11 @@ QImage RotateFilter::applyFilter(QImage image, std::function<void(int)> updatePr
     PixelUnion *pixels = (PixelUnion *) filtered_image.bits();
     for (int j = 0; j < image.height(); ++j) {
         for (int i = 0; i < image.width(); ++i) {
-            int x = i * std::cos(angle_rad) - j * std::sin(angle_rad);
-            int y = i * std::sin(angle_rad) + j * std::cos(angle_rad);
-            pixels[j * filtered_image.width() + i].packed = getBilinearInterpolatedPixel(image, (float) x / image.width(), (float) y / image.height());
+            int x = (i - image.width() / 2) * std::cos(angle_rad) - (j - image.height() / 2) * std::sin(angle_rad);
+            int y = (i - image.width() / 2) * std::sin(angle_rad) + (j - image.height() / 2) * std::cos(angle_rad);
+            pixels[j * filtered_image.width() + i].packed =
+                    getBilinearInterpolatedPixel(image, (float) x / image.width(), (float) y / image.height(),
+                                                 image.width() / 2, image.height() / 2);
         }
         updateProgress(100 * j / filtered_image.height());
     }

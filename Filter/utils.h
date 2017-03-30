@@ -62,15 +62,15 @@ namespace FilterUtils {
         int a = 0;
     };
 
-    uint32_t inline getBilinearInterpolatedPixel(QImage &image, float x_norm, float y_norm) {
+    uint32_t inline getBilinearInterpolatedPixel(QImage &image, float x_norm, float y_norm, int x_offset = 0, int y_offset = 0) {
         PixelUnion rgba_union;
-        int x = x_norm * image.width();
-        int y = y_norm * image.height();
+        int x = x_norm * image.width() + x_offset;
+        int y = y_norm * image.height() + y_offset;
         if (x < 0 || x >= image.width() || y < 0 || y >= image.height()) {
             return 0;
         }
-        float x_diff = x_norm * image.width() - x;
-        float y_diff = y_norm * image.height() - y;
+        float x_diff = x_norm * image.width() + x_offset - x;
+        float y_diff = y_norm * image.height() + y_offset - y;
         uchar *channel = &rgba_union.rgba.r;
         for (int i = 0; i < 4; ++i) {
             channel[i] = image.bits()[y       * image.bytesPerLine() + x       * FilterUtils::RgbaDepth + i] * (1.0 - x_diff) * (1.0 - y_diff)
