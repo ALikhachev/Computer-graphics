@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <QProgressBar>
 #include <QTimer>
+#include <QActionGroup>
 
 #include "zone_container.h"
 
@@ -30,6 +31,7 @@ private:
     std::vector<QSharedPointer<Filter>> filters;
     QProgressBar *progress_bar;
     QTimer *progress_bar_hide_timer;
+    QActionGroup *filter_actions;
 };
 
 #endif // MAIN_WINDOW_H

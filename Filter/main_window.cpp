@@ -13,7 +13,8 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     progress_bar(new QProgressBar(this)),
-    progress_bar_hide_timer(new QTimer(this))
+    progress_bar_hide_timer(new QTimer(this)),
+    filter_actions(new QActionGroup(this))
 {
     this->resize(1280, 720);
     this->setMinimumSize(200, 200);
@@ -40,6 +41,7 @@ void MainWindow::initFilters() {
         QAction *action = filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, [it]{(*it)->request();});
         filters_toolbar->addAction(action);
         action->setStatusTip(tr("Apply %1 filter").arg((*it)->getName()));
+        this->filter_actions->addAction(action);
     }
     this->connect(this->zone_container, &ZoneContainer::progressChanged, this, [this] (int value) {
         this->progress_bar->show();
@@ -48,6 +50,7 @@ void MainWindow::initFilters() {
             this->progress_bar_hide_timer->start(1500);
         }
     });
+    this->filter_actions->setDisabled(true);
 }
 
 void MainWindow::setupActions() {
@@ -76,18 +79,21 @@ void MainWindow::setupActions() {
     save_act->setIcon(save_icon);
     save_act->setStatusTip("Save an image");
     toolbar->addAction(save_act);
+    this->filter_actions->addAction(save_act);
 
     QAction *c_to_b_act = file_menu->addAction(tr("&Copy C to B"), this->zone_container, &ZoneContainer::copyCToB);
     const QIcon c_to_b_icon = QIcon(":/icons/left.png");
     c_to_b_act->setIcon(c_to_b_icon);
     c_to_b_act->setStatusTip("Copy image from zone C to zone B");
     toolbar->addAction(c_to_b_act);
+    this->filter_actions->addAction(c_to_b_act);
 
     QAction *b_to_c_act = file_menu->addAction(tr("&Copy B to C"), this->zone_container, &ZoneContainer::copyBToC);
     const QIcon b_to_c_icon = QIcon(":/icons/right.png");
     b_to_c_act->setIcon(b_to_c_icon);
     b_to_c_act->setStatusTip("Copy image from zone B to zone C");
     toolbar->addAction(b_to_c_act);
+    this->filter_actions->addAction(b_to_c_act);
 
     file_menu->addSeparator();
     QAction *exit_Act = file_menu->addAction(tr("&Quit..."), this, close);
@@ -115,6 +121,7 @@ void MainWindow::openImage() {
     }
     this->zone_container->setSourceImage(image);
     this->opened_from_file_name = filename;
+    this->filter_actions->setDisabled(false);
 }
 
 void MainWindow::saveImage() {
@@ -137,4 +144,5 @@ void MainWindow::showError(QString text) {
 void MainWindow::clearZones() {
     this->opened_from_file_name = QString();
     this->zone_container->clear();
+    this->filter_actions->setDisabled(true);
 }
