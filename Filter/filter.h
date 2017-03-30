@@ -5,45 +5,49 @@
 #include <QImage>
 #include <QString>
 #include <QIcon>
-#include <QThread>
-
-#include "filter_parameters_widget.h"
+#include <QRunnable>
+#include <functional>
 
 class Filter;
 
-class FilterWorker : public QObject
+class FilterWorker : public QObject, public QRunnable
 {
     Q_OBJECT
-public slots:
-    void doFilter(Filter *, QImage);
+public:
+    FilterWorker(Filter *filter, QImage image);
+    void run() override;
+
 signals:
-    void resultReady(QImage);
+    void imageReady(QImage);
+    void progressChanged(int);
+
+private:
+    Filter *f;
+    QImage image;
+};
+
+class FilterSettings {
+public:
+    virtual ~FilterSettings() {}
+    virtual FilterSettings * clone() = 0;
 };
 
 class Filter : public QObject
 {
     Q_OBJECT
 public:
-    virtual QImage applyFilter(QImage) = 0;
-    virtual FilterParametersWidget *getParametersWidget(QWidget *parent = 0) = 0;
+    virtual ~Filter() {}
+    virtual QImage applyFilter(QImage, std::function<void(int)>) = 0;
     virtual QIcon getIcon() = 0;
     virtual QString getName() = 0;
+    virtual FilterSettings *getSettings();
+    virtual void setSettings(FilterSettings *);
 
 public slots:
     void request();
 
 signals:
     void requested(Filter *f);
-};
-
-class GrayscaleFilter : public Filter
-{
-public:
-    GrayscaleFilter();
-    QImage applyFilter(QImage);
-    FilterParametersWidget *getParametersWidget(QWidget *parent = 0);
-    QIcon getIcon();
-    QString getName();
 };
 
 #endif // FILTER_H

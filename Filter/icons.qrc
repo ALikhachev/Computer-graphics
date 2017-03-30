@@ -4,5 +4,21 @@
         <file>icons/new.png</file>
         <file>icons/open.png</file>
         <file>icons/grayscale.png</file>
+        <file>icons/negative.png</file>
+        <file>icons/blur.png</file>
+        <file>icons/left.png</file>
+        <file>icons/right.png</file>
+        <file>icons/scale.png</file>
+        <file>icons/gamma.png</file>
+        <file>icons/sharpness.png</file>
+        <file>icons/emboss.png</file>
+        <file>icons/save.png</file>
+        <file>icons/edge.png</file>
+        <file>icons/roberts.png</file>
+        <file>icons/sobel.png</file>
+        <file>icons/watercolor.png</file>
+        <file>icons/ordered_dithering.png</file>
+        <file>icons/rotate.png</file>
+        <file>icons/floyd_steinberg.png</file>
     </qresource>
 </RCC>

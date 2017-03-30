@@ -6,119 +6,130 @@
 #include "utils.h"
 
 using FilterUtils::emptyImage;
+using FilterUtils::drawDashedRect;
+using FilterUtils::RgbaDepth;
 
 FilterZone::FilterZone(QWidget *parent) : QWidget(parent),
-    image(350, 350, QImage::Format_RGB32)
+    image(0, 0, QImage::Format_RGBA8888),
+    canvas(352, 352, QImage::Format_RGBA8888),
+    has_image(false)
 {
     this->setFixedSize(352, 352);
-    this->clear();
+    memset(this->canvas.bits(), 0, this->canvas.bytesPerLine() * this->canvas.height());
+    this->drawBorder();
 }
 
 void FilterZone::clear() {
-    emptyImage(this->image);
+    emptyImage(this->canvas);
+    this->has_image = false;
+    this->drawBorder();
     this->update();
 }
 
 void FilterZone::setImage(QImage image) {
     this->image = image;
+    this->clear();
+    this->has_image = true;
+    for (int i = 0; i < image.height(); ++i) {
+        memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, image.bits() + i * image.bytesPerLine(), image.width() * RgbaDepth);
+    }
     this->update();
 }
 
-QImage FilterZone::getImage() {
+QImage &FilterZone::getImage() {
     return this->image;
+}
+
+void FilterZone::drawBorder() {
+    drawDashedRect(this->canvas, 0, 0, this->canvas.width(), this->canvas.height());
 }
 
 void FilterZone::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawImage(1, 1, this->image);
-    QPen pen(Qt::black, 1, Qt::DashLine);
-    painter.setPen(pen);
-    painter.drawRect(0, 0, 351, 351);
+    painter.drawImage(0, 0, this->canvas);
 }
 
-SourceZone::SourceZone(QWidget *parent) : QWidget(parent),
-    selection({0, 0, 0, 0, true}),
-    source_image(350, 350, QImage::Format_RGB32),
-    image(350, 350, QImage::Format_RGB32)
+SourceZone::SourceZone(QWidget *parent) : FilterZone(parent)
 {
-    this->setFixedSize(352, 352);
-    this->clear();
 }
 
 void SourceZone::clear() {
-    emptyImage(this->image);
-    emptyImage(this->source_image);
-    this->selection.empty = true;
-    this->update();
+    FilterZone::clear();
 }
 
-void SourceZone::setSourceImage(QImage image) {
-    this->selection.empty = true;
-    this->source_image = image;
-    this->image = (image.width() > 350 || image.height() > 350) ?
-                      image.scaled(350, 350, Qt::KeepAspectRatio) :
-                      image;
+void SourceZone::setImage(QImage image) {
+    this->image = image;
+    this->clear();
+    this->has_image = true;
+    QImage scaled = (image.width() > 350 || image.height() > 350) ?
+                    FilterUtils::scaleImageToFit(image, 350, 350) :
+                    image;
+    for (int i = 0; i < scaled.height(); ++i) {
+        memcpy(this->canvas.bits() + (i + 1) * this->canvas.bytesPerLine() + RgbaDepth, scaled.bits() + i * scaled.bytesPerLine(), scaled.width() * RgbaDepth);
+    }
+    this->saveCanvas();
+    this->scaled_width = scaled.width();
+    this->scaled_height = scaled.height();
     this->update();
 }
 
 void SourceZone::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawImage(1, 1, this->image);
-    QPen pen(Qt::black, 1, Qt::DashLine);
-    painter.setPen(pen);
-    painter.drawRect(0, 0, 351, 351); // border
-
-    if (this->selection.empty) {
-        return;
-    }
-    QVector<qreal> pattern = {5, 5};
-    pen.setDashPattern(pattern);
-    painter.setPen(pen);
-    painter.drawRect(this->selection.x + 1, this->selection.y + 1, this->selection.width, this->selection.height); // selection
+    painter.drawImage(0, 0, this->canvas);
 }
 
 void SourceZone::mousePressEvent(QMouseEvent *event) {
-    int x = event->x() - 175 * this->image.width() / this->source_image.width();
-    int y = event->y() - 175 * this->image.height() / this->source_image.height();
-    int scaled_x = event->x() * this->source_image.width() / this->image.width() - 175;
-    int scaled_y = event->y() * this->source_image.height() / this->image.height() - 175;
-    int width = std::min(350, this->source_image.width());
-    int height = std::min(350, this->source_image.height());
+    if (!this->has_image) {
+        return;
+    }
+    int x = event->x() - 175 * this->scaled_width / this->image.width();
+    int y = event->y() - 175 * this->scaled_height / this->image.height();
+    int scaled_x = event->x() * this->image.width() / this->scaled_width - 175;
+    int scaled_y = event->y() * this->image.height() / this->scaled_height - 175;
+    int width = std::min(350, this->image.width());
+    int height = std::min(350, this->image.height());
     if (scaled_x < 0) {
         x = 0;
         scaled_x = 0;
     }
-    if (scaled_x + width > this->source_image.width()) {
-        x = this->image.width() - width * this->image.width() / this->source_image.width();
-        scaled_x = this->source_image.width() - width;
+    if (scaled_x + width > this->image.width()) {
+        x = this->scaled_width - width * this->scaled_width / this->image.width();
+        scaled_x = this->image.width() - width;
     }
     if (scaled_y < 0) {
         y = 0;
         scaled_y = 0;
     }
-    if (scaled_y + height > this->source_image.height()) {
-        y = this->image.height() - height * this->image.height() / this->source_image.height();
-        scaled_y = this->source_image.height() - height;
+    if (scaled_y + height > this->image.height()) {
+        y = this->scaled_height - height * this->scaled_height / this->image.height();
+        scaled_y = this->image.height() - height;
     }
-    this->selection = {
-        .x = x,
-        .y = y,
-        .width = width * this->image.width() / this->source_image.width(),
-        .height = height * this->image.height() / this->source_image.height(),
-        .empty = false
-    };
-    QImage selection(350, 350, this->source_image.format());
+    QImage selection(width, height, this->image.format());
     emptyImage(selection);
     for (int i = 0; i < height; ++i) {
         memcpy(selection.bits() + i * selection.bytesPerLine(),
-               this->source_image.bits() + (scaled_y + i) * this->source_image.bytesPerLine() + scaled_x * this->source_image.depth() / 8,
-               width * this->source_image.depth() / 8);
+               this->image.bits() + (scaled_y + i) * this->image.bytesPerLine() + scaled_x * this->image.depth() / 8,
+               width * this->image.depth() / 8);
     }
-    this->update();
+    drawSelectionBox(x, y, width * this->scaled_width / this->image.width(), height * this->scaled_height / this->image.height());
     emit zoneSelected(selection);
+}
+
+void SourceZone::drawSelectionBox(int x, int y, int width, int height) {
+    this->restoreCanvas();
+    drawDashedRect(this->canvas, x + 1, y + 1, width, height);
+    this->update();
 }
 
 void SourceZone::mouseMoveEvent(QMouseEvent *event) {
     this->mousePressEvent(event);
+}
+
+void SourceZone::saveCanvas() {
+    this->canvas_without_selection = this->canvas;
+}
+
+void SourceZone::restoreCanvas() {
+    this->canvas = this->canvas_without_selection;
 }
 
