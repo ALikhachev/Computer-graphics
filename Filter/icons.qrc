@@ -13,5 +13,12 @@
         <file>icons/sharpness.png</file>
         <file>icons/emboss.png</file>
         <file>icons/save.png</file>
+        <file>icons/edge.png</file>
+        <file>icons/roberts.png</file>
+        <file>icons/sobel.png</file>
+        <file>icons/watercolor.png</file>
+        <file>icons/ordered_dithering.png</file>
+        <file>icons/rotate.png</file>
+        <file>icons/floyd_steinberg.png</file>
     </qresource>
 </RCC>
