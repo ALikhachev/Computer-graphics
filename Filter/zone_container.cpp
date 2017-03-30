@@ -9,31 +9,41 @@
 SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent),
     last_filter(NULL),
     scroll_area(new QScrollArea(this)),
-    widget(NULL)
+    widget(NULL),
+    ok_button(new QPushButton(tr("OK"), this)),
+    cancel_button(new QPushButton(tr("Cancel"), this))
 {
     this->scroll_area->setFrameShape(QFrame::NoFrame);
     this->scroll_area->setWidget(new QWidget(this));
     QVBoxLayout *main_layout = new QVBoxLayout(this);
-    QPushButton *ok_button = new QPushButton(tr("OK"), this);
-    QPushButton *cancel_button = new QPushButton(tr("Cancel"), this);
     QHBoxLayout *layout = new QHBoxLayout();
     main_layout->addWidget(new QLabel(tr("<b><font size=\"5\">Filter settings</font></b>")));
     main_layout->addWidget(scroll_area);
-    layout->addWidget(ok_button);
-    layout->addWidget(cancel_button);
+    layout->addWidget(this->ok_button);
+    layout->addWidget(this->cancel_button);
     main_layout->addLayout(layout);
-    cancel_button->setEnabled(false);
-    connect(ok_button, &QPushButton::released, this, [this, cancel_button] {
+    this->ok_button->setEnabled(false);
+    this->cancel_button->setEnabled(false);
+    connect(this->ok_button, &QPushButton::released, this, [this] {
         emit saveFilterRequested(this->last_filter);
-        cancel_button->setEnabled(true);
+        this->cancel_button->setEnabled(true);
     });
-    connect(cancel_button, &QPushButton::released, this, [this, cancel_button] {
+    connect(cancel_button, &QPushButton::released, this, [this] {
         emit restoreFilterRequested();
-        cancel_button->setEnabled(false);
+        this->cancel_button->setEnabled(false);
     });
 }
 
+void SettingsWidget::clear() {
+    this->widget = NULL;
+    delete this->scroll_area->takeWidget();
+    this->ok_button->setEnabled(false);
+    this->cancel_button->setEnabled(false);
+    this->last_filter = NULL;
+}
+
 void SettingsWidget::showFilterWidget(Filter *f) {
+    this->ok_button->setEnabled(true);
     if (f != this->last_filter) {
         if (this->scroll_area->widget()) {
             delete this->scroll_area->widget();
@@ -112,6 +122,7 @@ void ZoneContainer::clear() {
     this->zone_c->clear();
     this->thread_pool->clear();
     this->clean = true;
+    this->settings_widget->clear();
 }
 
 void ZoneContainer::copyBToC() {

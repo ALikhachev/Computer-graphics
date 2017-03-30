@@ -5,6 +5,7 @@
 #include <QScrollArea>
 #include <QSharedPointer>
 #include <QThreadPool>
+#include <QPushButton>
 
 #include "filter.h"
 #include "filter_zone.h"
@@ -17,6 +18,7 @@ public:
 
 public slots:
     void showFilterWidget(Filter *f);
+    void clear();
 
 signals:
     void saveFilterRequested(Filter *f);
@@ -26,6 +28,8 @@ private:
     Filter *last_filter;
     QScrollArea *scroll_area;
     FilterWidget *widget;
+    QPushButton *ok_button;
+    QPushButton *cancel_button;
 };
 
 class ZoneContainer : public QWidget
