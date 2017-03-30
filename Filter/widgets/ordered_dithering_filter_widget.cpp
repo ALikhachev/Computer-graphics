@@ -41,7 +41,7 @@ OrderedDitheringFilterWidget::OrderedDitheringFilterWidget(OrderedDitheringFilte
 }
 
 //namespace {
-//    bool reg = FilterRegistry::getInstance().registerWidgetBuilder(QObject::tr("OrderedDithering"), [] (Filter *f, QWidget *parent) {
+//    bool reg = FilterRegistry::getInstance().registerWidgetBuilder(QObject::tr("Ordered dithering"), [] (Filter *f, QWidget *parent) {
 //        OrderedDitheringFilter *OrderedDithering_filter = dynamic_cast<OrderedDitheringFilter *>(f);
 //        return new OrderedDitheringFilterWidget(OrderedDithering_filter, parent);
 //    });

@@ -21,6 +21,8 @@ public:
     OrderedDitheringFilterSettings *getSettings();
 
 private:
+    static std::vector<float> buildMatrix(int size);
+
     OrderedDitheringFilterSettings settings;
 };
 
