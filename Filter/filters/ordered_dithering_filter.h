@@ -5,9 +5,6 @@
 
 class OrderedDitheringFilterSettings {
 public:
-    int red = 2;
-    int green = 2;
-    int blue = 2;
     int matrix_size = 4;
 };
 
