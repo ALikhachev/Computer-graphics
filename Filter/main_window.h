@@ -6,6 +6,7 @@
 #include <QProgressBar>
 #include <QTimer>
 #include <QActionGroup>
+#include <QMenu>
 
 #include "zone_container.h"
 
@@ -21,6 +22,7 @@ public slots:
     void clearZones();
     void openImage();
     void saveImage();
+    void showAbout();
 
 private:
     void showError(QString text);
@@ -32,6 +34,7 @@ private:
     QProgressBar *progress_bar;
     QTimer *progress_bar_hide_timer;
     QActionGroup *filter_actions;
+    QMenu *filters_menu;
 };
 
 #endif // MAIN_WINDOW_H

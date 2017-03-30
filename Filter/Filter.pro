@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     widgets/ordered_dithering_filter_widget.cpp \
     widgets/floyd_steinberg_filter_widget.cpp \
     filters/rotate_filter.cpp \
-    widgets/rotate_filter_widget.cpp
+    widgets/rotate_filter_widget.cpp \
+    about_view.cpp \
 
 HEADERS  += \
     filter_zone.h \
@@ -90,9 +91,11 @@ HEADERS  += \
     widgets/ordered_dithering_filter_widget.h \
     widgets/floyd_steinberg_filter_widget.h \
     filters/rotate_filter.h \
-    widgets/rotate_filter_widget.h
+    widgets/rotate_filter_widget.h \
+    about_view.h
 
 RESOURCES += \
-    icons.qrc
+    icons.qrc \
+    about.qrc
 
 DISTFILES +=

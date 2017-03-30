@@ -10,6 +10,7 @@
 #include <QErrorMessage>
 
 #include "filter_registry.h"
+#include "about_view.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     progress_bar(new QProgressBar(this)),
@@ -36,9 +37,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 void MainWindow::initFilters() {
     QToolBar *filters_toolbar = this->addToolBar(tr("Filters"));
-    QMenu *filters_menu = this->menuBar()->addMenu(tr("F&ilters"));
     for (auto it = FilterRegistry::getInstance().getFilters().begin(); it < FilterRegistry::getInstance().getFilters().end(); ++it) {
-        QAction *action = filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, [it]{(*it)->request();});
+        QAction *action = this->filters_menu->addAction((*it)->getIcon(), (*it)->getName(), this, [it]{(*it)->request();});
         filters_toolbar->addAction(action);
         action->setStatusTip(tr("Apply %1 filter").arg((*it)->getName()));
         this->filter_actions->addAction(action);
@@ -99,6 +99,13 @@ void MainWindow::setupActions() {
     QAction *exit_Act = file_menu->addAction(tr("&Quit..."), this, close);
     exit_Act->setStatusTip("Quit application");
     exit_Act->setShortcut(tr("Ctrl+Q"));
+
+    this->filters_menu = this->menuBar()->addMenu(tr("F&ilters"));
+
+    QAction *about_act = this->menuBar()->addAction(tr("&?"), this, SLOT(showAbout()));
+    about_act->setShortcut(tr("F1"));
+    about_act->setStatusTip("About this application");
+    about_act->setIcon(QIcon(":/icons/about.png"));
 }
 
 void MainWindow::openImage() {
@@ -132,6 +139,13 @@ void MainWindow::saveImage() {
     if (!this->zone_container->saveResultImage(filename)) {
         this->showError(tr("Cannot save result image!"));
     }
+}
+
+void MainWindow::showAbout() {
+    AboutView about_view;
+    about_view.setModal(true);
+    about_view.show();
+    about_view.exec();
 }
 
 void MainWindow::showError(QString text) {
