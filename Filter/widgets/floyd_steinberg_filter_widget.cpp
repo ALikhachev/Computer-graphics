@@ -33,9 +33,9 @@ FloydSteinbergFilterWidget::FloydSteinbergFilterWidget(FloydSteinbergFilter *f, 
     });
 }
 
-//namespace {
-//    bool reg = FilterRegistry::getInstance().registerWidgetBuilder(QObject::tr("FloydSteinberg"), [] (Filter *f, QWidget *parent) {
-//        FloydSteinbergFilter *FloydSteinberg_filter = dynamic_cast<FloydSteinbergFilter *>(f);
-//        return new FloydSteinbergFilterWidget(FloydSteinberg_filter, parent);
-//    });
-//}
+namespace {
+    bool reg = FilterRegistry::getInstance().registerWidgetBuilder(QObject::tr("Floyd-steinberg"), [] (Filter *f, QWidget *parent) {
+        FloydSteinbergFilter *FloydSteinberg_filter = dynamic_cast<FloydSteinbergFilter *>(f);
+        return new FloydSteinbergFilterWidget(FloydSteinberg_filter, parent);
+    });
+}

@@ -21,6 +21,8 @@ public:
     FloydSteinbergFilterSettings *getSettings();
 
 private:
+    static uchar getClosestColor(uchar color, int shades);
+
     FloydSteinbergFilterSettings settings;
 };
 

@@ -135,6 +135,16 @@ namespace FilterUtils {
         }
         return c;
     }
+
+    uchar inline validateColor(int color) {
+        if (color > 255) {
+            return 255;
+        }
+        if (color < 0) {
+            return 0;
+        }
+        return color;
+    }
 }
 
 #endif // UTILS_H
