@@ -8,7 +8,7 @@ class WatercolorFilterSettings  : public FilterSettings
 public:
     FilterSettings *clone() override;
 
-    int radius = 1;
+    int radius = 5;
 };
 
 class WatercolorFilter : public ConvolutionFilter

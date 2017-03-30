@@ -21,10 +21,11 @@ QImage WatercolorFilter::applyFilter(QImage image, std::function<void(int)> upda
     std::vector<int> neighbors[4];
     PixelUnion *source_pixels = (PixelUnion *) image.bits();
     PixelUnion *pixels = (PixelUnion *) filtered_image.bits();
+    int radius = this->settings.radius;
     for (int j = 0; j < filtered_image.height(); ++j) {
         for (int i = 0; i < filtered_image.width(); ++i) {
-            for (int k = -5; k < 5; ++k) {
-                for (int l = -5; l < 5; ++l) {
+            for (int k = -radius; k < radius; ++k) {
+                for (int l = -radius; l < radius; ++l) {
                     int x = reflect(image.width(), i + l);
                     int y = reflect(image.height(), j + k);
                     for (int i1 = 0; i1 < 4; ++i1) {
