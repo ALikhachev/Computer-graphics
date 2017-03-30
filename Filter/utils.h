@@ -66,6 +66,9 @@ namespace FilterUtils {
         PixelUnion rgba_union;
         int x = x_norm * image.width();
         int y = y_norm * image.height();
+        if (x < 0 || x >= image.width() || y < 0 || y >= image.height()) {
+            return 0;
+        }
         float x_diff = x_norm * image.width() - x;
         float y_diff = y_norm * image.height() - y;
         uchar *channel = &rgba_union.rgba.r;
