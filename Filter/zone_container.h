@@ -8,6 +8,7 @@
 
 #include "filter.h"
 #include "filter_zone.h"
+#include "filter_widget.h"
 
 class SettingsWidget : public QWidget {
     Q_OBJECT
@@ -24,6 +25,7 @@ signals:
 private:
     Filter *last_filter;
     QScrollArea *scroll_area;
+    FilterWidget *widget;
 };
 
 class ZoneContainer : public QWidget

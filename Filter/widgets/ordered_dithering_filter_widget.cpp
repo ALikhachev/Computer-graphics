@@ -7,16 +7,21 @@
 
 OrderedDitheringFilterWidget::OrderedDitheringFilterWidget(OrderedDitheringFilter *f, QWidget *parent) : FilterWidget(parent),
     filter(f),
-    settings(f->getSettings())
+    settings(f->getSettings()),
+    log_2_slider(new QSliderBox(1, 7, this))
 {
     QFormLayout *layout = new QFormLayout(this);
-    QSliderBox *log_2_slider = new QSliderBox(1, 7, this);
-    log_2_slider->setValue(std::log2(this->settings->matrix_size));
-    layout->addRow(tr("Matrix size (2<sup>k</sup>)"), log_2_slider);
-    connect(log_2_slider, &QSliderBox::valueChanged, [this] (int i) {
+    this->log_2_slider->setValue(std::log2(this->settings->matrix_size));
+    layout->addRow(tr("Matrix size (2<sup>k</sup>)"), this->log_2_slider);
+    connect(this->log_2_slider, &QSliderBox::valueChanged, [this] (int i) {
         this->settings->matrix_size = std::pow(2, i);
         this->filter->request();
     });
+}
+
+void OrderedDitheringFilterWidget::settingsUpdate() {
+    this->settings = this->filter->getSettings();
+    this->log_2_slider->setValue(std::log2(this->settings->matrix_size));
 }
 
 namespace {

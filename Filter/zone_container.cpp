@@ -8,7 +8,8 @@
 
 SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent),
     last_filter(NULL),
-    scroll_area(new QScrollArea(this))
+    scroll_area(new QScrollArea(this)),
+    widget(NULL)
 {
     this->scroll_area->setFrameShape(QFrame::NoFrame);
     this->scroll_area->setWidget(new QWidget(this));
@@ -21,12 +22,14 @@ SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent),
     layout->addWidget(ok_button);
     layout->addWidget(cancel_button);
     main_layout->addLayout(layout);
-
-    connect(ok_button, &QPushButton::released, this, [this] {
+    cancel_button->setEnabled(false);
+    connect(ok_button, &QPushButton::released, this, [this, cancel_button] {
         emit saveFilterRequested(this->last_filter);
+        cancel_button->setEnabled(true);
     });
-    connect(cancel_button, &QPushButton::released, this, [this] {
+    connect(cancel_button, &QPushButton::released, this, [this, cancel_button] {
         emit restoreFilterRequested();
+        cancel_button->setEnabled(false);
     });
 }
 
@@ -34,9 +37,13 @@ void SettingsWidget::showFilterWidget(Filter *f) {
     if (f != this->last_filter) {
         if (this->scroll_area->widget()) {
             delete this->scroll_area->widget();
+            this->widget = NULL;
         }
-        this->scroll_area->setWidget(FilterRegistry::getInstance().getWidget(f, this->scroll_area));
+        this->widget = FilterRegistry::getInstance().getWidget(f, this->scroll_area);
+        this->scroll_area->setWidget(this->widget);
         this->last_filter = f;
+    } else if (this->widget) {
+        this->widget->settingsUpdate();
     }
 }
 
@@ -44,7 +51,9 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
     filters(filters),
     thread_pool(new QThreadPool(this)),
     clean(true),
-    settings_widget(new SettingsWidget(this))
+    settings_widget(new SettingsWidget(this)),
+    saved_filter(NULL),
+    saved_filter_settings(NULL)
 {
     this->thread_pool->setMaxThreadCount(1);
     this->setMinimumSize(352 * 3 + 10 * 5, 352 + 2 * 10 + 145);
@@ -115,11 +124,17 @@ void ZoneContainer::copyCToB() {
 
 void ZoneContainer::saveFilterWithSettings(Filter *f) {
     this->saved_filter = f;
-    this->saved_filter_settings = f->getSettings()->clone();
+    if (f->getSettings()) {
+        this->saved_filter_settings = f->getSettings()->clone();
+    } else {
+        this->saved_filter_settings = NULL;
+    }
 }
 
 void ZoneContainer::restoreFilterWithSettings() {
-    this->saved_filter->setSettings(this->saved_filter_settings);
-    delete this->saved_filter_settings;
+    if (this->saved_filter_settings) {
+        this->saved_filter->setSettings(this->saved_filter_settings);
+        delete this->saved_filter_settings;
+    }
     this->saved_filter->request();
 }

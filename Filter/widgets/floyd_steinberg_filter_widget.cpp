@@ -7,30 +7,37 @@
 
 FloydSteinbergFilterWidget::FloydSteinbergFilterWidget(FloydSteinbergFilter *f, QWidget *parent) : FilterWidget(parent),
     filter(f),
-    settings(f->getSettings())
+    settings(f->getSettings()),
+    red_slider(new QSliderBox(2, 255, this)),
+    green_slider(new QSliderBox(2, 255, this)),
+    blue_slider(new QSliderBox(2, 255, this))
 {
     QFormLayout *layout = new QFormLayout(this);
-    QSliderBox *red_slider = new QSliderBox(2, 255, this);
-    QSliderBox *green_slider = new QSliderBox(2, 255, this);
-    QSliderBox *blue_slider = new QSliderBox(2, 255, this);
-    red_slider->setValue(this->settings->red);
-    green_slider->setValue(this->settings->green);
-    blue_slider->setValue(this->settings->blue);
-    layout->addRow(tr("Red"), red_slider);
-    layout->addRow(tr("Green"), green_slider);
-    layout->addRow(tr("Blue"), blue_slider);
-    connect(red_slider, &QSliderBox::valueChanged, [this] (int i) {
+    this->red_slider->setValue(this->settings->red);
+    this->green_slider->setValue(this->settings->green);
+    this->blue_slider->setValue(this->settings->blue);
+    layout->addRow(tr("Red"), this->red_slider);
+    layout->addRow(tr("Green"), this->green_slider);
+    layout->addRow(tr("Blue"), this->blue_slider);
+    connect(this->red_slider, &QSliderBox::valueChanged, [this] (int i) {
         this->settings->red = i;
         this->filter->request();
     });
-    connect(green_slider, &QSliderBox::valueChanged, [this] (int i) {
+    connect(this->green_slider, &QSliderBox::valueChanged, [this] (int i) {
         this->settings->green = i;
         this->filter->request();
     });
-    connect(blue_slider, &QSliderBox::valueChanged, [this] (int i) {
+    connect(this->blue_slider, &QSliderBox::valueChanged, [this] (int i) {
         this->settings->blue = i;
         this->filter->request();
     });
+}
+
+void FloydSteinbergFilterWidget::settingsUpdate() {
+    this->settings = this->filter->getSettings();
+    this->red_slider->setValue(this->settings->red);
+    this->green_slider->setValue(this->settings->green);
+    this->blue_slider->setValue(this->settings->blue);
 }
 
 namespace {

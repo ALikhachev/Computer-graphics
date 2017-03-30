@@ -7,16 +7,21 @@
 
 RobertsFilterWidget::RobertsFilterWidget(RobertsFilter *f, QWidget *parent) : FilterWidget(parent),
     filter(f),
-    settings(f->getSettings())
+    settings(f->getSettings()),
+    threshold_slider(new QSliderBox(0, 600, this))
 {
     QFormLayout *layout = new QFormLayout(this);
-    QSliderBox *threshold_slider = new QSliderBox(0, 600, this);
-    threshold_slider->setValue(this->settings->threshold);
-    layout->addRow(tr("Roberts threshold"), threshold_slider);
-    connect(threshold_slider, &QSliderBox::valueChanged, [this] (int i) {
+    this->threshold_slider->setValue(this->settings->threshold);
+    layout->addRow(tr("Roberts threshold"), this->threshold_slider);
+    connect(this->threshold_slider, &QSliderBox::valueChanged, [this] (int i) {
         this->settings->threshold = i;
         this->filter->request();
     });
+}
+
+void RobertsFilterWidget::settingsUpdate() {
+    this->settings = this->filter->getSettings();
+    this->threshold_slider->setValue(this->settings->threshold);
 }
 
 namespace {

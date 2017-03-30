@@ -7,16 +7,21 @@
 
 RotateFilterWidget::RotateFilterWidget(RotateFilter *f, QWidget *parent) : FilterWidget(parent),
     filter(f),
-    settings(f->getSettings())
+    settings(f->getSettings()),
+    angle_slider(new QSliderBox(-180, 180, this))
 {
     QFormLayout *layout = new QFormLayout(this);
-    QSliderBox *angle_slider = new QSliderBox(-180, 180, this);
-    angle_slider->setValue(this->settings->angle);
-    layout->addRow(tr("Rotation angle"), angle_slider);
-    connect(angle_slider, &QSliderBox::valueChanged, [this] (int i) {
+    this->angle_slider->setValue(this->settings->angle);
+    layout->addRow(tr("Rotation angle"), this->angle_slider);
+    connect(this->angle_slider, &QSliderBox::valueChanged, [this] (int i) {
         this->settings->angle = i;
         this->filter->request();
     });
+}
+
+void RotateFilterWidget::settingsUpdate() {
+    this->settings = this->filter->getSettings();
+    this->angle_slider->setValue(this->settings->angle);
 }
 
 namespace {

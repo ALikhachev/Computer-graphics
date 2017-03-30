@@ -8,19 +8,24 @@
 
 BlurFilterWidget::BlurFilterWidget(BlurFilter *f, QWidget *parent) : FilterWidget(parent),
     filter(f),
-    settings(f->getSettings())
+    settings(f->getSettings()),
+    box(new QComboBox(this))
 {
     QFormLayout *layout = new QFormLayout(this);
-    QComboBox *box = new QComboBox(this);
-    box->addItem(tr("Blur"));
-    box->addItem(tr("Box blur"));
-    box->addItem(tr("Gauss blur (3x3)"));
-    box->addItem(tr("Gauss blur (5x5)"));
-    layout->addRow(tr("Type"), box);
-    connect(box, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this] (int i) {
+    this->box->addItem(tr("Blur"));
+    this->box->addItem(tr("Box blur"));
+    this->box->addItem(tr("Gauss blur (3x3)"));
+    this->box->addItem(tr("Gauss blur (5x5)"));
+    layout->addRow(tr("Type"), this->box);
+    connect(this->box, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this] (int i) {
         this->settings->matrix_index = i;
         this->filter->request();
     });
+}
+
+void BlurFilterWidget::settingsUpdate() {
+    this->settings = this->filter->getSettings();
+    this->box->setCurrentIndex(this->settings->matrix_index);
 }
 
 namespace {

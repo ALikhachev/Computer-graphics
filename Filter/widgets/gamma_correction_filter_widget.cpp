@@ -8,17 +8,22 @@
 
 GammaCorrectionFilterWidget::GammaCorrectionFilterWidget(GammaCorrectionFilter *f, QWidget *parent) : FilterWidget(parent),
     filter(f),
-    settings(f->getSettings())
+    settings(f->getSettings()),
+    box(new QDoubleSpinBox(this))
 {
     QFormLayout *layout = new QFormLayout(this);
-    QDoubleSpinBox *box = new QDoubleSpinBox(this);
-    box->setRange(0.01, 10.0);
-    box->setValue(this->settings->gamma);
-    layout->addRow(tr("Gamma value (0-10]"), box);
-    connect(box, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this] (double val) {
+    this->box->setRange(0.01, 10.0);
+    this->box->setValue(this->settings->gamma);
+    layout->addRow(tr("Gamma value (0-10]"), this->box);
+    connect(this->box, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), [this] (double val) {
         this->settings->gamma = val;
         this->filter->request();
     });
+}
+
+void GammaCorrectionFilterWidget::settingsUpdate() {
+    this->settings = this->filter->getSettings();
+    this->box->setValue(this->settings->gamma);
 }
 
 namespace {

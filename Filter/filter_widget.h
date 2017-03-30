@@ -9,6 +9,7 @@ class FilterWidget : public QWidget
 public:
     explicit FilterWidget(QWidget *parent = 0);
     virtual ~FilterWidget() {}
+    virtual void settingsUpdate() = 0;
 };
 
 #endif // FILTER_WIDGET_H
