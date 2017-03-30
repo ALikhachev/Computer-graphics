@@ -1,5 +1,8 @@
 #include "ordered_dithering_filter.h"
 #include "filter_registry.h"
+#include "utils.h"
+
+using FilterUtils::PixelUnion;
 
 OrderedDitheringFilter::OrderedDitheringFilter()
 {
@@ -7,7 +10,24 @@ OrderedDitheringFilter::OrderedDitheringFilter()
 }
 
 QImage OrderedDitheringFilter::applyFilter(QImage image, std::function<void(int)> updateProgress) {
-    return image;
+    QImage filtered_image(image.size(), QImage::Format_RGBA8888);
+    PixelUnion *pixels = (PixelUnion *) filtered_image.bits();
+    PixelUnion *source_pixels = (PixelUnion *) image.bits();
+    int matrix_size = this->settings.matrix_size;
+    std::vector<float> matrix = buildMatrix(matrix_size);
+    for (int j = 0; j < filtered_image.height(); ++j) {
+        for (int i = 0; i < filtered_image.width(); ++i) {
+            int matrix_value = matrix[(j % matrix_size) * matrix_size + (i % matrix_size)] * 255;
+            for (int k = 0; k < 3; ++k) {
+                uchar pixel_value = ((uchar *)(&source_pixels[j * image.width() + i].rgba.r))[k];
+                ((uchar *)(&pixels[j * image.width() + i].rgba.r))[k] =
+                        pixel_value > matrix_value ? 255 : 0;
+            }
+            pixels[j * filtered_image.width() + i].rgba.a = source_pixels[j * filtered_image.width() + i].rgba.a;
+        }
+        updateProgress(100 * j / filtered_image.height());
+    }
+    return filtered_image;
 }
 
 QIcon OrderedDitheringFilter::getIcon() {

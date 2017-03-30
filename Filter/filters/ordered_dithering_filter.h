@@ -5,7 +5,7 @@
 
 class OrderedDitheringFilterSettings {
 public:
-    int matrix_size = 4;
+    int matrix_size = 16;
 };
 
 class OrderedDitheringFilter : public Filter
