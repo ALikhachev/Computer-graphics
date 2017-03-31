@@ -62,6 +62,7 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
     thread_pool(new QThreadPool(this)),
     clean(true),
     settings_widget(new SettingsWidget(this)),
+    current_filter(NULL),
     saved_filter(NULL),
     saved_filter_settings(NULL)
 {
@@ -82,6 +83,7 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
     for (auto it = this->filters.begin(); it < this->filters.end(); ++it) {
         Filter *f = it->data();
         this->connect(f, &Filter::requested, [this, f, main_layout] {
+            this->current_filter = f;
             this->settings_widget->showFilterWidget(f);
             FilterWorker *worker = new FilterWorker(f, this->zone_b->getImage());
             worker->setAutoDelete(true);
@@ -97,7 +99,12 @@ ZoneContainer::ZoneContainer(std::vector<QSharedPointer<Filter>> &filters, QWidg
             this->thread_pool->start(worker);
         });
     }
-    this->connect(zone_a, &SourceZone::zoneSelected, this->zone_b, FilterZone::setImage);
+    this->connect(zone_a, &SourceZone::zoneSelected, [this] (QImage image) {
+        this->zone_b->setImage(image);
+        if (this->current_filter) {
+            this->current_filter->request();
+        }
+    });
     connect(this->settings_widget, &SettingsWidget::saveFilterRequested, this, &ZoneContainer::saveFilterWithSettings);
     connect(this->settings_widget, &SettingsWidget::restoreFilterRequested, this, &ZoneContainer::restoreFilterWithSettings);
 }
@@ -123,6 +130,7 @@ void ZoneContainer::clear() {
     this->thread_pool->clear();
     this->clean = true;
     this->settings_widget->clear();
+    this->current_filter = NULL;
 }
 
 void ZoneContainer::copyBToC() {
@@ -131,6 +139,9 @@ void ZoneContainer::copyBToC() {
 
 void ZoneContainer::copyCToB() {
     this->zone_b->setImage(this->zone_c->getImage());
+    if (this->current_filter) {
+        this->current_filter->request();
+    }
 }
 
 void ZoneContainer::saveFilterWithSettings(Filter *f) {
