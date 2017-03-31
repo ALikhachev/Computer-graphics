@@ -15,7 +15,8 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     progress_bar(new QProgressBar(this)),
     progress_bar_hide_timer(new QTimer(this)),
-    filter_actions(new QActionGroup(this))
+    filter_actions(new QActionGroup(this)),
+    progress_value(0)
 {
     this->resize(1280, 720);
     this->setMinimumSize(200, 200);
@@ -43,12 +44,17 @@ void MainWindow::initFilters() {
         action->setStatusTip(tr("Apply %1 filter").arg((*it)->getName()));
         this->filter_actions->addAction(action);
     }
-    this->connect(this->zone_container, &ZoneContainer::progressChanged, this, [this] (int value) {
+    QTimer *update_progress_timer = new QTimer(this);
+    connect(update_progress_timer, &QTimer::timeout, this, [this] {
         this->progress_bar->show();
-        this->progress_bar->setValue(value);
-        if (value == 100) {
+        this->progress_bar->setValue(this->progress_value);
+        if (this->progress_value == 100) {
             this->progress_bar_hide_timer->start(1500);
         }
+    });
+    update_progress_timer->start(50);
+    this->connect(this->zone_container, &ZoneContainer::progressChanged, this, [this] (int value) {
+        this->progress_value = value;
     });
     this->filter_actions->setDisabled(true);
 }
