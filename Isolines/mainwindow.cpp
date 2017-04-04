@@ -4,7 +4,6 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
-#include <QScrollArea>
 #include <QGuiApplication>
 #include <QScreen>
 
@@ -13,9 +12,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     function_viewer(new FunctionViewer(this))
 {
-    QScrollArea *scroll_area = new QScrollArea(this);
-    scroll_area->setWidget(this->function_viewer);
-    this->setCentralWidget(scroll_area);
+    this->setCentralWidget(this->function_viewer);
     this->setupActions();
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 }

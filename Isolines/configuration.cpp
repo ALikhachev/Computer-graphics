@@ -3,9 +3,9 @@
 #include <QColor>
 
 Configuration::Configuration(QObject *parent) : QObject(parent),
-    _width(200),
-    _height(200),
-    _levels({qRgb(255, 255, 255), qRgb(127, 127, 127), qRgb(0, 0, 0)}),
+    _width(100),
+    _height(20),
+    _levels({qRgb(255, 0, 0), qRgb(0, 255, 0), qRgb(0, 0, 255)}),
     _isolines_color(qRgb(255, 255, 255))
 {
 
