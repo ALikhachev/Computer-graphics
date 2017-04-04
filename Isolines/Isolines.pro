@@ -24,6 +24,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    function_viewer.cpp \
+    legend.cpp \
+    isolines.cpp \
+    configuration.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    function_viewer.h \
+    legend.h \
+    isolines.h \
+    configuration.h
+
+DISTFILES += \
+    data/input.txt
