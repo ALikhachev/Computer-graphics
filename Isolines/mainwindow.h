@@ -17,6 +17,7 @@ public:
 
 private slots:
     void openConfig();
+    void showAbout();
 
 private:
     void showError(const QString &text) const;

@@ -28,13 +28,19 @@ SOURCES += main.cpp\
     function_viewer.cpp \
     legend.cpp \
     isolines.cpp \
-    configuration.cpp
+    configuration.cpp \
+    about_view.cpp
 
 HEADERS  += mainwindow.h \
     function_viewer.h \
     legend.h \
     isolines.h \
-    configuration.h
+    configuration.h \
+    about_view.h
 
 DISTFILES += \
     data/input.txt
+
+RESOURCES += \
+    icons.qrc \
+    photos.qrc
