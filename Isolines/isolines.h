@@ -8,6 +8,13 @@
 
 #include "configuration.h"
 
+struct IsolinesMousePosition {
+    double x;
+    double y;
+    double value;
+    bool out_of_screen;
+};
+
 class Isolines : public QWidget
 {
     Q_OBJECT
@@ -15,8 +22,13 @@ public:
     explicit Isolines(QSharedPointer<Configuration> config, QWidget *parent = 0);
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *) override;
+    void paintEvent(QPaintEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
+    bool event(QEvent *) override;
+
+signals:
+    void pointerFunctionValueUpdated(IsolinesMousePosition position);
 
 private:
     void plot();
@@ -31,6 +43,7 @@ private:
     double step;
     std::vector<double> isolines;
     double mul;
+    IsolinesMousePosition position;
 };
 
 #endif // ISOLINES_H

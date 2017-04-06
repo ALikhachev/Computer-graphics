@@ -19,6 +19,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     this->setCentralWidget(this->function_viewer);
     this->setupActions();
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
+    connect(this->function_viewer, &FunctionViewer::pointerFunctionValueUpdated, this, [this] (IsolinesMousePosition position) {
+        if (position.out_of_screen) {
+            this->statusBar()->clearMessage();
+        } else {
+            this->statusBar()->showMessage(QString("f(%1, %2) = %3").arg(
+                                               QString::number(position.x, 'f', 2),
+                                               QString::number(position.y, 'f', 2),
+                                               QString::number(position.value, 'f', 2)
+                                           ));
+        }
+    });
 }
 
 MainWindow::~MainWindow()

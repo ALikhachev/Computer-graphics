@@ -2,12 +2,15 @@
 
 #include <QPainter>
 #include <QDebug>
+#include <QMouseEvent>
 
 Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
     image(this->size(), QImage::Format_RGB32),
     min(std::numeric_limits<double>::max())
 {
+    this->setAttribute(Qt::WA_Hover);
+    this->setMouseTracking(true);
     plot();
     connect(this->config.data(), &Configuration::interpolateChanged, this, [this] (bool) {
         this->plot();
@@ -96,6 +99,36 @@ void Isolines::resizeEvent(QResizeEvent *event) {
         this->min = std::numeric_limits<double>::max();
         plot();
     }
+}
+
+bool Isolines::event(QEvent *event) {
+    if (event->type() == QEvent::HoverLeave) {
+        this->position.out_of_screen = true;
+        emit pointerFunctionValueUpdated(this->position);
+        return true;
+    }
+    return QWidget::event(event);
+}
+
+void Isolines::mouseMoveEvent(QMouseEvent *event) {
+    bool out_of_screen = event->x() < 0 || event->y() < 0 || event->x() >= this->image.width() || event->y() >= this->image.height();
+    if (!out_of_screen) {
+        double x = (double) event->x() / mul;
+        double y = (double) (this->image.height() - event->y()) / mul;
+        double val = Isolines::f(x, y);
+        this->position = {
+            .x = x,
+            .y = y,
+            .value = val,
+            .out_of_screen = false
+        };
+    }
+    // do not emit new signals
+    if (out_of_screen && this->position.out_of_screen) {
+        return;
+    }
+    this->position.out_of_screen = out_of_screen;
+    emit pointerFunctionValueUpdated(this->position);
 }
 
 void Isolines::paintEvent(QPaintEvent *) {

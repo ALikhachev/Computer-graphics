@@ -11,4 +11,8 @@ FunctionViewer::FunctionViewer(QSharedPointer<Configuration> config, QWidget *pa
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(this->isolines);
     layout->addWidget(this->legend);
+
+    connect(this->isolines, &Isolines::pointerFunctionValueUpdated, this, [this] (IsolinesMousePosition position) {
+        emit pointerFunctionValueUpdated(position);
+    });
 }

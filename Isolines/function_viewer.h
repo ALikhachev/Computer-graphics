@@ -14,6 +14,9 @@ class FunctionViewer : public QWidget
 public:
     explicit FunctionViewer(QSharedPointer<Configuration> config, QWidget *parent = 0);
 
+signals:
+    void pointerFunctionValueUpdated(IsolinesMousePosition);
+
 private:
     QSharedPointer<Configuration> config;
     Legend *legend;
