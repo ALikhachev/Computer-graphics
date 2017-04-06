@@ -8,7 +8,9 @@
 
 Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
-    image(this->size(), QImage::Format_RGB32)
+    image(this->size(), QImage::Format_RGB32),
+    has_user_isoline(false),
+    continious_isoline_mode(false)
 {
     this->setAttribute(Qt::WA_Hover);
     this->setMouseTracking(true);
@@ -144,6 +146,12 @@ void Isolines::drawIsolines() {
                     IsolinesUtils::drawLine(this->image, it->first, it->second, color);
                 }
             }
+            if (this->has_user_isoline) {
+                std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, this->user_isoline, middle_value);
+                for (auto it = isolines.begin(); it < isolines.end(); ++it) {
+                    IsolinesUtils::drawLine(this->image, it->first, it->second, color);
+                }
+            }
         }
     }
 }
@@ -176,6 +184,37 @@ void Isolines::mouseMoveEvent(QMouseEvent *event) {
         .out_of_screen = false
     };
     emit pointerFunctionValueUpdated(this->position);
+    if (this->continious_isoline_mode && this->config->showIsolines()) {
+        this->user_isoline = val;
+        this->plot();
+        this->update();
+    }
+}
+
+void Isolines::mousePressEvent(QMouseEvent *event) {
+    if (!this->config->showIsolines()) {
+        return;
+    }
+    if (event->button() == Qt::LeftButton) {
+        this->has_user_isoline = true;
+        double x = (double) event->x() / this->scale_factor_x + this->config->startX();
+        double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
+        this->user_isoline = Isolines::f(x, y);
+        this->continious_isoline_mode = true;
+    } else {
+        this->has_user_isoline = false;
+    }
+    this->plot();
+    this->update();
+}
+
+void Isolines::mouseReleaseEvent(QMouseEvent *event) {
+    if (!this->config->showIsolines()) {
+        return;
+    }
+    if (event->button() == Qt::LeftButton) {
+        this->continious_isoline_mode = false;
+    }
 }
 
 void Isolines::paintEvent(QPaintEvent *) {

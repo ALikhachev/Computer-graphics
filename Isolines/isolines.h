@@ -25,6 +25,8 @@ protected:
     void resizeEvent(QResizeEvent *) override;
     void paintEvent(QPaintEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
     bool event(QEvent *) override;
 
 signals:
@@ -40,10 +42,12 @@ private:
 
     QSharedPointer<Configuration> config;
     QImage image;
-    std::vector<double> isolines;
+    double user_isoline;
+    bool has_user_isoline;
     double scale_factor_x;
     double scale_factor_y;
     IsolinesMousePosition position;
+    bool continious_isoline_mode;
 };
 
 #endif // ISOLINES_H
