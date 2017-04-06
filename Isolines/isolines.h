@@ -39,7 +39,8 @@ private:
     QSharedPointer<Configuration> config;
     QImage image;
     std::vector<double> isolines;
-    double mul;
+    double scale_factor_x;
+    double scale_factor_y;
     IsolinesMousePosition position;
 };
 

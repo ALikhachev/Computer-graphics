@@ -20,24 +20,6 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         this->plot();
         this->update();
     });
-    connect(this->config.data(), &Configuration::widthChanged, this, [this] (int width) {
-        double x_mul =  (double) this->width() / (double) width;
-        double y_mul = (double) this->height() / (double) this->config->height();
-        this->mul = std::min(x_mul, y_mul);
-        this->image = QImage(width * this->mul, this->config->height() * this->mul, QImage::Format_RGB32);
-        this->config->setFMin(std::numeric_limits<double>::max());
-        this->plot();
-        this->update();
-    });
-    connect(this->config.data(), &Configuration::heightChanged, this, [this] (int height) {
-        double x_mul =  (double) this->width() / (double) this->config->width();
-        double y_mul = (double) this->height() / (double) height;
-        this->mul = std::min(x_mul, y_mul);
-        this->image = QImage(this->config->width() * this->mul, height * this->mul, QImage::Format_RGB32);
-        this->config->setFMin(std::numeric_limits<double>::max());
-        this->plot();
-        this->update();
-    });
 }
 
 void Isolines::plot() {
@@ -45,11 +27,13 @@ void Isolines::plot() {
     auto levels = this->config->levels();
     double min = this->config->fMin();
     double max = this->config->fMax();
+    int x_offset = this->config->startX();
+    int y_offset = this->config->startY();
     // find min and max of function, count level step
     if (min - std::numeric_limits<double>::max() < 1e-20) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
-                double val = Isolines::f(((double) i) / mul, ((double) j) / mul);
+                double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, ((double) j) / this->scale_factor_y + y_offset);
                 if (val < min) {
                     min = val;
                 }
@@ -63,11 +47,9 @@ void Isolines::plot() {
         this->config->setFStep((max - min) / (double) levels.size());
     }
     double step = this->config->fStep();
-    int x_offset = this->config->startX();
-    int y_offset = this->config->startY();
     for (int j = 0; j < this->image.height(); ++j) {
         for (int i = 0; i < this->image.width(); ++i) {
-            double val = Isolines::f(((double) i) / mul + x_offset, ((double) j) / mul + y_offset);
+            double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, ((double) j) / this->scale_factor_y + y_offset);
             int level_index = ((val - min) / step);
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
@@ -96,15 +78,11 @@ void Isolines::plot() {
 }
 
 void Isolines::resizeEvent(QResizeEvent *event) {
-    double x_mul =  (double) event->size().width() / (double) this->config->width();
-    double y_mul = (double) event->size().height() / (double) this->config->height();
-    double mul = std::min(x_mul, y_mul);
-    if (mul != this->mul) {
-        this->mul = mul;
-        this->image = QImage(this->config->width() * this->mul, this->config->height() * this->mul, QImage::Format_RGB32);
-        this->config->setFMin(std::numeric_limits<double>::max());
-        plot();
-    }
+    this->scale_factor_x =  (double) event->size().width() / (double) this->config->width();
+    this->scale_factor_y = (double) event->size().height() / (double) this->config->height();
+    this->image = QImage(this->config->width() * this->scale_factor_x, this->config->height() * this->scale_factor_y, QImage::Format_RGB32);
+    this->config->setFMin(std::numeric_limits<double>::max());
+    plot();
 }
 
 bool Isolines::event(QEvent *event) {
@@ -119,8 +97,8 @@ bool Isolines::event(QEvent *event) {
 void Isolines::mouseMoveEvent(QMouseEvent *event) {
     bool out_of_screen = event->x() < 0 || event->y() < 0 || event->x() >= this->image.width() || event->y() >= this->image.height();
     if (!out_of_screen) {
-        double x = (double) event->x() / mul + this->config->startX();
-        double y = (double) (this->image.height() - event->y()) / mul + this->config->startY();
+        double x = (double) event->x() / this->scale_factor_x + this->config->startX();
+        double y = (double) (this->image.height() - event->y()) / this->scale_factor_y + this->config->startY();
         double val = Isolines::f(x, y);
         this->position = {
             .x = x,
