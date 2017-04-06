@@ -55,13 +55,12 @@ namespace IsolinesUtils {
             if (p1.first.y() != p3.first.y()) {
                 std::swap(p3, p4);
             }
-            int x_left = std::min(p1.first.x(), p3.first.x());
-            int x_right = std::max(p1.first.x(), p3.first.x());
-            start.setX(x_left + std::fabs(value - p3.second) * (x_right - x_left) / std::fabs(p1.second - p3.second));
-            x_left = std::min(p2.first.x(), p4.first.x());
-            x_right = std::max(p2.first.x(), p4.first.x());
-            end.setX(x_left + std::fabs(value - p2.second) * (x_right - x_left) / std::fabs(p2.second - p4.second));
-            qDebug() << 1;
+            int offset = p1.first.x();
+            int sign = offset == std::max(p1.first.x(), p3.first.x()) ? -1 : 1;
+            start.setX(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.x() - p3.first.x()) / std::fabs(p1.second - p3.second));
+            offset = p2.first.x();
+            sign = offset == std::max(p2.first.x(), p4.first.x()) ? -1 : 1;
+            end.setX(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.x() - p4.first.x()) / std::fabs(p2.second - p4.second));
             return std::vector<std::pair<QPoint, QPoint>>{std::make_pair(start, end)};
         } else if (p1.first.y() == p2.first.y()) {
             QPoint start(p1.first.x(), 0);
@@ -69,13 +68,12 @@ namespace IsolinesUtils {
             if (p1.first.x() != p3.first.x()) {
                 std::swap(p3, p4);
             }
-            int y_left = std::min(p1.first.y(), p3.first.y());
-            int y_right = std::max(p1.first.y(), p3.first.y());
-            start.setY(y_left + std::fabs(value - p1.second) * (y_right - y_left) / std::fabs(p1.second - p3.second));
-            y_left = std::min(p2.first.y(), p4.first.y());
-            y_right = std::max(p2.first.y(), p4.first.y());
-            end.setY(y_left + std::fabs(value - p2.second) * (y_right - y_left) / std::fabs(p2.second - p4.second));
-            qDebug() << 2;
+            int offset = p1.first.y();
+            int sign = offset == std::max(p1.first.y(), p3.first.y()) ? -1 : 1;
+            start.setY(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.y() - p3.first.y()) / std::fabs(p1.second - p3.second));
+            offset = p2.first.y();
+            sign = offset == std::max(p2.first.y(), p4.first.y()) ? -1 : 1;
+            end.setY(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.y() - p4.first.y()) / std::fabs(p2.second - p4.second));
             return std::vector<std::pair<QPoint, QPoint>>{std::make_pair(start, end)};
         } else {
             QPoint start1(p1.first.x(), 0);
@@ -87,19 +85,18 @@ namespace IsolinesUtils {
                     std::swap(p3, p4);
                 }
             }
-            int x_left = std::min(p1.first.x(), p3.first.x());
-            int x_right = std::max(p1.first.x(), p3.first.x());
-            end1.setX(x_left + std::fabs(value - p1.second) * (x_right - x_left) / std::fabs(p1.second - p3.second));
-            int y_left = std::min(p1.first.y(), p3.first.y());
-            int y_right = std::max(p1.first.y(), p3.first.y());
-            start1.setY(y_left + std::fabs(value - p1.second) * (y_right - y_left) / std::fabs(p1.second - p3.second));
-            x_left = std::min(p2.first.x(), p4.first.x());
-            x_right = std::max(p2.first.x(), p4.first.x());
-            end2.setX(x_left + std::fabs(value - p2.second) * (x_right - x_left) / std::fabs(p2.second - p4.second));
-            y_left = std::min(p2.first.y(), p4.first.y());
-            y_right = std::max(p2.first.y(), p4.first.y());
-            start2.setY(y_left + std::fabs(value - p2.second) * (y_right - y_left) / std::fabs(p2.second - p4.second));
-            qDebug() << 3;
+            int offset = p1.first.x();
+            int sign = offset == std::max(p1.first.x(), p3.first.x()) ? -1 : 1;
+            end1.setX(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.x() - p3.first.x()) / std::fabs(p1.second - p3.second));
+            offset = p1.first.y();
+            sign = offset == std::max(p1.first.y(), p3.first.y()) ? -1 : 1;
+            start1.setY(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.y() - p3.first.y()) / std::fabs(p1.second - p3.second));
+            offset = p2.first.x();
+            sign = offset == std::max(p2.first.x(), p4.first.x()) ? -1 : 1;
+            end2.setX(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.x() - p4.first.x()) / std::fabs(p2.second - p4.second));
+            offset = p2.first.y();
+            sign = offset == std::max(p2.first.y(), p4.first.y()) ? -1 : 1;
+            start2.setY(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.y() - p4.first.y()) / std::fabs(p2.second - p4.second));
             return std::vector<std::pair<QPoint, QPoint>>{std::make_pair(start1, end1), std::make_pair(start2, end2)};
         }
     }
@@ -187,7 +184,7 @@ namespace IsolinesUtils {
         if ((uchar) color == (uchar) (color >> 8) &&
                 (uchar) color == (uchar) (color >> 16)) {
             uchar *line = image.bits() + from.y() * image.bytesPerLine();
-            memset(line + from.x() * image.depth() / 8, color, 3 * (to.x() - from.x()));
+            memset(line + from.x() * image.depth() / 8, color, image.depth() / 8 * (to.x() - from.x()));
         } else {
             QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
             for (int i = from.x(); i <= to.x(); ++i) {

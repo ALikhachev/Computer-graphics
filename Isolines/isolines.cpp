@@ -136,7 +136,6 @@ void Isolines::drawIsolines() {
             double middle_value = f(i * cell_width / 2 + this->config->startX(), height - j * cell_height / 2 + this->config->startY());
             std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, 0, middle_value);
             for (auto it = isolines.begin(); it < isolines.end(); ++it) {
-                qDebug() << it->first << it->second;
                 IsolinesUtils::drawLine(this->image, it->first, it->second, color);
             }
         }
