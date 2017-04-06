@@ -54,3 +54,37 @@ void Configuration::setInterpolate(bool interpolate) {
     this->_interpolate = interpolate;
     emit interpolateChanged(this->_interpolate);
 }
+
+bool Configuration::load(QTextStream &in) {
+    int width, height, n;
+    QRgb isolines_color;
+    in >> width;
+    if (width <= 0) {
+        return false;
+    }
+    in >> height;
+    if (height <= 0) {
+        return false;
+    }
+    in.readLine();
+    in >> n;
+    if (n <= 0) {
+        return false;
+    }
+    in.readLine();
+    std::vector<QRgb> levels(n + 1);
+    for (int i = 0; i < n + 1; ++i) {
+        int r, g, b;
+        in >> r >> g >> b;
+        levels[i] = qRgb(r, g, b);
+        in.readLine();
+    }
+    int r, g, b;
+    in >> r >> g >> b;
+    isolines_color = qRgb(r, g, b);
+    this->setWidth(width);
+    this->setHeight(height);
+    this->setLevels(levels);
+    this->setIsolinesColor(isolines_color);
+    return true;
+}

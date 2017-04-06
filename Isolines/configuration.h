@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QRgb>
+#include <QTextStream>
 
 class Configuration : public QObject
 {
@@ -24,6 +25,7 @@ public:
     void setIsolinesColor(QRgb);
     bool interpolate() const;
     void setInterpolate(bool);
+    bool load(QTextStream &);
 
 signals:
     void widthChanged(int);

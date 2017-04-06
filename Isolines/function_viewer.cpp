@@ -12,7 +12,3 @@ FunctionViewer::FunctionViewer(QSharedPointer<Configuration> config, QWidget *pa
     layout->addWidget(this->isolines);
     layout->addWidget(this->legend);
 }
-
-bool FunctionViewer::readConfiguration(QString path) {
-    // ...
-}

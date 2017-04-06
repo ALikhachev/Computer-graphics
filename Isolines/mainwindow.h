@@ -15,7 +15,11 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void openConfig();
+
 private:
+    void showError(const QString &text) const;
     void setupActions();
 
     QAction *toolbar_switch;

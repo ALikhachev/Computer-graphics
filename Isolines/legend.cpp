@@ -18,6 +18,12 @@ Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(
         this->plot();
         this->update();
     });
+    connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
+        this->f_step = (this->f_max - this->f_min) / levels.size();
+        this->step = (double) this->image.width() / levels.size();
+        this->plot();
+        this->update();
+    });
 }
 
 void Legend::resizeEvent(QResizeEvent *event) {

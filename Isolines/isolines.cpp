@@ -13,6 +13,11 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         this->plot();
         this->update();
     });
+    connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
+        this->step = (this->max - this->min) / (double) levels.size();
+        this->plot();
+        this->update();
+    });
 }
 
 void Isolines::plot() {

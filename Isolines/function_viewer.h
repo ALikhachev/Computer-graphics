@@ -13,7 +13,6 @@ class FunctionViewer : public QWidget
     Q_OBJECT
 public:
     explicit FunctionViewer(QSharedPointer<Configuration> config, QWidget *parent = 0);
-    bool readConfiguration(QString path);
 
 private:
     QSharedPointer<Configuration> config;
