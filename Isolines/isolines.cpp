@@ -6,8 +6,7 @@
 
 Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
-    image(this->size(), QImage::Format_RGB32),
-    min(std::numeric_limits<double>::max())
+    image(this->size(), QImage::Format_RGB32)
 {
     this->setAttribute(Qt::WA_Hover);
     this->setMouseTracking(true);
@@ -17,7 +16,7 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         this->update();
     });
     connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
-        this->step = (this->max - this->min) / (double) levels.size();
+        this->config->setFStep((this->config->fMax() - this->config->fMin()) / (double) levels.size());
         this->plot();
         this->update();
     });
@@ -26,7 +25,7 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         double y_mul = (double) this->height() / (double) this->config->height();
         this->mul = std::min(x_mul, y_mul);
         this->image = QImage(width * this->mul, this->config->height() * this->mul, QImage::Format_RGB32);
-        this->min = std::numeric_limits<double>::max();
+        this->config->setFMin(std::numeric_limits<double>::max());
         this->plot();
         this->update();
     });
@@ -35,7 +34,7 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         double y_mul = (double) this->height() / (double) height;
         this->mul = std::min(x_mul, y_mul);
         this->image = QImage(this->config->width() * this->mul, height * this->mul, QImage::Format_RGB32);
-        this->min = std::numeric_limits<double>::max();
+        this->config->setFMin(std::numeric_limits<double>::max());
         this->plot();
         this->update();
     });
@@ -44,39 +43,46 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
 void Isolines::plot() {
     QRgb *pixels = (QRgb *) this->image.bits();
     auto levels = this->config->levels();
+    double min = this->config->fMin();
+    double max = this->config->fMax();
     // find min and max of function, count level step
-    if (this->min - std::numeric_limits<double>::max() < 1e-20) {
+    if (min - std::numeric_limits<double>::max() < 1e-20) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
                 double val = Isolines::f(((double) i) / mul, ((double) j) / mul);
-                if (val < this->min) {
-                    this->min = val;
+                if (val < min) {
+                    min = val;
                 }
-                if (val > this->max) {
-                    this->max = val;
+                if (val > max) {
+                    max = val;
                 }
             }
         }
-        this->step = (this->max - this->min) / (double) this->config->levels().size();
+        this->config->setFMin(min);
+        this->config->setFMax(max);
+        this->config->setFStep((max - min) / (double) levels.size());
     }
+    double step = this->config->fStep();
+    int x_offset = this->config->startX();
+    int y_offset = this->config->startY();
     for (int j = 0; j < this->image.height(); ++j) {
         for (int i = 0; i < this->image.width(); ++i) {
-            double val = Isolines::f(((double) i) / mul, ((double) j) / mul);
-            int level_index = ((val - this->min) / this->step);
+            double val = Isolines::f(((double) i) / mul + x_offset, ((double) j) / mul + y_offset);
+            int level_index = ((val - min) / step);
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
-                double rel = val - min - level_index * this->step;
-                int sign = (rel > this->step / 2) ? 1 : -1;
+                double rel = val - min - level_index * step;
+                int sign = (rel > step / 2) ? 1 : -1;
                 int neighbor_index = level_index + sign;
                 if (!(neighbor_index < 0 || static_cast<size_t>(neighbor_index) > levels.size() - 1)) {
                     QColor neighbor_color = QColor(QColor(levels[neighbor_index]));
                     double factor_neighbor;
                     double factor_this;
                     if (sign > 0) {
-                        factor_neighbor = (double) (rel - this->step / 2) / this->step;
+                        factor_neighbor = (double) (rel - step / 2) / step;
                         factor_this = 1.0 - factor_neighbor;
                     } else {
-                        factor_neighbor = (double) (this->step / 2 - rel) / this->step;
+                        factor_neighbor = (double) (step / 2 - rel) / step;
                         factor_this = 1.0 - factor_neighbor;
                     }
                     color.setRed(color.red() * factor_this + neighbor_color.red() * factor_neighbor);
@@ -96,7 +102,7 @@ void Isolines::resizeEvent(QResizeEvent *event) {
     if (mul != this->mul) {
         this->mul = mul;
         this->image = QImage(this->config->width() * this->mul, this->config->height() * this->mul, QImage::Format_RGB32);
-        this->min = std::numeric_limits<double>::max();
+        this->config->setFMin(std::numeric_limits<double>::max());
         plot();
     }
 }
@@ -113,8 +119,8 @@ bool Isolines::event(QEvent *event) {
 void Isolines::mouseMoveEvent(QMouseEvent *event) {
     bool out_of_screen = event->x() < 0 || event->y() < 0 || event->x() >= this->image.width() || event->y() >= this->image.height();
     if (!out_of_screen) {
-        double x = (double) event->x() / mul;
-        double y = (double) (this->image.height() - event->y()) / mul;
+        double x = (double) event->x() / mul + this->config->startX();
+        double y = (double) (this->image.height() - event->y()) / mul + this->config->startY();
         double val = Isolines::f(x, y);
         this->position = {
             .x = x,

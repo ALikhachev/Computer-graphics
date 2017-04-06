@@ -7,10 +7,7 @@
 Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
     image(this->size(), QImage::Format_RGB32),
-    step(0),
-    f_min(-2.0),
-    f_max(2.0),
-    f_step((this->f_max - this->f_min) / this->config->levels().size())
+    step(0)
 {
     this->setMinimumHeight(LegendHeight + VTopPadding);
     this->setMaximumHeight(LegendHeight + VTopPadding);
@@ -18,9 +15,7 @@ Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(
         this->plot();
         this->update();
     });
-    connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
-        this->f_step = (this->f_max - this->f_min) / levels.size();
-        this->step = (double) this->image.width() / levels.size();
+    connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &) {
         this->plot();
         this->update();
     });
@@ -38,7 +33,8 @@ void Legend::resizeEvent(QResizeEvent *event) {
 void Legend::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.setFont(QFont(QString("Courier"), CharWidth, QFont::Bold));
-    for (double i = this->f_min, k = HPadding; k <= this->width(); i += this->f_step, k += this->step) {
+    double f_step = this->config->fStep();
+    for (double i = this->config->fMin(), k = HPadding; k <= this->width(); i += f_step, k += this->step) {
         const QString str = QString::number(i, 'f', 2);
         int offset = str.length() * CharWidth / 2;
         painter.drawText(k - offset, 18, str);

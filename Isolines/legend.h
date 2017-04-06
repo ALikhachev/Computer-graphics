@@ -26,9 +26,6 @@ private:
     QImage image;
     double step;
     const static int LegendHeight = 30;
-    double f_min;
-    double f_max;
-    double f_step;
     const static int CharWidth = 10;
     const static int HPadding = CharWidth * 3;
     const static int VTopPadding = 20;
