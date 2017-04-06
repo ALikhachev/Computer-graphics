@@ -166,23 +166,15 @@ bool Isolines::event(QEvent *event) {
 }
 
 void Isolines::mouseMoveEvent(QMouseEvent *event) {
-    bool out_of_screen = event->x() < 0 || event->y() < 0 || event->x() >= this->image.width() || event->y() >= this->image.height();
-    if (!out_of_screen) {
-        double x = (double) event->x() / this->scale_factor_x + this->config->startX();
-        double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
-        double val = Isolines::f(x, y);
-        this->position = {
-            .x = x,
-            .y = y,
-            .value = val,
-            .out_of_screen = false
-        };
-    }
-    // do not emit new signals
-    if (out_of_screen && this->position.out_of_screen) {
-        return;
-    }
-    this->position.out_of_screen = out_of_screen;
+    double x = (double) event->x() / this->scale_factor_x + this->config->startX();
+    double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
+    double val = Isolines::f(x, y);
+    this->position = {
+        .x = x,
+        .y = y,
+        .value = val,
+        .out_of_screen = false
+    };
     emit pointerFunctionValueUpdated(this->position);
 }
 
