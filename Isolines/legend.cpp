@@ -12,8 +12,8 @@ Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(
     f_max(2.0),
     f_step((this->f_max - this->f_min) / this->config->levels().size())
 {
-    this->setMinimumHeight(120);
-    this->setMaximumHeight(120);
+    this->setMinimumHeight(LegendHeight + VTopPadding);
+    this->setMaximumHeight(LegendHeight + VTopPadding);
     connect(this->config.data(), &Configuration::interpolateChanged, this, [this] (bool) {
         this->plot();
         this->update();

@@ -25,7 +25,7 @@ private:
     QSharedPointer<Configuration> config;
     QImage image;
     double step;
-    const static int LegendHeight = 100;
+    const static int LegendHeight = 30;
     double f_min;
     double f_max;
     double f_step;
