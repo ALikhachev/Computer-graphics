@@ -118,6 +118,9 @@ void Isolines::drawIsolines() {
     double scaled_cell_width = cell_width * this->scale_factor_x;
     double scaled_cell_height = cell_height * this->scale_factor_y;
     double height = this->config->height();
+    int default_isolines = this->config->levels().size() - 1;
+    double min = this->config->fMin();
+    double step = this->config->fStep();
     for (int j = 0; j < vertical_cells; ++j) {
         for (int i = 0; i < horizontal_cells; ++i) {
             std::vector<std::pair<QPoint, double>> cell{
@@ -134,9 +137,12 @@ void Isolines::drawIsolines() {
                                        f((i + 1) * cell_width + this->config->startX(), height - (j + 1) * cell_height + this->config->startY()))
             };
             double middle_value = f(i * cell_width / 2 + this->config->startX(), height - j * cell_height / 2 + this->config->startY());
-            std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, 0, middle_value);
-            for (auto it = isolines.begin(); it < isolines.end(); ++it) {
-                IsolinesUtils::drawLine(this->image, it->first, it->second, color);
+            for (int k = 0; k < default_isolines; ++k) {
+                double isoline_level = min + (k + 1) * step;
+                std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, isoline_level, middle_value);
+                for (auto it = isolines.begin(); it < isolines.end(); ++it) {
+                    IsolinesUtils::drawLine(this->image, it->first, it->second, color);
+                }
             }
         }
     }
