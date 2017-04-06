@@ -36,7 +36,7 @@ void Isolines::plot() {
     if (min - std::numeric_limits<double>::max() < 1e-20) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
-                double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, ((double) j) / this->scale_factor_y + y_offset);
+                double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, ((double) j) / this->scale_factor_y - y_offset);
                 if (val < min) {
                     min = val;
                 }
@@ -52,7 +52,7 @@ void Isolines::plot() {
     double step = this->config->fStep();
     for (int j = 0; j < this->image.height(); ++j) {
         for (int i = 0; i < this->image.width(); ++i) {
-            double val = Isolines::f((double) i / this->scale_factor_x + x_offset, (double) j / this->scale_factor_y + y_offset);
+            double val = Isolines::f((double) i / this->scale_factor_x + x_offset, (double) j / this->scale_factor_y - y_offset);
             int level_index = ((val - min) / step);
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
