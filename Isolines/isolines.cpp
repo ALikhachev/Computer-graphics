@@ -30,8 +30,8 @@ void Isolines::plot() {
     auto levels = this->config->levels();
     double min = this->config->fMin();
     double max = this->config->fMax();
-    int x_offset = this->config->startX();
-    int y_offset = this->config->startY();
+    double x_offset = this->config->startX();
+    double y_offset = this->config->startY();
     // find min and max of function, count level step
     if (min - std::numeric_limits<double>::max() < 1e-20) {
         for (int j = 0; j < this->image.height(); ++j) {
@@ -52,7 +52,7 @@ void Isolines::plot() {
     double step = this->config->fStep();
     for (int j = 0; j < this->image.height(); ++j) {
         for (int i = 0; i < this->image.width(); ++i) {
-            double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, ((double) j) / this->scale_factor_y + y_offset);
+            double val = Isolines::f((double) i / this->scale_factor_x + x_offset, (double) j / this->scale_factor_y + y_offset);
             int level_index = ((val - min) / step);
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
@@ -120,7 +120,7 @@ void Isolines::mouseMoveEvent(QMouseEvent *event) {
     bool out_of_screen = event->x() < 0 || event->y() < 0 || event->x() >= this->image.width() || event->y() >= this->image.height();
     if (!out_of_screen) {
         double x = (double) event->x() / this->scale_factor_x + this->config->startX();
-        double y = (double) (this->image.height() - event->y()) / this->scale_factor_y + this->config->startY();
+        double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
         double val = Isolines::f(x, y);
         this->position = {
             .x = x,
