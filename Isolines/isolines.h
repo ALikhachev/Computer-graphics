@@ -32,6 +32,7 @@ signals:
 
 private:
     void plot();
+    void drawGrid();
     static inline double f(double x, double y) {
         return std::sin(x) + std::cos(y);
     }

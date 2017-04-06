@@ -13,7 +13,8 @@ Configuration::Configuration(QObject *parent) : QObject(parent),
     _cell_height(10),
     _levels({qRgb(255, 0, 0), qRgb(255, 83, 0), qRgb(255, 223, 0), qRgb(0, 255, 0), qRgb(0, 184, 217), qRgb(0, 0, 255), qRgb(128, 0, 255)}),
     _isolines_color(qRgb(255, 255, 255)),
-    _interpolate(false)
+    _interpolate(false),
+    _show_grid(false)
 {
 
 }
@@ -124,15 +125,24 @@ void Configuration::setInterpolate(bool interpolate) {
     emit interpolateChanged(this->_interpolate);
 }
 
+bool Configuration::showGrid() const {
+    return this->_show_grid;
+}
+
+void Configuration::setShowGrid(bool show_grid) {
+    this->_show_grid = show_grid;
+    emit showGridChanged(this->_show_grid);
+}
+
 bool Configuration::load(QTextStream &in) {
-    int width, height, n;
+    int cell_width, cell_height, n;
     QRgb isolines_color;
-    in >> width;
-    if (width <= 0) {
+    in >> cell_width;
+    if (cell_width <= 0) {
         return false;
     }
-    in >> height;
-    if (height <= 0) {
+    in >> cell_height;
+    if (cell_height <= 0) {
         return false;
     }
     in.readLine();
@@ -151,8 +161,8 @@ bool Configuration::load(QTextStream &in) {
     int r, g, b;
     in >> r >> g >> b;
     isolines_color = qRgb(r, g, b);
-    this->setWidth(width);
-    this->setHeight(height);
+    this->setCellWidth(cell_width);
+    this->setCellHeight(cell_height);
     this->setLevels(levels);
     this->setIsolinesColor(isolines_color);
     return true;

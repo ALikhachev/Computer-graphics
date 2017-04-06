@@ -26,6 +26,7 @@ private:
     QAction *toolbar_switch;
     QAction *statusbar_switch;
     QAction *interpolate_colors;
+    QAction *show_grid;
 
     QSharedPointer<Configuration> config;
     FunctionViewer *function_viewer;

@@ -20,6 +20,7 @@ class Configuration : public QObject
     Q_PROPERTY(std::vector<QRgb> levels READ levels WRITE setLevels NOTIFY levelsChanged)
     Q_PROPERTY(QRgb isolinesColor READ isolinesColor WRITE setIsolinesColor NOTIFY isolinesColorChanged)
     Q_PROPERTY(bool interpolate READ interpolate WRITE setInterpolate NOTIFY interpolateChanged)
+    Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid NOTIFY showGridChanged)
 public:
     explicit Configuration(QObject *parent = 0);
     double startX() const;
@@ -46,6 +47,8 @@ public:
     void setIsolinesColor(QRgb);
     bool interpolate() const;
     void setInterpolate(bool);
+    bool showGrid() const;
+    void setShowGrid(bool);
     bool load(QTextStream &);
 
 signals:
@@ -61,6 +64,7 @@ signals:
     void levelsChanged(const std::vector<QRgb> &);
     void isolinesColorChanged(QRgb);
     void interpolateChanged(bool);
+    void showGridChanged(bool);
 
 private:
     double _start_x;
@@ -75,6 +79,7 @@ private:
     std::vector<QRgb> _levels;
     QRgb _isolines_color;
     bool _interpolate;
+    bool _show_grid;
 };
 
 #endif // CONFIGURATION_H

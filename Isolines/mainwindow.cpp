@@ -87,6 +87,16 @@ void MainWindow::setupActions() {
     });
     this->interpolate_colors->setStatusTip("Enable/disable color interpolation");
 
+    toolbar->addAction(this->show_grid = isolines_menu->addAction(tr("Show grid"), this, [this] {
+        this->config->setShowGrid(!this->config->showGrid());
+    }));
+    this->show_grid->setCheckable(true);
+    this->show_grid->setChecked(this->config->showGrid());
+    connect(this->config.data(), &Configuration::showGridChanged, this, [this] (bool b) {
+        this->show_grid->setChecked(b);
+    });
+    this->show_grid->setStatusTip("Show/hide grid");
+
     QAction *about_action = this->menuBar()->addAction(tr("&?"), this, SLOT(showAbout()));
     about_action->setIcon(QIcon(":/icons/about.png"));
     about_action->setStatusTip("About this application");
