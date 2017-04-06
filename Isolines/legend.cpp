@@ -2,14 +2,18 @@
 
 #include <QPainter>
 #include <QColor>
+#include <QFont>
 
 Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
     image(this->size(), QImage::Format_RGB32),
-    step(0)
+    step(0),
+    f_min(-2.0),
+    f_max(2.0),
+    f_step((this->f_max - this->f_min) / this->config->levels().size())
 {
-    this->setMinimumHeight(100);
-    this->setMaximumHeight(100);
+    this->setMinimumHeight(120);
+    this->setMaximumHeight(120);
     connect(this->config.data(), &Configuration::interpolateChanged, this, [this] (bool) {
         this->plot();
         this->update();
@@ -17,16 +21,23 @@ Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(
 }
 
 void Legend::resizeEvent(QResizeEvent *event) {
-    if (this->image.width() != event->size().width()) {
-        this->image = QImage(event->size().width(), Legend::LegendHeight, QImage::Format_RGB32);
-        this->step = this->image.width() / this->config->levels().size();
+    int width = event->size().width() - HPadding * 2;
+    if (this->image.width() != width) {
+        this->image = QImage(width, Legend::LegendHeight, QImage::Format_RGB32);
+        this->step = (double) this->image.width() / this->config->levels().size();
         this->plot();
     }
 }
 
 void Legend::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawImage(0, 0, this->image);
+    painter.setFont(QFont(QString("Courier"), CharWidth, QFont::Bold));
+    for (double i = this->f_min, k = HPadding; k <= this->width(); i += this->f_step, k += this->step) {
+        const QString str = QString::number(i, 'f', 2);
+        int offset = str.length() * CharWidth / 2;
+        painter.drawText(k - offset, 18, str);
+    }
+    painter.drawImage(HPadding, VTopPadding, this->image);
 }
 
 void Legend::plot() {
@@ -39,7 +50,7 @@ void Legend::plot() {
             level_index = x / this->step;
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
-                int rel = x - level_index * this->step;
+                double rel = x - level_index * this->step;
                 int sign = (rel > this->step / 2) ? 1 : -1;
                 int neighbor_index = level_index + sign;
                 if (!(neighbor_index < 0 || static_cast<size_t>(neighbor_index) > levels.size() - 1)) {
@@ -47,10 +58,10 @@ void Legend::plot() {
                     double factor_neighbor;
                     double factor_this;
                     if (sign > 0) {
-                        factor_neighbor = (double) (rel - this->step / 2) / this->step;
+                        factor_neighbor = (rel - this->step / 2) / this->step;
                         factor_this = 1.0 - factor_neighbor;
                     } else {
-                        factor_neighbor = (double) (this->step / 2 - rel) / this->step;
+                        factor_neighbor = (this->step / 2 - rel) / this->step;
                         factor_this = 1.0 - factor_neighbor;
                     }
                     color.setRed(color.red() * factor_this + neighbor_color.red() * factor_neighbor);
@@ -80,9 +91,9 @@ void Legend::drawBorders() {
     }
     if (!this->config->interpolate()) {
         int levels_count = this->config->levels().size() - 1;
-        for (int i = this->step, k = 0; k < levels_count; i += this->step, ++k) {
+        for (double i = this->step, k = 0; k < levels_count; i += this->step, ++k) {
             for (int j = 0; j < this->image.height(); ++j) {
-                pixels[j * this->image.width() + i] = qRgb(0, 0, 0);
+                pixels[j * this->image.width() + (int) std::ceil(i)] = qRgb(0, 0, 0);
             }
         }
     }
