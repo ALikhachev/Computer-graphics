@@ -97,6 +97,16 @@ void MainWindow::setupActions() {
     });
     this->show_grid->setStatusTip("Show/hide grid");
 
+    toolbar->addAction(this->show_isolines = isolines_menu->addAction(tr("Show isolines"), this, [this] {
+        this->config->setShowIsolines(!this->config->showIsolines());
+    }));
+    this->show_isolines->setCheckable(true);
+    this->show_isolines->setChecked(this->config->showIsolines());
+    connect(this->config.data(), &Configuration::showIsolinesChanged, this, [this] (bool b) {
+        this->show_isolines->setChecked(b);
+    });
+    this->show_isolines->setStatusTip("Show/hide isolines");
+
     QAction *about_action = this->menuBar()->addAction(tr("&?"), this, SLOT(showAbout()));
     about_action->setIcon(QIcon(":/icons/about.png"));
     about_action->setStatusTip("About this application");

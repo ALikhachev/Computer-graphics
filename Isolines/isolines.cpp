@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QMouseEvent>
 
+#include "utils.h"
+
 Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
     image(this->size(), QImage::Format_RGB32)
@@ -15,6 +17,10 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         this->update();
     });
     connect(this->config.data(), &Configuration::showGridChanged, this, [this] (bool) {
+        this->plot();
+        this->update();
+    });
+    connect(this->config.data(), &Configuration::showIsolinesChanged, this, [this] (bool) {
         this->plot();
         this->update();
     });
@@ -32,11 +38,12 @@ void Isolines::plot() {
     double max = this->config->fMax();
     double x_offset = this->config->startX();
     double y_offset = this->config->startY();
+    double height = this->config->height();
     // find min and max of function, count level step
     if (min - std::numeric_limits<double>::max() < 1e-20) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
-                double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, ((double) j) / this->scale_factor_y - y_offset);
+                double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, height - ((double) j) / this->scale_factor_y - y_offset);
                 if (val < min) {
                     min = val;
                 }
@@ -52,7 +59,7 @@ void Isolines::plot() {
     double step = this->config->fStep();
     for (int j = 0; j < this->image.height(); ++j) {
         for (int i = 0; i < this->image.width(); ++i) {
-            double val = Isolines::f((double) i / this->scale_factor_x + x_offset, (double) j / this->scale_factor_y - y_offset);
+            double val = Isolines::f((double) i / this->scale_factor_x + x_offset, height - (double) j / this->scale_factor_y - y_offset);
             int level_index = ((val - min) / step);
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
@@ -75,11 +82,14 @@ void Isolines::plot() {
                     color.setBlue(color.blue() * factor_this + neighbor_color.blue() * factor_neighbor);
                 }
             }
-            pixels[(this->image.height() - 1 - j) * this->image.width() + i] = color.rgb();
+            pixels[j * this->image.width() + i] = color.rgb();
         }
     }
     if (this->config->showGrid()) {
         this->drawGrid();
+    }
+    if (this->config->showIsolines()) {
+        this->drawIsolines();
     }
 }
 
@@ -95,6 +105,40 @@ void Isolines::drawGrid() {
     for (double j = cell_height; j < this->image.height(); j += cell_height) {
         for (int i = 0; i < this->image.width(); ++i) {
             pixels[(int) j * this->image.width() + i] = qRgb(0, 0, 0);
+        }
+    }
+}
+
+void Isolines::drawIsolines() {
+    QRgb color = this->config->isolinesColor();
+    int horizontal_cells = this->config->horizontalCellCount();
+    int vertical_cells = this->config->horizontalCellCount();
+    double cell_width = (double) this->config->width() / horizontal_cells;
+    double cell_height = (double) this->config->height() / vertical_cells;
+    double scaled_cell_width = cell_width * this->scale_factor_x;
+    double scaled_cell_height = cell_height * this->scale_factor_y;
+    double height = this->config->height();
+    for (int j = 0; j < vertical_cells; ++j) {
+        for (int i = 0; i < horizontal_cells; ++i) {
+            std::vector<std::pair<QPoint, double>> cell{
+                        std::make_pair(QPoint( i * scaled_cell_width,       j * scaled_cell_height),
+                                       f( i * cell_width + this->config->startX(),       height - j * cell_height + this->config->startY())),
+
+                        std::make_pair(QPoint((i + 1) * scaled_cell_width,  j * scaled_cell_height),
+                                       f((i + 1) * cell_width + this->config->startX(),  height - j * cell_height + this->config->startY())),
+
+                        std::make_pair(QPoint( i * scaled_cell_width,      (j + 1) * scaled_cell_height),
+                                       f( i * cell_width + this->config->startX(),      height - (j + 1) * cell_height + this->config->startY())),
+
+                        std::make_pair(QPoint((i + 1) * scaled_cell_width, (j + 1) * scaled_cell_height),
+                                       f((i + 1) * cell_width + this->config->startX(), height - (j + 1) * cell_height + this->config->startY()))
+            };
+            double middle_value = f(i * cell_width / 2 + this->config->startX(), height - j * cell_height / 2 + this->config->startY());
+            std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, 0, middle_value);
+            for (auto it = isolines.begin(); it < isolines.end(); ++it) {
+                qDebug() << it->first << it->second;
+                IsolinesUtils::drawLine(this->image, it->first, it->second, color);
+            }
         }
     }
 }

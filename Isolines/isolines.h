@@ -33,6 +33,7 @@ signals:
 private:
     void plot();
     void drawGrid();
+    void drawIsolines();
     static inline double f(double x, double y) {
         return std::sin(x) + std::cos(y);
     }

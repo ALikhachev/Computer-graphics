@@ -36,7 +36,8 @@ HEADERS  += mainwindow.h \
     legend.h \
     isolines.h \
     configuration.h \
-    about_view.h
+    about_view.h \
+    utils.h
 
 DISTFILES += \
     data/input.txt
