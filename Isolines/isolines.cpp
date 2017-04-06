@@ -84,17 +84,17 @@ void Isolines::plot() {
 }
 
 void Isolines::drawGrid() {
-    double cell_width = this->config->cellWidth() * this->scale_factor_x;
-    double cell_height = this->config->cellHeight() * this->scale_factor_y;
+    double cell_width = (double) this->image.width() / this->config->horizontalCellCount();
+    double cell_height = (double) this->image.height() / this->config->horizontalCellCount();
     QRgb *pixels = (QRgb *) this->image.bits();
     for (int j = 0; j < this->image.height(); ++j) {
-        for (double i = cell_width - 1; i < this->image.width(); i += cell_width) {
-            pixels[j * this->image.width() + (int) std::ceil(i)] = qRgb(0, 0, 0);
+        for (double i = cell_width; i < this->image.width(); i += cell_width) {
+            pixels[j * this->image.width() + (int) i] = qRgb(0, 0, 0);
         }
     }
-    for (double j = cell_height - 1; j < this->image.height(); j += cell_height) {
+    for (double j = cell_height; j < this->image.height(); j += cell_height) {
         for (int i = 0; i < this->image.width(); ++i) {
-            pixels[(int) std::ceil(j) * this->image.width() + i] = qRgb(0, 0, 0);
+            pixels[(int) j * this->image.width() + i] = qRgb(0, 0, 0);
         }
     }
 }

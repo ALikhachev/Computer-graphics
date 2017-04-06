@@ -9,12 +9,13 @@ Configuration::Configuration(QObject *parent) : QObject(parent),
     _height(40),
     _f_min(0),
     _f_max(0),
-    _cell_width(5),
-    _cell_height(5),
+    _horizontal_cell_count(30),
+    _vertical_cell_count(30),
     _levels({qRgb(255, 0, 0), qRgb(255, 83, 0), qRgb(255, 223, 0), qRgb(0, 255, 0), qRgb(0, 184, 217), qRgb(0, 0, 255), qRgb(128, 0, 255)}),
-    _isolines_color(qRgb(255, 255, 255)),
+    _isolines_color(qRgb(0, 0, 0)),
     _interpolate(false),
-    _show_grid(false)
+    _show_grid(false),
+    _show_isolines(false)
 {
 
 }
@@ -35,30 +36,30 @@ void Configuration::setStartY(double start_y) {
     emit startYChanged(this->_start_y);
 }
 
-int Configuration::width() const {
+double Configuration::width() const {
     return this->_width;
 }
 
-void Configuration::setWidth(int width) {
+void Configuration::setWidth(double width) {
     this->_width = width;
     emit widthChanged(this->_width);
 }
 
-int Configuration::height() const {
+double Configuration::height() const {
     return this->_height;
 }
-void Configuration::setHeight(int height) {
+void Configuration::setHeight(double height) {
     this->_height = height;
     emit heightChanged(this->_height);
 }
 
-int Configuration::cellWidth() const {
-    return this->_cell_width;
+int Configuration::horizontalCellCount() const {
+    return this->_horizontal_cell_count;
 }
 
-void Configuration::setCellWidth(int cell_width) {
-    this->_cell_width = cell_width;
-    emit cellWidthChanged(this->_cell_width);
+void Configuration::setHorizontalCellCount(int cell_width) {
+    this->_horizontal_cell_count = cell_width;
+    emit horizontalCellCountChanged(this->_horizontal_cell_count);
 }
 
 double Configuration::fMin() const {
@@ -89,13 +90,13 @@ void Configuration::setFStep(double step) {
 }
 
 
-int Configuration::cellHeight() const {
-    return this->_cell_height;
+int Configuration::verticalCellCount() const {
+    return this->_vertical_cell_count;
 }
 
-void Configuration::setCellHeight(int cell_height) {
-    this->_cell_height = cell_height;
-    emit cellHeightChanged(this->_cell_height);
+void Configuration::setVerticalCellCount(int cell_height) {
+    this->_vertical_cell_count = cell_height;
+    emit verticalCellCountChanged(this->_vertical_cell_count);
 }
 
 std::vector<QRgb> Configuration::levels() const {
@@ -134,6 +135,15 @@ void Configuration::setShowGrid(bool show_grid) {
     emit showGridChanged(this->_show_grid);
 }
 
+bool Configuration::showIsolines() const {
+    return this->_show_isolines;
+}
+
+void Configuration::setShowIsolines(bool show_isolines) {
+    this->_show_isolines = show_isolines;
+    emit showIsolinesChanged(this->_show_isolines);
+}
+
 bool Configuration::load(QTextStream &in) {
     int cell_width, cell_height, n;
     QRgb isolines_color;
@@ -161,8 +171,8 @@ bool Configuration::load(QTextStream &in) {
     int r, g, b;
     in >> r >> g >> b;
     isolines_color = qRgb(r, g, b);
-    this->setCellWidth(cell_width);
-    this->setCellHeight(cell_height);
+    this->setHorizontalCellCount(cell_width);
+    this->setVerticalCellCount(cell_height);
     this->setLevels(levels);
     this->setIsolinesColor(isolines_color);
     return true;
