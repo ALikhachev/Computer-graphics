@@ -24,12 +24,16 @@ namespace IsolinesUtils {
 
         for (auto it = vertices.begin() + 1; it < vertices.end(); ++it) {
             if (point.first.x() == it->first.x()) {
-                start.setY((value - it->second) * std::abs(point.first.y() - it->first.y()) / (point.second - it->second)
-                           + std::min(it->first.y(), point.first.y()));
+                int offset = point.second > it->second ? point.first.y() : it->first.y();
+                int sign = offset == std::max(point.first.y(), it->first.y()) ? -1 : 1;
+                start.setY(sign * std::fabs(value - std::max(point.second, it->second)) * std::abs(point.first.y() - it->first.y()) / std::fabs(point.second - it->second)
+                           + offset);
             }
             if (point.first.y() == it->first.y()) {
-                end.setX((value - it->second) * std::abs(point.first.x() - it->first.x()) / (point.second - it->second)
-                         + std::min(it->first.x(), point.first.x()));
+                int offset = point.second > it->second ? point.first.x() : it->first.x();
+                int sign = offset == std::max(point.first.x(), it->first.x()) ? -1 : 1;
+                end.setX(sign * std::fabs(value - std::max(point.second, it->second)) * std::abs(point.first.x() - it->first.x()) / std::fabs(point.second - it->second)
+                         + offset);
             }
         }
         return std::vector<std::pair<QPoint, QPoint>>{std::make_pair(start, end)};
