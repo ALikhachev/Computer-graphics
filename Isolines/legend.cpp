@@ -15,7 +15,8 @@ Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(
         this->plot();
         this->update();
     });
-    connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &) {
+    connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
+        this->step = (double) this->image.width() / levels.size();
         this->plot();
         this->update();
     });
