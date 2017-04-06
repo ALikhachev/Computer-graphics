@@ -70,6 +70,7 @@ void Isolines::resizeEvent(QResizeEvent *event) {
     if (mul != this->mul) {
         this->mul = mul;
         this->image = QImage(this->config->width() * this->mul, this->config->height() * this->mul, QImage::Format_RGB32);
+        this->min = std::numeric_limits<double>::max();
         plot();
     }
 }
