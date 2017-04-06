@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QAction>
 
+#include "configuration.h"
 #include "function_viewer.h"
 
 class MainWindow : public QMainWindow
@@ -19,7 +20,9 @@ private:
 
     QAction *toolbar_switch;
     QAction *statusbar_switch;
+    QAction *interpolate_colors;
 
+    QSharedPointer<Configuration> config;
     FunctionViewer *function_viewer;
 };
 

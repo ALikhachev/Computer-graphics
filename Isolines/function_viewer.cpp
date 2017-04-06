@@ -2,8 +2,8 @@
 
 #include <QVBoxLayout>
 
-FunctionViewer::FunctionViewer(QWidget *parent) : QWidget(parent),
-    config(new Configuration),
+FunctionViewer::FunctionViewer(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
+    config(config),
     legend(new Legend(this->config, this)),
     isolines(new Isolines(this->config, this))
 {

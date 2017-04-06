@@ -45,3 +45,12 @@ void Configuration::setIsolinesColor(QRgb isolines_color) {
     this->_isolines_color = isolines_color;
     emit isolinesColorChanged(this->_isolines_color);
 }
+
+bool Configuration::interpolate() const {
+    return this->_interpolate;
+}
+
+void Configuration::setInterpolate(bool interpolate) {
+    this->_interpolate = interpolate;
+    emit interpolateChanged(this->_interpolate);
+}

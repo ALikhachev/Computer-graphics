@@ -10,7 +10,8 @@
 #include "function_viewer.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-    function_viewer(new FunctionViewer(this))
+    config(new Configuration),
+    function_viewer(new FunctionViewer(config, this))
 {
     this->setCentralWidget(this->function_viewer);
     this->setupActions();
@@ -50,4 +51,14 @@ void MainWindow::setupActions() {
     });
     this->statusbar_switch->setCheckable(true);
     this->statusbar_switch->setChecked(true);
+
+    QMenu *isolines_menu = this->menuBar()->addMenu(tr("&Isolines"));
+    toolbar->addAction(this->interpolate_colors = isolines_menu->addAction(tr("Interpolate colors"), this, [this] {
+        this->config->setInterpolate(!this->config->interpolate());
+    }));
+    this->interpolate_colors->setCheckable(true);
+    this->interpolate_colors->setChecked(this->config->interpolate());
+    connect(this->config.data(), &Configuration::interpolateChanged, this, [this] (bool b) {
+        this->interpolate_colors->setChecked(b);
+    });
 }
