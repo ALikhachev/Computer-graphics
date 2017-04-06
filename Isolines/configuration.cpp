@@ -5,7 +5,7 @@
 Configuration::Configuration(QObject *parent) : QObject(parent),
     _width(100),
     _height(20),
-    _levels({qRgb(255, 0, 0), qRgb(0, 255, 0), qRgb(0, 0, 255)}),
+    _levels({qRgb(255, 0, 0), qRgb(255, 83, 0), qRgb(255, 223, 0), qRgb(0, 255, 0), qRgb(0, 184, 217), qRgb(0, 0, 255), qRgb(128, 0, 255)}),
     _isolines_color(qRgb(255, 255, 255))
 {
 
