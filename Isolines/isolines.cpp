@@ -18,6 +18,24 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
         this->plot();
         this->update();
     });
+    connect(this->config.data(), &Configuration::widthChanged, this, [this] (int width) {
+        double x_mul =  (double) this->width() / (double) width;
+        double y_mul = (double) this->height() / (double) this->config->height();
+        this->mul = std::min(x_mul, y_mul);
+        this->image = QImage(width * this->mul, this->config->height() * this->mul, QImage::Format_RGB32);
+        this->min = std::numeric_limits<double>::max();
+        this->plot();
+        this->update();
+    });
+    connect(this->config.data(), &Configuration::heightChanged, this, [this] (int height) {
+        double x_mul =  (double) this->width() / (double) this->config->width();
+        double y_mul = (double) this->height() / (double) height;
+        this->mul = std::min(x_mul, y_mul);
+        this->image = QImage(this->config->width() * this->mul, height * this->mul, QImage::Format_RGB32);
+        this->min = std::numeric_limits<double>::max();
+        this->plot();
+        this->update();
+    });
 }
 
 void Isolines::plot() {
