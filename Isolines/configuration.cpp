@@ -15,7 +15,8 @@ Configuration::Configuration(QObject *parent) : QObject(parent),
     _isolines_color(qRgb(0, 0, 0)),
     _interpolate(false),
     _show_grid(false),
-    _show_isolines(false)
+    _show_isolines(false),
+    _show_cell_entries(false)
 {
 
 }

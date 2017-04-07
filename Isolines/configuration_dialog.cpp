@@ -26,9 +26,9 @@ ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, Q
     QGridLayout *layout = new QGridLayout(this);
     QFormLayout *form_layout = new QFormLayout();
     layout->addLayout(form_layout, 0, 0, 1, 4);
-    this->grid_cells_x->setRange(0, 200);
+    this->grid_cells_x->setRange(0, 100);
     this->grid_cells_x->setValue(this->config->horizontalCellCount());
-    this->grid_cells_y->setRange(0, 200);
+    this->grid_cells_y->setRange(0, 100);
     this->grid_cells_y->setValue(this->config->verticalCellCount());
     this->domain_x->setRange(-10000.0, 10000);
     this->domain_x->setMinValue(this->config->startX());

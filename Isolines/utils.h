@@ -181,6 +181,9 @@ namespace IsolinesUtils {
         if (to.x() >= image.width()) {
             to.setX(image.width() - 1);
         }
+        if (from.x() >= image.width()) {
+            return;
+        }
         if ((uchar) color == (uchar) (color >> 8) &&
                 (uchar) color == (uchar) (color >> 16)) {
             uchar *line = image.bits() + from.y() * image.bytesPerLine();
@@ -205,6 +208,9 @@ namespace IsolinesUtils {
         }
         if (to.y() >= image.height()) {
             to.setY(image.height() - 1);
+        }
+        if (from.y() >= image.height()) {
+            return;
         }
         QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
         for (int j = from.y(); j <= to.y(); ++j) {
@@ -232,24 +238,32 @@ namespace IsolinesUtils {
             from.y() >= image.height()
         };
         if (b[0]) {
-            int newY = from.y() + (to.y() - from.y()) * from.x() / (from.x() - to.x());
-            from.setY(newY);
-            from.setX(0);
+            if (from.x() != to.x()) {
+                int newY = from.y() + (to.y() - from.y()) * from.x() / (from.x() - to.x());
+                from.setY(newY);
+                from.setX(0);
+            }
         }
         if (b[1]) {
-            int newY = from.y() + (to.y() - from.y()) * (image.width() - 1 - from.x()) / (to.x() - from.x());
-            from.setY(newY);
-            from.setX(image.width() - 1);
+            if (to.x() != from.x()) {
+                int newY = from.y() + (to.y() - from.y()) * (image.width() - 1 - from.x()) / (to.x() - from.x());
+                from.setY(newY);
+                from.setX(image.width() - 1);
+            }
         }
         if (b[2]) {
-            int newX = from.x() + (to.x() - from.x()) * from.y() / (from.y() - to.y());
-            from.setX(newX);
-            from.setY(0);
+            if (from.y() != to.y()) {
+                int newX = from.x() + (to.x() - from.x()) * from.y() / (from.y() - to.y());
+                from.setX(newX);
+                from.setY(0);
+            }
         }
         if (b[3]) {
-            int newX = from.x() + (to.x() - from.x()) * (image.height() - 1 - from.y()) / (to.y() - from.y());
-            from.setX(newX);
-            from.setY(image.height() - 1);
+            if (to.y() != from.y()) {
+                int newX = from.x() + (to.x() - from.x()) * (image.height() - 1 - from.y()) / (to.y() - from.y());
+                from.setX(newX);
+                from.setY(image.height() - 1);
+            }
         }
     }
 
