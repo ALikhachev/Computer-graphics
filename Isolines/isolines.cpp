@@ -106,7 +106,7 @@ void Isolines::drawGrid() {
     }
     for (double j = cell_height; j < this->image.height(); j += cell_height) {
         for (int i = 0; i < this->image.width(); ++i) {
-            pixels[(int) j * this->image.width() + i] = qRgb(0, 0, 0);
+            pixels[(int) std::round(j) * this->image.width() + i] = qRgb(0, 0, 0);
         }
     }
 }
@@ -126,16 +126,16 @@ void Isolines::drawIsolines() {
     for (int j = 0; j < vertical_cells; ++j) {
         for (int i = 0; i < horizontal_cells; ++i) {
             std::vector<std::pair<QPoint, double>> cell{
-                        std::make_pair(QPoint( i * scaled_cell_width,       j * scaled_cell_height),
+                        std::make_pair(QPoint((int) std::round(i * scaled_cell_width),       (int) std::round(j * scaled_cell_height)),
                                        f( i * cell_width + this->config->startX(),       height - j * cell_height + this->config->startY())),
 
-                        std::make_pair(QPoint((i + 1) * scaled_cell_width,  j * scaled_cell_height),
+                        std::make_pair(QPoint((int) std::round((i + 1) * scaled_cell_width),  (int) std::round(j * scaled_cell_height)),
                                        f((i + 1) * cell_width + this->config->startX(),  height - j * cell_height + this->config->startY())),
 
-                        std::make_pair(QPoint( i * scaled_cell_width,      (j + 1) * scaled_cell_height),
+                        std::make_pair(QPoint((int) std::round(i * scaled_cell_width),      (int) std::round((j + 1) * scaled_cell_height)),
                                        f( i * cell_width + this->config->startX(),      height - (j + 1) * cell_height + this->config->startY())),
 
-                        std::make_pair(QPoint((i + 1) * scaled_cell_width, (j + 1) * scaled_cell_height),
+                        std::make_pair(QPoint((int) std::round((i + 1) * scaled_cell_width), (int) std::round((j + 1) * scaled_cell_height)),
                                        f((i + 1) * cell_width + this->config->startX(), height - (j + 1) * cell_height + this->config->startY()))
             };
             double middle_value = f(i * cell_width / 2 + this->config->startX(), height - j * cell_height / 2 + this->config->startY());
