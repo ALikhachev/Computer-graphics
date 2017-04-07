@@ -29,6 +29,7 @@ private:
     QAction *interpolate_colors;
     QAction *show_grid;
     QAction *show_isolines;
+    QAction *show_entries;
 
     QSharedPointer<Configuration> config;
     FunctionViewer *function_viewer;

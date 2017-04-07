@@ -6,5 +6,6 @@
         <file>icons/grid.png</file>
         <file>icons/interpolation.png</file>
         <file>icons/isolines.png</file>
+        <file>icons/entries.png</file>
     </qresource>
 </RCC>

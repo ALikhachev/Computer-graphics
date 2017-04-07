@@ -20,6 +20,7 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
     connect(this->config.data(), &Configuration::interpolateChanged, this, Isolines::replotImageB);
     connect(this->config.data(), &Configuration::showGridChanged, this, Isolines::replotImageB);
     connect(this->config.data(), &Configuration::showIsolinesChanged, this, Isolines::replotImageB);
+    connect(this->config.data(), &Configuration::showEntriesChanged, this, Isolines::replotImageB);
     connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
         this->config->setFStep((this->config->fMax() - this->config->fMin()) / (double) levels.size());
         this->replotImage();
@@ -120,6 +121,7 @@ void Isolines::drawIsolines() {
     int default_isolines = this->config->levels().size() - 1;
     double min = this->config->fMin();
     double step = this->config->fStep();
+    bool show_entries = this->config->showEntries();
     for (int j = 0; j < vertical_cells; ++j) {
         for (int i = 0; i < horizontal_cells; ++i) {
             std::vector<std::pair<QPoint, double>> cell{
@@ -140,12 +142,20 @@ void Isolines::drawIsolines() {
                 double isoline_level = min + (k + 1) * step;
                 std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, isoline_level, middle_value);
                 for (auto it = isolines.begin(); it < isolines.end(); ++it) {
+                    if (show_entries) {
+                        IsolinesUtils::drawCircle(this->image, it->first, CircleRadius, qRgb(0, 0, 0));
+                        IsolinesUtils::drawCircle(this->image, it->second, CircleRadius, qRgb(0, 0, 0));
+                    }
                     IsolinesUtils::drawLine(this->image, it->first, it->second, color);
                 }
             }
             if (this->has_user_isoline) {
                 std::vector<std::pair<QPoint, QPoint>> isolines = IsolinesUtils::handleCell(cell, this->user_isoline, middle_value);
                 for (auto it = isolines.begin(); it < isolines.end(); ++it) {
+                    if (show_entries) {
+                        IsolinesUtils::drawCircle(this->image, it->first, CircleRadius, qRgb(0, 0, 0));
+                        IsolinesUtils::drawCircle(this->image, it->second, CircleRadius, qRgb(0, 0, 0));
+                    }
                     IsolinesUtils::drawLine(this->image, it->first, it->second, color);
                 }
             }

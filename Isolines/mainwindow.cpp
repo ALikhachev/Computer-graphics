@@ -88,8 +88,20 @@ void MainWindow::setupActions() {
     this->show_isolines->setChecked(this->config->showIsolines());
     connect(this->config.data(), &Configuration::showIsolinesChanged, this, [this] (bool b) {
         this->show_isolines->setChecked(b);
+        this->show_entries->setDisabled(!b);
     });
     this->show_isolines->setStatusTip("Show/hide isolines");
+
+    toolbar->addAction(this->show_entries = isolines_menu->addAction(QIcon(":/icons/entries.png"), tr("Show cell entries"), this, [this] {
+        this->config->setShowEntries(!this->config->showEntries());
+    }));
+    this->show_entries->setCheckable(true);
+    this->show_entries->setChecked(this->config->showEntries());
+    this->show_entries->setDisabled(!this->config->showIsolines());
+    connect(this->config.data(), &Configuration::showEntriesChanged, this, [this] (bool b) {
+        this->show_entries->setChecked(b);
+    });
+    this->show_entries->setStatusTip("Show/hide points of entry isolines into cells");
 
     QAction *edit_configuration_action = isolines_menu->addAction(QIcon(":/icons/config.png"),
                                                                   tr("Edit configuration"),

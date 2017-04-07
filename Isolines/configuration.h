@@ -21,6 +21,7 @@ class Configuration : public QObject
     Q_PROPERTY(QRgb isolinesColor READ isolinesColor WRITE setIsolinesColor NOTIFY isolinesColorChanged)
     Q_PROPERTY(bool interpolate READ interpolate WRITE setInterpolate NOTIFY interpolateChanged)
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid NOTIFY showGridChanged)
+    Q_PROPERTY(bool showEntries READ showEntries WRITE setShowEntries NOTIFY showEntriesChanged)
 public:
     explicit Configuration(QObject *parent = 0);
     double startX() const;
@@ -51,6 +52,8 @@ public:
     void setShowGrid(bool);
     bool showIsolines() const;
     void setShowIsolines(bool);
+    bool showEntries() const;
+    void setShowEntries(bool);
     bool load(QTextStream &);
     void update();
 
@@ -69,6 +72,7 @@ signals:
     void interpolateChanged(bool);
     void showGridChanged(bool);
     void showIsolinesChanged(bool);
+    void showEntriesChanged(bool);
     void configurationUpdated();
 
 private:
@@ -86,6 +90,7 @@ private:
     bool _interpolate;
     bool _show_grid;
     bool _show_isolines;
+    bool _show_cell_entries;
 };
 
 #endif // CONFIGURATION_H

@@ -260,6 +260,38 @@ namespace IsolinesUtils {
             drawLineBresenham(image, from, to, color);
         }
     }
+
+    inline void setPixel(QImage &image, int x, int y, QRgb color) {
+        if (x < 0 || x >= image.width() || y < 0 || y >= image.height()) return;
+        QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
+        pixels[y * image.width() + x] = color;
+    }
+
+    inline void drawCircle(QImage &image, QPoint center, int radius, QRgb color) {
+        int x = 0;
+        int y = radius;
+        int delta = 1 - 2 * radius;
+        int error = 0;
+        while (y >= 0) {
+            setPixel(image, center.x() + x, center.y() + y, color);
+            setPixel(image, center.x() + x, center.y() - y, color);
+            setPixel(image, center.x() - x, center.y() + y, color);
+            setPixel(image, center.x() - x, center.y() - y, color);
+            error = 2 * (delta + y) - 1;
+            if ((delta < 0) && (error <= 0)) {
+                delta += 2 * ++x + 1;
+                continue;
+            }
+            error = 2 * (delta - x) - 1;
+            if ((delta > 0) && (error > 0)) {
+                delta += 1 - 2 * --y;
+                continue;
+            }
+            x++;
+            delta += 2 * (x - y);
+            --y;
+        }
+    }
 }
 
 #endif // UTILS_H

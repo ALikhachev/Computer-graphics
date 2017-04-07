@@ -53,6 +53,7 @@ private:
     double scale_factor_y;
     IsolinesMousePosition position;
     bool continious_isoline_mode;
+    const static int CircleRadius = 3;
 };
 
 #endif // ISOLINES_H

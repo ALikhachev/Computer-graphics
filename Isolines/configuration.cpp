@@ -179,6 +179,15 @@ bool Configuration::load(QTextStream &in) {
     return true;
 }
 
+bool Configuration::showEntries() const {
+    return this->_show_cell_entries;
+}
+
+void Configuration::setShowEntries(bool b) {
+    this->_show_cell_entries = b;
+    emit showEntriesChanged(this->_show_cell_entries);
+}
+
 void Configuration::update() {
     emit configurationUpdated();
 }
