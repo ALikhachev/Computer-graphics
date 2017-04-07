@@ -8,8 +8,10 @@
 #include <QScreen>
 #include <QErrorMessage>
 #include <QFileDialog>
+#include <QScopedPointer>
 
 #include "about_view.h"
+#include "configuration_dialog.h"
 #include "function_viewer.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
@@ -57,25 +59,6 @@ void MainWindow::setupActions() {
     QAction *quit_action = file_menu->addAction(tr("&Quit..."), this, &MainWindow::close, QKeySequence(QString("Ctrl+Q")));
     quit_action->setStatusTip("Quit the application");
 
-    QMenu *view_menu = this->menuBar()->addMenu(tr("&View"));
-    this->toolbar_switch = view_menu->addAction(tr("&Toolbar"), this, [this, toolbar] {
-        bool b = toolbar->isHidden();
-        toolbar->setHidden(!b);
-        this->toolbar_switch->setChecked(b);
-    });
-    this->toolbar_switch->setCheckable(true);
-    this->toolbar_switch->setChecked(true);
-    this->toolbar_switch->setStatusTip("Show/hide toolbar");
-
-    this->statusbar_switch = view_menu->addAction(tr("&Statusbar"), this, [this] {
-        bool b = this->statusBar()->isHidden();
-        this->statusBar()->setHidden(!b);
-        this->statusbar_switch->setChecked(b);
-    });
-    this->statusbar_switch->setCheckable(true);
-    this->statusbar_switch->setChecked(true);
-    this->statusbar_switch->setStatusTip("Show/hide statusbar");
-
     QMenu *isolines_menu = this->menuBar()->addMenu(tr("&Isolines"));
     toolbar->addAction(this->interpolate_colors = isolines_menu->addAction(tr("Interpolate colors"), this, [this] {
         this->config->setInterpolate(!this->config->interpolate());
@@ -107,6 +90,29 @@ void MainWindow::setupActions() {
     });
     this->show_isolines->setStatusTip("Show/hide isolines");
 
+    QAction *edit_configuration_action = isolines_menu->addAction(tr("Edit configuration"), this, &MainWindow::showConfiguration);
+    toolbar->addAction(edit_configuration_action);
+    edit_configuration_action->setStatusTip("Open configuration edit window");
+
+    QMenu *view_menu = this->menuBar()->addMenu(tr("&View"));
+    this->toolbar_switch = view_menu->addAction(tr("&Toolbar"), this, [this, toolbar] {
+        bool b = toolbar->isHidden();
+        toolbar->setHidden(!b);
+        this->toolbar_switch->setChecked(b);
+    });
+    this->toolbar_switch->setCheckable(true);
+    this->toolbar_switch->setChecked(true);
+    this->toolbar_switch->setStatusTip("Show/hide toolbar");
+
+    this->statusbar_switch = view_menu->addAction(tr("&Statusbar"), this, [this] {
+        bool b = this->statusBar()->isHidden();
+        this->statusBar()->setHidden(!b);
+        this->statusbar_switch->setChecked(b);
+    });
+    this->statusbar_switch->setCheckable(true);
+    this->statusbar_switch->setChecked(true);
+    this->statusbar_switch->setStatusTip("Show/hide statusbar");
+
     QAction *about_action = this->menuBar()->addAction(tr("&?"), this, SLOT(showAbout()));
     about_action->setIcon(QIcon(":/icons/about.png"));
     about_action->setStatusTip("About this application");
@@ -133,4 +139,11 @@ void MainWindow::showAbout() {
     about_view.setModal(true);
     about_view.show();
     about_view.exec();
+}
+
+void MainWindow::showConfiguration() {
+    ConfigurationDialog conf_dialog(this->config, this);
+    conf_dialog.setModal(true);
+    conf_dialog.show();
+    conf_dialog.exec();
 }

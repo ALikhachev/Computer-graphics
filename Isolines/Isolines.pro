@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     legend.cpp \
     isolines.cpp \
     configuration.cpp \
-    about_view.cpp
+    about_view.cpp \
+    configuration_dialog.cpp \
+    range_spin_boxes.cpp
 
 HEADERS  += mainwindow.h \
     function_viewer.h \
@@ -37,7 +39,9 @@ HEADERS  += mainwindow.h \
     isolines.h \
     configuration.h \
     about_view.h \
-    utils.h
+    utils.h \
+    configuration_dialog.h \
+    range_spin_boxes.h
 
 DISTFILES += \
     data/input.txt
