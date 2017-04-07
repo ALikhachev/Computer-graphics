@@ -137,9 +137,9 @@ namespace IsolinesUtils {
             pixels[y * image.width() + x] = color;
             if (err > 0) {
                 x += sign;
-                err = err - dy;
+                err = err - 2 * dy;
             }
-            err = err + dx;
+            err = err + 2 * dx;
         }
     }
 
@@ -162,9 +162,9 @@ namespace IsolinesUtils {
             pixels[y * image.width() + x] = color;
             if (err > 0) {
                 y += sign;
-                err = err - dx;
+                err = err - 2 * dx;
             }
-            err = err + dy;
+            err = err + 2 * dy;
         }
     }
 
