@@ -32,6 +32,11 @@ protected:
 signals:
     void pointerFunctionValueUpdated(IsolinesMousePosition position);
 
+private slots:
+    void resizeImage();
+    void replotImage();
+    void replotImageB(bool);
+
 private:
     void plot();
     void drawGrid();

@@ -52,6 +52,7 @@ public:
     bool showIsolines() const;
     void setShowIsolines(bool);
     bool load(QTextStream &);
+    void update();
 
 signals:
     void startXChanged(double);
@@ -68,6 +69,7 @@ signals:
     void interpolateChanged(bool);
     void showGridChanged(bool);
     void showIsolinesChanged(bool);
+    void configurationUpdated();
 
 private:
     double _start_x;

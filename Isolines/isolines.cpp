@@ -14,22 +14,15 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
 {
     this->setAttribute(Qt::WA_Hover);
     this->setMouseTracking(true);
-    connect(this->config.data(), &Configuration::interpolateChanged, this, [this] (bool) {
-        this->plot();
-        this->update();
-    });
-    connect(this->config.data(), &Configuration::showGridChanged, this, [this] (bool) {
-        this->plot();
-        this->update();
-    });
-    connect(this->config.data(), &Configuration::showIsolinesChanged, this, [this] (bool) {
-        this->plot();
-        this->update();
-    });
+    connect(this->config.data(), &Configuration::configurationUpdated, this, Isolines::replotImage);
+    connect(this->config.data(), &Configuration::widthChanged, this, Isolines::resizeImage);
+    connect(this->config.data(), &Configuration::heightChanged, this, Isolines::resizeImage);
+    connect(this->config.data(), &Configuration::interpolateChanged, this, Isolines::replotImageB);
+    connect(this->config.data(), &Configuration::showGridChanged, this, Isolines::replotImageB);
+    connect(this->config.data(), &Configuration::showIsolinesChanged, this, Isolines::replotImageB);
     connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
         this->config->setFStep((this->config->fMax() - this->config->fMin()) / (double) levels.size());
-        this->plot();
-        this->update();
+        this->replotImage();
     });
 }
 
@@ -104,9 +97,13 @@ void Isolines::drawGrid() {
             pixels[j * this->image.width() + (int) i] = qRgb(0, 0, 0);
         }
     }
-    for (double j = cell_height; j < this->image.height(); j += cell_height) {
+    for (double j = cell_height; ; j += cell_height) {
+        int y = (int) std::round(j);
+        if (y >= this->image.height()) {
+            return;
+        }
         for (int i = 0; i < this->image.width(); ++i) {
-            pixels[(int) std::round(j) * this->image.width() + i] = qRgb(0, 0, 0);
+            pixels[y * this->image.width() + i] = qRgb(0, 0, 0);
         }
     }
 }
@@ -156,12 +153,8 @@ void Isolines::drawIsolines() {
     }
 }
 
-void Isolines::resizeEvent(QResizeEvent *event) {
-    this->scale_factor_x =  (double) event->size().width() / (double) this->config->width();
-    this->scale_factor_y = (double) event->size().height() / (double) this->config->height();
-    this->image = QImage(this->config->width() * this->scale_factor_x, this->config->height() * this->scale_factor_y, QImage::Format_RGB32);
-    this->config->setFMin(std::numeric_limits<double>::max());
-    plot();
+void Isolines::resizeEvent(QResizeEvent *) {
+    this->resizeImage();
 }
 
 bool Isolines::event(QEvent *event) {
@@ -220,4 +213,27 @@ void Isolines::mouseReleaseEvent(QMouseEvent *event) {
 void Isolines::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.drawImage(0, 0, this->image);
+}
+
+void Isolines::resizeImage() {
+    double f_x = (double) this->width() / (double) this->config->width();
+    double f_y = (double) this->height() / (double) this->config->height();
+    if (this->scale_factor_x != f_x || this->scale_factor_y != f_y) {
+        this->scale_factor_x =  (double) this->width() / (double) this->config->width();
+        this->scale_factor_y = (double) this->height() / (double) this->config->height();
+        this->image = QImage(this->config->width() * this->scale_factor_x, this->config->height() * this->scale_factor_y, QImage::Format_RGB32);
+        this->config->setFMin(std::numeric_limits<double>::max());
+        this->plot();
+        this->update();
+    }
+}
+
+void Isolines::replotImage() {
+    this->plot();
+    this->update();
+}
+
+void Isolines::replotImageB(bool) {
+    this->plot();
+    this->update();
 }

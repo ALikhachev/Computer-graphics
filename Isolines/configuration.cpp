@@ -175,5 +175,10 @@ bool Configuration::load(QTextStream &in) {
     this->setVerticalCellCount(cell_height);
     this->setLevels(levels);
     this->setIsolinesColor(isolines_color);
+    this->update();
     return true;
+}
+
+void Configuration::update() {
+    emit configurationUpdated();
 }
