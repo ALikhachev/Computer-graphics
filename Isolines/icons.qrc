@@ -2,5 +2,9 @@
     <qresource prefix="/">
         <file>icons/about.png</file>
         <file>icons/open.png</file>
+        <file>icons/config.png</file>
+        <file>icons/grid.png</file>
+        <file>icons/interpolation.png</file>
+        <file>icons/isolines.png</file>
     </qresource>
 </RCC>

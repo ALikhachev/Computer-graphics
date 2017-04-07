@@ -60,7 +60,8 @@ void MainWindow::setupActions() {
     quit_action->setStatusTip("Quit the application");
 
     QMenu *isolines_menu = this->menuBar()->addMenu(tr("&Isolines"));
-    toolbar->addAction(this->interpolate_colors = isolines_menu->addAction(tr("Interpolate colors"), this, [this] {
+    toolbar->addAction(this->interpolate_colors = isolines_menu->addAction(QIcon(":/icons/interpolation.png"),
+                                                                           tr("Interpolate colors"), this, [this] {
         this->config->setInterpolate(!this->config->interpolate());
     }));
     this->interpolate_colors->setCheckable(true);
@@ -70,7 +71,7 @@ void MainWindow::setupActions() {
     });
     this->interpolate_colors->setStatusTip("Enable/disable color interpolation");
 
-    toolbar->addAction(this->show_grid = isolines_menu->addAction(tr("Show grid"), this, [this] {
+    toolbar->addAction(this->show_grid = isolines_menu->addAction(QIcon(":/icons/grid.png"), tr("Show grid"), this, [this] {
         this->config->setShowGrid(!this->config->showGrid());
     }));
     this->show_grid->setCheckable(true);
@@ -80,7 +81,7 @@ void MainWindow::setupActions() {
     });
     this->show_grid->setStatusTip("Show/hide grid");
 
-    toolbar->addAction(this->show_isolines = isolines_menu->addAction(tr("Show isolines"), this, [this] {
+    toolbar->addAction(this->show_isolines = isolines_menu->addAction(QIcon(":/icons/isolines.png"), tr("Show isolines"), this, [this] {
         this->config->setShowIsolines(!this->config->showIsolines());
     }));
     this->show_isolines->setCheckable(true);
@@ -90,7 +91,9 @@ void MainWindow::setupActions() {
     });
     this->show_isolines->setStatusTip("Show/hide isolines");
 
-    QAction *edit_configuration_action = isolines_menu->addAction(tr("Edit configuration"), this, &MainWindow::showConfiguration);
+    QAction *edit_configuration_action = isolines_menu->addAction(QIcon(":/icons/config.png"),
+                                                                  tr("Edit configuration"),
+                                                                  this, &MainWindow::showConfiguration);
     toolbar->addAction(edit_configuration_action);
     edit_configuration_action->setStatusTip("Open configuration edit window");
 
