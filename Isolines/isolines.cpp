@@ -39,7 +39,7 @@ void Isolines::plot() {
     if (min - std::numeric_limits<double>::max() < 1e-20) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
-                double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, height - ((double) j) / this->scale_factor_y - y_offset);
+                double val = Isolines::f(((double) i) / this->scale_factor_x - x_offset, height - ((double) j) / this->scale_factor_y - y_offset);
                 if (val < min) {
                     min = val;
                 }
@@ -55,7 +55,7 @@ void Isolines::plot() {
     double step = this->config->fStep();
     for (int j = 0; j < this->image.height(); ++j) {
         for (int i = 0; i < this->image.width(); ++i) {
-            double val = Isolines::f((double) i / this->scale_factor_x + x_offset, height - (double) j / this->scale_factor_y - y_offset);
+            double val = Isolines::f((double) i / this->scale_factor_x - x_offset, height - (double) j / this->scale_factor_y - y_offset);
             int level_index = ((val - min) / step);
             QColor color = QColor(levels[level_index]);
             if (this->config->interpolate()) {
@@ -126,16 +126,16 @@ void Isolines::drawIsolines() {
         for (int i = 0; i < horizontal_cells; ++i) {
             std::vector<std::pair<QPoint, double>> cell{
                         std::make_pair(QPoint((int) std::round(i * scaled_cell_width),       (int) std::round(j * scaled_cell_height)),
-                                       f( i * cell_width + this->config->startX(),       height - j * cell_height + this->config->startY())),
+                                       f( i * cell_width - this->config->startX(),       height - j * cell_height - this->config->startY())),
 
                         std::make_pair(QPoint((int) std::round((i + 1) * scaled_cell_width),  (int) std::round(j * scaled_cell_height)),
-                                       f((i + 1) * cell_width + this->config->startX(),  height - j * cell_height + this->config->startY())),
+                                       f((i + 1) * cell_width - this->config->startX(),  height - j * cell_height - this->config->startY())),
 
                         std::make_pair(QPoint((int) std::round(i * scaled_cell_width),      (int) std::round((j + 1) * scaled_cell_height)),
-                                       f( i * cell_width + this->config->startX(),      height - (j + 1) * cell_height + this->config->startY())),
+                                       f( i * cell_width - this->config->startX(),      height - (j + 1) * cell_height - this->config->startY())),
 
                         std::make_pair(QPoint((int) std::round((i + 1) * scaled_cell_width), (int) std::round((j + 1) * scaled_cell_height)),
-                                       f((i + 1) * cell_width + this->config->startX(), height - (j + 1) * cell_height + this->config->startY()))
+                                       f((i + 1) * cell_width - this->config->startX(), height - (j + 1) * cell_height - this->config->startY()))
             };
             double middle_value = f(i * cell_width / 2 + this->config->startX(), height - j * cell_height / 2 + this->config->startY());
             for (int k = 0; k < default_isolines; ++k) {
@@ -177,8 +177,8 @@ bool Isolines::event(QEvent *event) {
 }
 
 void Isolines::mouseMoveEvent(QMouseEvent *event) {
-    double x = (double) event->x() / this->scale_factor_x + this->config->startX();
-    double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
+    double x = (double) event->x() / this->scale_factor_x - this->config->startX();
+    double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y - this->config->startY();
     double val = Isolines::f(x, y);
     this->position = {
         .x = x,
@@ -200,8 +200,8 @@ void Isolines::mousePressEvent(QMouseEvent *event) {
     }
     if (event->button() == Qt::LeftButton) {
         this->has_user_isoline = true;
-        double x = (double) event->x() / this->scale_factor_x + this->config->startX();
-        double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
+        double x = (double) event->x() / this->scale_factor_x - this->config->startX();
+        double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y - this->config->startY();
         this->user_isoline = Isolines::f(x, y);
         this->continious_isoline_mode = true;
     } else {
