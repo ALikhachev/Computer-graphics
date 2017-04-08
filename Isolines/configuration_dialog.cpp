@@ -3,16 +3,7 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QColor>
-
-QRgbListItem::QRgbListItem(QColor color, QListWidget *parent) : QListWidgetItem(parent, QListWidgetItem::UserType),
-    _color(color)
-{
-    this->setText(QString("RGB(%1, %2, %3)").arg(color.red()).arg(color.green()).arg(color.blue()));
-}
-
-QColor QRgbListItem::color() const {
-    return this->_color;
-}
+#include <QColorDialog>
 
 ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, QWidget *parent) : QDialog(parent),
     config(config),
@@ -55,7 +46,8 @@ void ConfigurationDialog::setupColorList(QGridLayout *layout) {
     this->colors_list->setSelectionMode(QAbstractItemView::SingleSelection);
     auto levels = this->config->levels();
     for (auto it = levels.begin(); it < levels.end(); ++it) {
-        QRgbListItem *item = new QRgbListItem(QColor(*it), this->colors_list);
+        QListWidgetItem *item = new QListWidgetItem(this->colors_list);
+        item->setBackgroundColor(QColor(*it));
         this->colors_list->addItem(item);
     };
     QSpinBox *r_box = new QSpinBox(this);
@@ -78,7 +70,8 @@ void ConfigurationDialog::setupColorList(QGridLayout *layout) {
         remove_selected_color->setDisabled(this->colors_list->count() == 1);
     });
     connect(add_color_button, &QPushButton::clicked, this, [this, r_box, g_box, b_box, remove_selected_color] {
-        QRgbListItem *item = new QRgbListItem(QColor(r_box->value(), g_box->value(), b_box->value()), this->colors_list);
+        QListWidgetItem *item = new QListWidgetItem(this->colors_list);
+        item->setBackgroundColor(QColor(r_box->value(), g_box->value(), b_box->value()));
         this->colors_list->addItem(item);
         remove_selected_color->setDisabled(false);
     });
@@ -100,7 +93,7 @@ void ConfigurationDialog::save() {
     this->config->update();
     std::vector<QRgb> levels;
     for (int i = 0; i < this->colors_list->count(); ++i) {
-        QColor color = dynamic_cast<QRgbListItem *>(this->colors_list->item(i))->color();
+        QColor color = this->colors_list->item(i)->backgroundColor();
         levels.push_back(color.rgb());
     }
     this->config->setLevels(levels);

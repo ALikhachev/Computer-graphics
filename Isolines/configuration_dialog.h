@@ -12,15 +12,6 @@
 #include "configuration.h"
 #include "range_spin_boxes.h"
 
-class QRgbListItem : public QListWidgetItem
-{
-public:
-    QRgbListItem(QColor color, QListWidget * parent = 0);
-    QColor color() const;
-private:
-    QColor _color;
-};
-
 class ConfigurationDialog : public QDialog
 {
     Q_OBJECT
