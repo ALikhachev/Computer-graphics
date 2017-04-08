@@ -9,6 +9,8 @@
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QScopedPointer>
+#include <QSettings>
+#include <QApplication>
 
 #include "about_view.h"
 #include "configuration_dialog.h"
@@ -20,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 {
     this->setCentralWidget(this->function_viewer);
     this->setupActions();
+    this->updateRecentFileActions();
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
     connect(this->function_viewer, &FunctionViewer::pointerFunctionValueUpdated, this, [this] (IsolinesMousePosition position) {
         if (position.out_of_screen) {
@@ -52,9 +55,18 @@ void MainWindow::setupActions() {
     QMenu *file_menu = this->menuBar()->addMenu(tr("&File"));
     QAction *open_action = file_menu->addAction(
                 QIcon::fromTheme("document-open", QIcon(":/icons/open.png")),
-                tr("&Open"), this, &MainWindow::openConfig, QKeySequence(QString("Ctrl+O")));
+                tr("&Open"), this, &MainWindow::selectAndOpenConfig, QKeySequence(QString("Ctrl+O")));
     toolbar->addAction(open_action);
     open_action->setStatusTip("Load configuration from specified file");
+
+    this->separator_act = file_menu->addSeparator();
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        this->recent_file_acts[i] = new QAction(this);
+        this->recent_file_acts[i]->setVisible(false);
+        connect(this->recent_file_acts[i], &QAction::triggered, this, &MainWindow::openRecentFile);
+        file_menu->addAction(this->recent_file_acts[i]);
+    }
+
     file_menu->addSeparator();
     QAction *quit_action = file_menu->addAction(tr("&Quit..."), this, &MainWindow::close, QKeySequence(QString("Ctrl+Q")));
     quit_action->setStatusTip("Quit the application");
@@ -133,20 +145,28 @@ void MainWindow::setupActions() {
     about_action->setStatusTip("About this application");
 }
 
-void MainWindow::openConfig() {
+void MainWindow::selectAndOpenConfig() {
     QString filename = QFileDialog::getOpenFileName();
-    if (filename.length() == 0) {
-        return;
+    if (!filename.isEmpty()) {
+        this->openConfig(filename);
     }
+}
+
+void MainWindow::openConfig(const QString &filename) {
     QFile f(filename);
     if (!f.open(QIODevice::ReadOnly)) {
-        showError(QString("Cannot open file %1 to load data").arg(filename));
+        this->showError(QString("Cannot open file %1 to load data").arg(filename));
         return;
     }
     QTextStream in(&f);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     if (!this->config->load(in)) {
-        showError(QString("Incorrect configuration file %1").arg(filename));
+        this->showError(QString("Incorrect configuration file %1").arg(filename));
+    } else {
+        this->setCurrentFile(filename);
+        this->statusBar()->showMessage(tr("Configuration loaded"), 2000);
     }
+    QApplication::restoreOverrideCursor();
 }
 
 void MainWindow::showAbout() {
@@ -161,4 +181,59 @@ void MainWindow::showConfiguration() {
     conf_dialog.setModal(true);
     conf_dialog.show();
     conf_dialog.exec();
+}
+
+void MainWindow::setCurrentFile(const QString &fileName)
+{
+    this->setWindowFilePath(fileName);
+
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles) {
+        files.removeLast();
+    }
+
+    settings.setValue("recentFileList", files);
+
+    foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+        MainWindow *mainWin = qobject_cast<MainWindow *>(widget);
+        if (mainWin) {
+            mainWin->updateRecentFileActions();
+        }
+    }
+}
+
+void MainWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(this->sender());
+    if (action) {
+        this->openConfig(action->data().toString());
+    }
+}
+
+void MainWindow::updateRecentFileActions()
+{
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int num_recent_files = qMin(files.size(), (int) MaxRecentFiles);
+
+    for (int i = 0; i < num_recent_files; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        this->recent_file_acts[i]->setText(text);
+        this->recent_file_acts[i]->setData(files[i]);
+        this->recent_file_acts[i]->setVisible(true);
+    }
+    for (int j = num_recent_files; j < MaxRecentFiles; ++j) {
+        this->recent_file_acts[j]->setVisible(false);
+    }
+
+    this->separator_act->setVisible(num_recent_files > 0);
+}
+
+QString MainWindow::strippedName(const QString &full_file_name)
+{
+    return QFileInfo(full_file_name).fileName();
 }

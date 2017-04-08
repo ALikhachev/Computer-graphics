@@ -16,13 +16,18 @@ public:
     ~MainWindow();
 
 private slots:
-    void openConfig();
+    void selectAndOpenConfig();
     void showAbout();
     void showConfiguration();
+    void openRecentFile();
 
 private:
     void showError(const QString &text) const;
     void setupActions();
+    void setCurrentFile(const QString &filename);
+    void openConfig(const QString &filename);
+    void updateRecentFileActions();
+    QString strippedName(const QString &full_filename);
 
     QAction *toolbar_switch;
     QAction *statusbar_switch;
@@ -33,6 +38,10 @@ private:
 
     QSharedPointer<Configuration> config;
     FunctionViewer *function_viewer;
+
+    const static int MaxRecentFiles = 5;
+    QAction *separator_act;
+    QAction *recent_file_acts[MaxRecentFiles];
 };
 
 #endif // MAINWINDOW_H

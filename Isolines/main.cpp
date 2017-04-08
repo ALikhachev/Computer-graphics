@@ -3,9 +3,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
+    app.setOrganizationName("Alexander Likhachev");
+    app.setApplicationName("Isolines");
     MainWindow w;
     w.show();
 
-    return a.exec();
+    return app.exec();
 }
