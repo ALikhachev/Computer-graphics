@@ -34,10 +34,13 @@ signals:
 
 private slots:
     void resizeImage();
-    void replotImage();
-    void replotImageB(bool);
+    void repaint();
+    void replot();
+    void repaintB(bool);
+    void replotB(bool);
 
 private:
+    void paint();
     void plot();
     void drawGrid();
     void drawIsolines();
@@ -47,6 +50,7 @@ private:
 
     QSharedPointer<Configuration> config;
     QImage image;
+    QImage image_plot;
     double user_isoline;
     bool has_user_isoline;
     double scale_factor_x;
@@ -54,6 +58,7 @@ private:
     IsolinesMousePosition position;
     bool continious_isoline_mode;
     const static int CircleRadius = 3;
+    bool need_replot;
 };
 
 #endif // ISOLINES_H
