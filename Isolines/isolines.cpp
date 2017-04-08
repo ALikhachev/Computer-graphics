@@ -34,11 +34,11 @@ void Isolines::paint() {
         this->need_replot = false;
     }
     this->image = this->image_plot;
-    if (this->config->showGrid()) {
-        this->drawGrid();
-    }
     if (this->config->showIsolines()) {
         this->drawIsolines();
+    }
+    if (this->config->showGrid()) {
+        this->drawGrid();
     }
 }
 
