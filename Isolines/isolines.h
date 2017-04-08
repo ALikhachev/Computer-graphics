@@ -36,8 +36,6 @@ private slots:
     void resizeImage();
     void repaint();
     void replot();
-    void repaintB(bool);
-    void replotB(bool);
 
 private:
     void paint();

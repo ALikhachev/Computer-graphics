@@ -22,10 +22,10 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
     connect(this->config.data(), &Configuration::startYChanged, this, Isolines::replot);
     connect(this->config.data(), &Configuration::widthChanged, this, Isolines::resizeImage);
     connect(this->config.data(), &Configuration::heightChanged, this, Isolines::resizeImage);
-    connect(this->config.data(), &Configuration::interpolateChanged, this, Isolines::replotB);
-    connect(this->config.data(), &Configuration::showGridChanged, this, Isolines::repaintB);
-    connect(this->config.data(), &Configuration::showIsolinesChanged, this, Isolines::repaintB);
-    connect(this->config.data(), &Configuration::showEntriesChanged, this, Isolines::repaintB);
+    connect(this->config.data(), &Configuration::interpolateChanged, this, Isolines::replot);
+    connect(this->config.data(), &Configuration::showGridChanged, this, Isolines::repaint);
+    connect(this->config.data(), &Configuration::showIsolinesChanged, this, Isolines::repaint);
+    connect(this->config.data(), &Configuration::showEntriesChanged, this, Isolines::repaint);
     connect(this->config.data(), &Configuration::levelsChanged, this, [this] (const std::vector<QRgb> &levels) {
         this->config->setFStep((this->config->fMax() - this->config->fMin()) / (double) levels.size());
         this->replot();
@@ -255,15 +255,7 @@ void Isolines::repaint() {
     this->update();
 }
 
-void Isolines::repaintB(bool) {
-    this->repaint();
-}
-
 void Isolines::replot() {
     this->need_replot = true;
     this->repaint();
-}
-
-void Isolines::replotB(bool) {
-    this->replot();
 }
