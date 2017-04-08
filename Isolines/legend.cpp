@@ -7,10 +7,11 @@
 Legend::Legend(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     config(config),
     image(this->size(), QImage::Format_RGB32),
-    step(0)
+    step(0),
+    has_current_value(false)
 {
-    this->setMinimumHeight(LegendHeight + VTopPadding);
-    this->setMaximumHeight(LegendHeight + VTopPadding);
+    this->setMinimumHeight(LegendHeight + VTopPadding + VBottomPadding);
+    this->setMaximumHeight(LegendHeight + VTopPadding + VBottomPadding);
     connect(this->config.data(), &Configuration::interpolateChanged, this, [this] (bool) {
         this->plot();
         this->update();
@@ -39,6 +40,13 @@ void Legend::paintEvent(QPaintEvent *) {
         const QString str = QString::number(i, 'f', 2);
         int offset = str.length() * CharWidth / 2;
         painter.drawText(k - offset, 18, str);
+    }
+    if (this->has_current_value) {
+        double range = this->config->fMax() - this->config->fMin();
+        int x_offset = HPadding - 5 + std::round((this->current_value - this->config->fMin()) * this->image.width() / range);
+        int y_offset = this->height() - VBottomPadding;
+        QVector<QPoint> arrow{QPoint(x_offset, y_offset + 5), QPoint(x_offset + 10, y_offset + 5), QPoint(x_offset + 5, y_offset + 0)};
+        painter.drawPolygon(arrow);
     }
     painter.drawImage(HPadding, VTopPadding, this->image);
 }
@@ -100,4 +108,10 @@ void Legend::drawBorders() {
             }
         }
     }
+}
+
+void Legend::pointerFunctionValueUpdated(IsolinesMousePosition position) {
+    this->has_current_value = !position.out_of_screen;
+    this->current_value = position.value;
+    this->update();
 }

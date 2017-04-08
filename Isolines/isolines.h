@@ -7,13 +7,7 @@
 #include <QResizeEvent>
 
 #include "configuration.h"
-
-struct IsolinesMousePosition {
-    double x;
-    double y;
-    double value;
-    bool out_of_screen;
-};
+#include "isolines_mouse_position.h"
 
 class Isolines : public QWidget
 {

@@ -15,4 +15,5 @@ FunctionViewer::FunctionViewer(QSharedPointer<Configuration> config, QWidget *pa
     connect(this->isolines, &Isolines::pointerFunctionValueUpdated, this, [this] (IsolinesMousePosition position) {
         emit pointerFunctionValueUpdated(position);
     });
+    connect(this->isolines, &Isolines::pointerFunctionValueUpdated, this->legend, &Legend::pointerFunctionValueUpdated);
 }

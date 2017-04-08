@@ -41,7 +41,8 @@ HEADERS  += mainwindow.h \
     about_view.h \
     utils.h \
     configuration_dialog.h \
-    range_spin_boxes.h
+    range_spin_boxes.h \
+    isolines_mouse_position.h
 
 DISTFILES += \
     data/input.txt
