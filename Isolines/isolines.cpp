@@ -53,9 +53,8 @@ void Isolines::plot() {
     double max = this->config->fMax();
     double x_offset = this->config->startX();
     double y_offset = this->config->startY();
-    double height = this->config->height();
     // find min and max of function, count level step
-    if (min - std::numeric_limits<double>::max() < 1e-15) {
+    if (std::fabs(min - std::numeric_limits<double>::max()) < 1e-15) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
                 double x = ((double) i) / this->scale_factor_x + x_offset;
