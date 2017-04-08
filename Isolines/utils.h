@@ -270,7 +270,21 @@ namespace IsolinesUtils {
     inline void drawLine(QImage &image, QPoint from, QPoint to, QRgb color) {
         if (!tryDrawSimpleLine(image, from, to, color)) {
             clipLine(image, from, to);
+            if (from.x() == to.x() || from.y() == to.y()) {
+                return;
+            }
             clipLine(image, to, from);
+            if (from.x() == to.x() || from.y() == to.y()) {
+                return;
+            }
+            clipLine(image, from, to);
+            if (from.x() == to.x() || from.y() == to.y()) {
+                return;
+            }
+            clipLine(image, to, from);
+            if (from.x() == to.x() || from.y() == to.y()) {
+                return;
+            }
             drawLineBresenham(image, from, to, color);
         }
     }
