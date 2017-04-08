@@ -8,6 +8,8 @@
 #include <QListWidgetItem>
 #include <QListWidget>
 #include <QGridLayout>
+#include <QPushButton>
+#include <QColor>
 
 #include "configuration.h"
 #include "range_spin_boxes.h"
@@ -21,6 +23,7 @@ public:
 private slots:
     void save();
     void addNewColor();
+    void editIsolinesColor();
 
 private:
     void setupColorList(QGridLayout *layout);
@@ -31,6 +34,9 @@ private:
     RangeDoubleSpinBoxes *domain_x;
     RangeDoubleSpinBoxes *domain_y;
     QListWidget *colors_list;
+    QPushButton *remove_selected_color_button;
+    QPushButton *isolines_color_button;
+    QColor isolines_color;
 };
 
 #endif // CONFIGURATION_DIALOG_H

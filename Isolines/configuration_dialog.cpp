@@ -1,8 +1,6 @@
 #include "configuration_dialog.h"
 
 #include <QFormLayout>
-#include <QPushButton>
-#include <QColor>
 #include <QColorDialog>
 #include <QLabel>
 
@@ -12,12 +10,13 @@ ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, Q
     grid_cells_y(new QSpinBox(this)),
     domain_x(new RangeDoubleSpinBoxes(this)),
     domain_y(new RangeDoubleSpinBoxes(this)),
-    colors_list(new QListWidget(this))
+    colors_list(new QListWidget(this)),
+    remove_selected_color_button(new QPushButton(tr("Remove selected color"), this)),
+    isolines_color_button(new QPushButton(tr("Edit isolines color"), this))
 {
     this->setModal(true);
     QGridLayout *layout = new QGridLayout(this);
     QFormLayout *form_layout = new QFormLayout();
-    layout->addLayout(form_layout, 0, 0, 1, 4);
     this->grid_cells_x->setRange(1, 100);
     this->grid_cells_x->setValue(this->config->horizontalCellCount());
     this->grid_cells_y->setRange(1, 100);
@@ -33,12 +32,21 @@ ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, Q
     form_layout->addRow(tr("Domain (X):"), this->domain_x);
     form_layout->addRow(tr("Domain (Y):"), this->domain_y);
     QPushButton *ok_button = new QPushButton(tr("Save"), this);
-    QPushButton *cancel_button = new QPushButton(tr("Cancel"), this);
-    layout->addWidget(ok_button, 4, 2);
-    layout->addWidget(cancel_button, 4, 3);
+    QPushButton *cancel_button = new QPushButton(tr("Cancel"), this);;
     connect(ok_button, &QPushButton::clicked, this, &ConfigurationDialog::save);
     connect(cancel_button, &QPushButton::clicked, this, &QDialog::close);
     this->setupColorList(layout);
+    QPalette pal = this->isolines_color_button->palette();
+    this->isolines_color = QColor(this->config->isolinesColor());
+    pal.setColor(QPalette::Button, this->isolines_color);
+    this->isolines_color_button->setPalette(pal);
+    this->isolines_color_button->setAutoFillBackground(true);
+    connect(this->isolines_color_button, &QPushButton::clicked, this, &ConfigurationDialog::editIsolinesColor);
+
+    layout->addLayout(form_layout, 0, 0, 1, 3);
+    layout->addWidget(ok_button, 4, 1);
+    layout->addWidget(cancel_button, 4, 2);
+    layout->addWidget(this->isolines_color_button, 3, 2);
 }
 
 void ConfigurationDialog::setupColorList(QGridLayout *layout) {
@@ -52,22 +60,20 @@ void ConfigurationDialog::setupColorList(QGridLayout *layout) {
         this->colors_list->addItem(item);
     };
     QPushButton *add_color_button = new QPushButton(tr("Add color"), this);
-    QPushButton *remove_selected_color = new QPushButton(tr("Remove selected color"), this);
-
-    layout->addWidget(new QLabel(tr("Colors of ranges list:"), this), 1, 0, 1, 4);
-    layout->addWidget(this->colors_list, 2, 0, 1, 4);
-    layout->addWidget(add_color_button, 3, 0, 1, 2);
-    layout->addWidget(remove_selected_color, 3, 2, 1, 2);
-    remove_selected_color->setDisabled(true);
-    connect(this->colors_list, &QListWidget::itemSelectionChanged, this, [this, remove_selected_color] {
-        remove_selected_color->setDisabled(this->colors_list->count() == 1);
+    layout->addWidget(new QLabel(tr("Colors of ranges list:"), this), 1, 0, 1, 3);
+    layout->addWidget(this->colors_list, 2, 0, 1, 3);
+    layout->addWidget(add_color_button, 3, 0);
+    layout->addWidget(this->remove_selected_color_button, 3, 1);
+    this->remove_selected_color_button->setDisabled(true);
+    connect(this->colors_list, &QListWidget::itemSelectionChanged, this, [this] {
+        this->remove_selected_color_button->setDisabled(this->colors_list->count() == 1);
     });
     connect(add_color_button, &QPushButton::clicked, this, &ConfigurationDialog::addNewColor);
-    connect(remove_selected_color, &QPushButton::clicked, this, [remove_selected_color, this] {
+    connect(remove_selected_color_button, &QPushButton::clicked, this, [this] {
         if (this->colors_list->count() > 1) {
             qDeleteAll(this->colors_list->selectedItems());
         }
-        remove_selected_color->setDisabled(this->colors_list->count() == 1);
+        this->remove_selected_color_button->setDisabled(this->colors_list->count() == 1);
     });
 }
 
@@ -78,6 +84,7 @@ void ConfigurationDialog::save() {
     this->config->setWidth(this->domain_x->maxValue() - this->domain_x->minValue());
     this->config->setStartY(this->domain_y->minValue());
     this->config->setHeight(this->domain_y->maxValue() - this->domain_y->minValue());
+    this->config->setIsolinesColor(this->isolines_color.rgb());
     this->config->update();
     std::vector<QRgb> levels;
     for (int i = 0; i < this->colors_list->count(); ++i) {
@@ -95,6 +102,20 @@ void ConfigurationDialog::addNewColor() {
         QListWidgetItem *item = new QListWidgetItem(this->colors_list);
         item->setBackgroundColor(color);
         this->colors_list->addItem(item);
+        this->remove_selected_color_button->setDisabled(this->colors_list->count() == 1);
+    });
+    dialog.exec();
+}
+
+void ConfigurationDialog::editIsolinesColor() {
+    QColorDialog dialog;
+    dialog.setModal(true);
+    dialog.setCurrentColor(this->isolines_color);
+    connect(&dialog, &QColorDialog::colorSelected, this, [this] (const QColor &color) {
+        QPalette pal = this->isolines_color_button->palette();
+        pal.setColor(QPalette::Button, color);
+        this->isolines_color = color;
+        this->isolines_color_button->setPalette(pal);
     });
     dialog.exec();
 }
