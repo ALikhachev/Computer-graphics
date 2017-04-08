@@ -1,5 +1,6 @@
 #include "isolines.h"
 
+#include <QApplication>
 #include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
@@ -34,7 +35,9 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
 
 void Isolines::paint() {
     if (this->need_replot) {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
         this->plot();
+        QApplication::restoreOverrideCursor();
         this->need_replot = false;
     }
     this->image = this->image_plot;
@@ -188,7 +191,7 @@ bool Isolines::event(QEvent *event) {
     }
     return QWidget::event(event);
 }
-#include <QDebug>
+
 void Isolines::mouseMoveEvent(QMouseEvent *event) {
     double x = (double) event->x() / this->scale_factor_x + this->config->startX();
     double y = (double) (this->image.height() - 1 - event->y()) / this->scale_factor_y + this->config->startY();
