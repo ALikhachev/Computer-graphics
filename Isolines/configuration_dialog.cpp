@@ -12,7 +12,7 @@ ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, Q
     domain_y(new RangeDoubleSpinBoxes(this)),
     colors_list(new QListWidget(this)),
     remove_selected_color_button(new QPushButton(tr("Remove selected color"), this)),
-    isolines_color_button(new QPushButton(tr("Edit isolines color"), this))
+    isolines_color_button(new QPushButton(this))
 {
     this->setModal(true);
     QGridLayout *layout = new QGridLayout(this);
@@ -41,12 +41,14 @@ ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, Q
     pal.setColor(QPalette::Button, this->isolines_color);
     this->isolines_color_button->setPalette(pal);
     this->isolines_color_button->setAutoFillBackground(true);
+    this->isolines_color_button->setFlat(true);
+    form_layout->addRow(tr("Isolines color:"), this->isolines_color_button);
     connect(this->isolines_color_button, &QPushButton::clicked, this, &ConfigurationDialog::editIsolinesColor);
 
     layout->addLayout(form_layout, 0, 0, 1, 3);
     layout->addWidget(ok_button, 4, 1);
     layout->addWidget(cancel_button, 4, 2);
-    layout->addWidget(this->isolines_color_button, 3, 2);
+
 }
 
 void ConfigurationDialog::setupColorList(QGridLayout *layout) {
@@ -63,7 +65,7 @@ void ConfigurationDialog::setupColorList(QGridLayout *layout) {
     layout->addWidget(new QLabel(tr("Colors of ranges list:"), this), 1, 0, 1, 3);
     layout->addWidget(this->colors_list, 2, 0, 1, 3);
     layout->addWidget(add_color_button, 3, 0);
-    layout->addWidget(this->remove_selected_color_button, 3, 1);
+    layout->addWidget(this->remove_selected_color_button, 3, 1, 1, 2);
     this->remove_selected_color_button->setDisabled(true);
     connect(this->colors_list, &QListWidget::itemSelectionChanged, this, [this] {
         this->remove_selected_color_button->setDisabled(this->colors_list->count() == 1);
