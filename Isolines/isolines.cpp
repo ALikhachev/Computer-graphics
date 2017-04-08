@@ -100,7 +100,7 @@ void Isolines::plot() {
 
 void Isolines::drawGrid() {
     double cell_width = (double) this->image.width() / this->config->horizontalCellCount();
-    double cell_height = (double) this->image.height() / this->config->horizontalCellCount();
+    double cell_height = (double) this->image.height() / this->config->verticalCellCount();
     QRgb *pixels = (QRgb *) this->image.bits();
     for (int j = 0; j < this->image.height(); ++j) {
         for (double i = cell_width; i < this->image.width(); i += cell_width) {
@@ -121,7 +121,7 @@ void Isolines::drawGrid() {
 void Isolines::drawIsolines() {
     QRgb color = this->config->isolinesColor();
     int horizontal_cells = this->config->horizontalCellCount();
-    int vertical_cells = this->config->horizontalCellCount();
+    int vertical_cells = this->config->verticalCellCount();
     double cell_width = (double) this->config->width() / horizontal_cells;
     double cell_height = (double) this->config->height() / vertical_cells;
     double scaled_cell_width = cell_width * this->scale_factor_x;
