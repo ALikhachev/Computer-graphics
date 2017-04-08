@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     config(new Configuration),
     function_viewer(new FunctionViewer(config, this))
 {
+    this->setWindowTitle("Isolines by Alexander Likhachev");
     this->setCentralWidget(this->function_viewer);
     this->setupActions();
     this->updateRecentFileActions();
