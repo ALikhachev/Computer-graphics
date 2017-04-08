@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QColor>
 #include <QColorDialog>
+#include <QLabel>
 
 ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, QWidget *parent) : QDialog(parent),
     config(config),
@@ -50,31 +51,18 @@ void ConfigurationDialog::setupColorList(QGridLayout *layout) {
         item->setBackgroundColor(QColor(*it));
         this->colors_list->addItem(item);
     };
-    QSpinBox *r_box = new QSpinBox(this);
-    r_box->setRange(0, 255);
-    QSpinBox *g_box = new QSpinBox(this);
-    g_box->setRange(0, 255);
-    QSpinBox *b_box = new QSpinBox(this);
-    b_box->setRange(0, 255);
     QPushButton *add_color_button = new QPushButton(tr("Add color"), this);
     QPushButton *remove_selected_color = new QPushButton(tr("Remove selected color"), this);
 
-    layout->addWidget(this->colors_list, 1, 0, 1, 4);
-    layout->addWidget(r_box, 2, 0);
-    layout->addWidget(g_box, 2, 1);
-    layout->addWidget(b_box, 2, 2);
-    layout->addWidget(add_color_button, 2, 3);
-    layout->addWidget(remove_selected_color, 3, 0, 1, 4);
+    layout->addWidget(new QLabel(tr("Colors of ranges list:"), this), 1, 0, 1, 4);
+    layout->addWidget(this->colors_list, 2, 0, 1, 4);
+    layout->addWidget(add_color_button, 3, 0, 1, 2);
+    layout->addWidget(remove_selected_color, 3, 2, 1, 2);
     remove_selected_color->setDisabled(true);
     connect(this->colors_list, &QListWidget::itemSelectionChanged, this, [this, remove_selected_color] {
         remove_selected_color->setDisabled(this->colors_list->count() == 1);
     });
-    connect(add_color_button, &QPushButton::clicked, this, [this, r_box, g_box, b_box, remove_selected_color] {
-        QListWidgetItem *item = new QListWidgetItem(this->colors_list);
-        item->setBackgroundColor(QColor(r_box->value(), g_box->value(), b_box->value()));
-        this->colors_list->addItem(item);
-        remove_selected_color->setDisabled(false);
-    });
+    connect(add_color_button, &QPushButton::clicked, this, &ConfigurationDialog::addNewColor);
     connect(remove_selected_color, &QPushButton::clicked, this, [remove_selected_color, this] {
         if (this->colors_list->count() > 1) {
             qDeleteAll(this->colors_list->selectedItems());
@@ -98,4 +86,15 @@ void ConfigurationDialog::save() {
     }
     this->config->setLevels(levels);
     QDialog::close();
+}
+
+void ConfigurationDialog::addNewColor() {
+    QColorDialog dialog;
+    dialog.setModal(true);
+    connect(&dialog, &QColorDialog::colorSelected, this, [this] (const QColor &color) {
+        QListWidgetItem *item = new QListWidgetItem(this->colors_list);
+        item->setBackgroundColor(color);
+        this->colors_list->addItem(item);
+    });
+    dialog.exec();
 }

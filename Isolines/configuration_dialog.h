@@ -20,6 +20,7 @@ public:
 
 private slots:
     void save();
+    void addNewColor();
 
 private:
     void setupColorList(QGridLayout *layout);
