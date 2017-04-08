@@ -55,7 +55,6 @@ public:
     bool showEntries() const;
     void setShowEntries(bool);
     bool load(QTextStream &);
-    void update();
 
 signals:
     void startXChanged(double);
@@ -73,7 +72,6 @@ signals:
     void showGridChanged(bool);
     void showIsolinesChanged(bool);
     void showEntriesChanged(bool);
-    void configurationUpdated();
 
 private:
     double _start_x;

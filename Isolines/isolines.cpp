@@ -15,7 +15,11 @@ Isolines::Isolines(QSharedPointer<Configuration> config, QWidget *parent) : QWid
 {
     this->setAttribute(Qt::WA_Hover);
     this->setMouseTracking(true);
-    connect(this->config.data(), &Configuration::configurationUpdated, this, Isolines::replot);
+    connect(this->config.data(), &Configuration::isolinesColorChanged, this, Isolines::repaint);
+    connect(this->config.data(), &Configuration::verticalCellCountChanged, this, Isolines::repaint);
+    connect(this->config.data(), &Configuration::horizontalCellCountChanged, this, Isolines::repaint);
+    connect(this->config.data(), &Configuration::startXChanged, this, Isolines::replot);
+    connect(this->config.data(), &Configuration::startYChanged, this, Isolines::replot);
     connect(this->config.data(), &Configuration::widthChanged, this, Isolines::resizeImage);
     connect(this->config.data(), &Configuration::heightChanged, this, Isolines::resizeImage);
     connect(this->config.data(), &Configuration::interpolateChanged, this, Isolines::replotB);
@@ -51,7 +55,7 @@ void Isolines::plot() {
     double y_offset = this->config->startY();
     double height = this->config->height();
     // find min and max of function, count level step
-    if (min - std::numeric_limits<double>::max() < 1e-20) {
+    if (min - std::numeric_limits<double>::max() < 1e-15) {
         for (int j = 0; j < this->image.height(); ++j) {
             for (int i = 0; i < this->image.width(); ++i) {
                 double val = Isolines::f(((double) i) / this->scale_factor_x + x_offset, height - ((double) j) / this->scale_factor_y - y_offset);
@@ -235,9 +239,9 @@ void Isolines::paintEvent(QPaintEvent *) {
 void Isolines::resizeImage() {
     double f_x = (double) this->width() / (double) this->config->width();
     double f_y = (double) this->height() / (double) this->config->height();
-    if (this->scale_factor_x != f_x || this->scale_factor_y != f_y) {
-        this->scale_factor_x =  (double) this->width() / (double) this->config->width();
-        this->scale_factor_y = (double) this->height() / (double) this->config->height();
+    if (std::fabs(this->scale_factor_x - f_x) > 1e-15 || std::fabs(this->scale_factor_y - f_y) > 1e-15) {
+        this->scale_factor_x =  f_x;
+        this->scale_factor_y = f_y;
         this->image = QImage(this->config->width() * this->scale_factor_x, this->config->height() * this->scale_factor_y, QImage::Format_RGB32);
         this->image_plot = this->image;
         this->config->setFMin(std::numeric_limits<double>::max());

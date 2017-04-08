@@ -80,20 +80,46 @@ void ConfigurationDialog::setupColorList(QGridLayout *layout) {
 }
 
 void ConfigurationDialog::save() {
-    this->config->setHorizontalCellCount(this->grid_cells_x->value());
-    this->config->setVerticalCellCount(this->grid_cells_y->value());
-    this->config->setStartX(this->domain_x->minValue());
-    this->config->setWidth(this->domain_x->maxValue() - this->domain_x->minValue());
-    this->config->setStartY(this->domain_y->minValue());
-    this->config->setHeight(this->domain_y->maxValue() - this->domain_y->minValue());
-    this->config->setIsolinesColor(this->isolines_color.rgb());
-    this->config->update();
+    if (this->config->horizontalCellCount() != this->grid_cells_x->value()) {
+        this->config->setHorizontalCellCount(this->grid_cells_x->value());
+    }
+    if (this->config->verticalCellCount() != this->grid_cells_y->value()) {
+        this->config->setVerticalCellCount(this->grid_cells_y->value());
+    }
+    if (std::fabs(this->domain_x->minValue() - this->config->startX()) > 1e-15) {
+        this->config->setStartX(this->domain_x->minValue());
+    }
+    if (std::fabs(this->domain_x->maxValue() - this->domain_x->minValue() - this->config->width()) > 1e-15) {
+        this->config->setWidth(this->domain_x->maxValue() - this->domain_x->minValue());
+    }
+    if (std::fabs(this->domain_y->minValue() - this->config->startY()) > 1e-15) {
+        this->config->setStartY(this->domain_y->minValue());
+    }
+    if (std::fabs(this->domain_y->maxValue() - this->domain_y->minValue() - this->config->height()) > 1e-15) {
+        this->config->setHeight(this->domain_y->maxValue() - this->domain_y->minValue());
+    }
+    if (this->config->isolinesColor() != this->isolines_color.rgb()) {
+        this->config->setIsolinesColor(this->isolines_color.rgb());
+    }
     std::vector<QRgb> levels;
     for (int i = 0; i < this->colors_list->count(); ++i) {
         QColor color = this->colors_list->item(i)->backgroundColor();
         levels.push_back(color.rgb());
     }
-    this->config->setLevels(levels);
+    auto old_levels = this->config->levels();
+
+    if (old_levels.size() != levels.size()) {
+        this->config->setLevels(levels);
+    } else {
+        for (auto it1 = old_levels.begin(), it2 = levels.begin();
+             it1 < old_levels.end() && it2 < levels.end();
+             ++it1, ++it2) {
+            if (*it1 != *it2) {
+                this->config->setLevels(levels);
+                break;
+            }
+        }
+    }
     QDialog::close();
 }
 

@@ -172,11 +172,27 @@ bool Configuration::load(QTextStream &in) {
     int r, g, b;
     in >> r >> g >> b;
     isolines_color = qRgb(r, g, b);
-    this->setHorizontalCellCount(cell_width);
-    this->setVerticalCellCount(cell_height);
-    this->setLevels(levels);
-    this->setIsolinesColor(isolines_color);
-    this->update();
+    if (cell_width != this->_horizontal_cell_count) {
+        this->setHorizontalCellCount(cell_width);
+    }
+    if (cell_height != this->_vertical_cell_count) {
+        this->setVerticalCellCount(cell_height);
+    }
+    if (this->_levels.size() != levels.size()) {
+        this->setLevels(levels);
+    } else {
+        for (auto it1 = this->_levels.begin(), it2 = levels.begin();
+             it1 < this->_levels.end() && it2 < levels.end();
+             ++it1, ++it2) {
+            if (*it1 != *it2) {
+                this->setLevels(levels);
+                break;
+            }
+        }
+    }
+    if (isolines_color != this->_isolines_color) {
+        this->setIsolinesColor(isolines_color);
+    }
     return true;
 }
 
@@ -187,8 +203,4 @@ bool Configuration::showEntries() const {
 void Configuration::setShowEntries(bool b) {
     this->_show_cell_entries = b;
     emit showEntriesChanged(this->_show_cell_entries);
-}
-
-void Configuration::update() {
-    emit configurationUpdated();
 }
