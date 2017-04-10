@@ -109,28 +109,27 @@ void Isolines::plot() {
 }
 
 void Isolines::drawGrid() {
-    double cell_width = (double) this->config->width() / this->config->horizontalCellCount();
-    double cell_height = (double) this->config->height() / this->config->verticalCellCount();
+    double cell_width = (this->config->width() + 1.0 / this->scale_factor_x) / this->config->horizontalCellCount();
+    double cell_height = (this->config->height() + 1.0 / this->scale_factor_y) / this->config->verticalCellCount();
     double scaled_cell_width = cell_width * this->scale_factor_x;
     double scaled_cell_height = cell_height * this->scale_factor_y;
     QRgb *pixels = (QRgb *) this->image.bits();
     for (int j = 0; j < this->image.height(); ++j) {
         for (double i = scaled_cell_width; ; i += scaled_cell_width) {
-            int x = std::round(i);
+            int x = std::round(i) - 1;
             if (x >= this->image.width()) {
                 break;
             }
             pixels[j * this->image.width() + x] = qRgb(0, 0, 0);
         }
     }
-    for (double j = 0; ; j += scaled_cell_height) {
-        int y = std::round(j);
+    for (double j = scaled_cell_height; ; j += scaled_cell_height) {
+        int y = std::round(j) - 1;
         if (y >= this->image.height()) {
             break;
         }
-        for (int i = 0; i < this->image.width(); ++i) {
-            pixels[(this->image.height() - 1 - y) * this->image.width() + i] = qRgb(0, 0, 0);
-        }
+        memset(this->image.bits() + (this->image.height() - 1 - y) * this->image.bytesPerLine(),
+               0, this->image.bytesPerLine());
     }
 }
 
@@ -138,8 +137,8 @@ void Isolines::drawIsolines() {
     QRgb color = this->config->isolinesColor();
     int horizontal_cells = this->config->horizontalCellCount();
     int vertical_cells = this->config->verticalCellCount();
-    double cell_width = (double) this->config->width() / horizontal_cells;
-    double cell_height = (double) this->config->height() / vertical_cells;
+    double cell_width = (this->config->width() + 1.0 / this->scale_factor_x) / horizontal_cells;
+    double cell_height = (this->config->height() + 1.0 / this->scale_factor_y) / vertical_cells;
     double scaled_cell_width = cell_width * this->scale_factor_x;
     double scaled_cell_height = cell_height * this->scale_factor_y;
     int default_isolines = this->config->levels().size() - 1;
@@ -148,18 +147,26 @@ void Isolines::drawIsolines() {
     bool show_entries = this->config->showEntries();
     for (int j = 0; j < vertical_cells; ++j) {
         for (int i = 0; i < horizontal_cells; ++i) {
+            int x = std::round(i * scaled_cell_width) - 1;
+            int x_next = std::round((i + 1) * scaled_cell_width) - 1;
+            int y = std::round(j * scaled_cell_height) - 1;
+            int y_next = std::round((j + 1) * scaled_cell_height) - 1;
+            double f_x = i * cell_width + this->config->startX() - 1.0 / this->scale_factor_x;
+            double f_x_next = (i + 1) * cell_width + this->config->startX() - 1.0 / this->scale_factor_x;
+            double f_y = j * cell_height + this->config->startY() - 1.0 / this->scale_factor_y;
+            double f_y_next = (j + 1) * cell_height + this->config->startY() - 1.0 / this->scale_factor_y;
             std::vector<std::pair<QPoint, double>> cell{
-                        std::make_pair(QPoint((int) std::round(i * scaled_cell_width),       this->image.height() - 1 - (int) std::round(j * scaled_cell_height)),
-                                       f( i * cell_width + this->config->startX(),      (j * cell_height) + this->config->startY())),
+                        std::make_pair(QPoint(x, this->image.height() - 1 - y),
+                                       f(f_x, f_y)),
 
-                        std::make_pair(QPoint((int) std::round((i + 1) * scaled_cell_width), this->image.height() - 1 - (int) std::round(j * scaled_cell_height)),
-                                       f((i + 1) * cell_width + this->config->startX(), (j * cell_height) + this->config->startY())),
+                        std::make_pair(QPoint(x_next, this->image.height() - 1 - y),
+                                       f(f_x_next, f_y)),
 
-                        std::make_pair(QPoint((int) std::round(i * scaled_cell_width),       this->image.height() - 1 - (int) std::round((j + 1) * scaled_cell_height)),
-                                       f( i * cell_width + this->config->startX(),      ((j + 1) * cell_height) + this->config->startY())),
+                        std::make_pair(QPoint(x, this->image.height() - 1 - y_next),
+                                       f(f_x, f_y_next)),
 
-                        std::make_pair(QPoint((int) std::round((i + 1) * scaled_cell_width), this->image.height() - 1 - (int) std::round((j + 1) * scaled_cell_height)),
-                                       f((i + 1) * cell_width + this->config->startX(), ((j + 1) * cell_height) + this->config->startY()))
+                        std::make_pair(QPoint(x_next, this->image.height() - 1 - y_next),
+                                       f(f_x_next, f_y_next))
             };
             double middle_value = f(i * cell_width / 2 + this->config->startX(), (j * cell_height / 2) + this->config->startY());
             for (int k = 0; k < default_isolines; ++k) {
