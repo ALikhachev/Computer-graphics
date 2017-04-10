@@ -3,6 +3,7 @@
 #include <QFormLayout>
 #include <QColorDialog>
 #include <QLabel>
+#include <QKeyEvent>
 
 ConfigurationDialog::ConfigurationDialog(QSharedPointer<Configuration> config, QWidget *parent) : QDialog(parent),
     config(config),
@@ -146,4 +147,16 @@ void ConfigurationDialog::editIsolinesColor() {
         this->isolines_color_button->setPalette(pal);
     });
     dialog.exec();
+}
+
+void ConfigurationDialog::keyPressEvent(QKeyEvent *event) {
+    switch (event->key()) {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        this->save();
+        break;
+    case Qt::Key_Escape:
+        this->close();
+        break;
+    }
 }

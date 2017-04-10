@@ -20,6 +20,9 @@ class ConfigurationDialog : public QDialog
 public:
     explicit ConfigurationDialog(QSharedPointer<Configuration> config, QWidget *parent = 0);
 
+protected:
+    void keyPressEvent(QKeyEvent *) override;
+
 private slots:
     void save();
     void addNewColor();
