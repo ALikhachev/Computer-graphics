@@ -295,7 +295,42 @@ namespace IsolinesUtils {
         pixels[y * image.width() + x] = color;
     }
 
+    inline void setPixelUnsafe(QImage &image, int x, int y, QRgb color) {
+        QRgb *pixels = reinterpret_cast<QRgb *>(image.bits());
+        pixels[y * image.width() + x] = color;
+    }
+
+    inline void drawCircleUnsafe(QImage &image, QPoint center, int radius, QRgb color) {
+        int x = 0;
+        int y = radius;
+        int delta = 1 - 2 * radius;
+        int error = 0;
+        while (y >= 0) {
+            setPixelUnsafe(image, center.x() + x, center.y() + y, color);
+            setPixelUnsafe(image, center.x() + x, center.y() - y, color);
+            setPixelUnsafe(image, center.x() - x, center.y() + y, color);
+            setPixelUnsafe(image, center.x() - x, center.y() - y, color);
+            error = 2 * (delta + y) - 1;
+            if ((delta < 0) && (error <= 0)) {
+                delta += 2 * ++x + 1;
+                continue;
+            }
+            error = 2 * (delta - x) - 1;
+            if ((delta > 0) && (error > 0)) {
+                delta += 1 - 2 * --y;
+                continue;
+            }
+            x++;
+            delta += 2 * (x - y);
+            --y;
+        }
+    }
+
     inline void drawCircle(QImage &image, QPoint center, int radius, QRgb color) {
+        if (center.x() > radius + 1 && center.x() < image.width() - 1 - radius - 1
+                && center.y() > radius + 1 && center.y() < image.height() - 1 - radius - 1) {
+            drawCircleUnsafe(image, center, radius, color);
+        }
         int x = 0;
         int y = radius;
         int delta = 1 - 2 * radius;
