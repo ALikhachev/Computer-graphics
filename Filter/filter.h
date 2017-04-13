@@ -15,6 +15,7 @@ class FilterWorker : public QObject, public QRunnable
     Q_OBJECT
 public:
     FilterWorker(Filter *filter, QImage image);
+    ~FilterWorker();
     void run() override;
 
 signals:

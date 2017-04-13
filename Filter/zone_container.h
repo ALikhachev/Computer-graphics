@@ -62,6 +62,7 @@ private:
     QThreadPool *thread_pool;
     bool clean;
     SettingsWidget *settings_widget;
+    Filter *current_filter;
     Filter *saved_filter;
     FilterSettings *saved_filter_settings;
 };

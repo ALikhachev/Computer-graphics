@@ -35,6 +35,7 @@ private:
     QTimer *progress_bar_hide_timer;
     QActionGroup *filter_actions;
     QMenu *filters_menu;
+    int progress_value;
 };
 
 #endif // MAIN_WINDOW_H

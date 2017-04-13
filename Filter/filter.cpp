@@ -1,10 +1,15 @@
 #include "filter.h"
+
 #include "utils.h"
 
 FilterWorker::FilterWorker(Filter *filter, QImage image) :
   f(filter),
   image(image)
 {
+}
+
+FilterWorker::~FilterWorker() {
+
 }
 
 void FilterWorker::run() {
