@@ -75,25 +75,44 @@ namespace IsolinesUtils {
             sign = offset == std::max(p2.first.y(), p4.first.y()) ? -1 : 1;
             end.setY(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.y() - p4.first.y()) / std::fabs(p2.second - p4.second));
             return std::vector<std::pair<QPoint, QPoint>>{std::make_pair(start, end)};
-        } else {
+        } else if (middle_value > value){
             QPoint start1(p1.first.x(), 0);
             QPoint end1(0, p2.first.y());
-            QPoint start2(p1.first.x(), 0);
+            QPoint start2(p2.first.x(), 0);
+            QPoint end2(0, p1.first.y());
+            if (p1.first.x() != p3.first.x()) {
+                std::swap(p3, p4);
+            }
+            int offset = p2.first.x();
+            int sign = offset == std::max(p2.first.x(), p3.first.x()) ? -1 : 1;
+            end1.setX(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.x() - p3.first.x()) / std::fabs(p2.second - p3.second));
+            offset = p1.first.y();
+            sign = offset == std::max(p1.first.y(), p3.first.y()) ? -1 : 1;
+            start1.setY(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.y() - p3.first.y()) / std::fabs(p1.second - p3.second));
+            offset = p1.first.x();
+            sign = offset == std::max(p1.first.x(), p4.first.x()) ? -1 : 1;
+            end2.setX(offset + sign * std::fabs(value - p1.second) * std::abs(p4.first.x() - p1.first.x()) / std::fabs(p1.second - p4.second));
+            offset = p2.first.y();
+            sign = offset == std::max(p2.first.y(), p4.first.y()) ? -1 : 1;
+            start2.setY(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.y() - p4.first.y()) / std::fabs(p2.second - p4.second));
+            return std::vector<std::pair<QPoint, QPoint>>{std::make_pair(start1, end1), std::make_pair(start2, end2)};
+        } else {
+            QPoint start1(p1.first.x(), 0);
+            QPoint end1(0, p1.first.y());
+            QPoint start2(p2.first.x(), 0);
             QPoint end2(0, p2.first.y());
-            if (middle_value > value) {
-                if (p1.first.x() != p3.first.x()) {
-                    std::swap(p3, p4);
-                }
+            if (p1.first.x() != p3.first.x()) {
+                std::swap(p3, p4);
             }
             int offset = p1.first.x();
-            int sign = offset == std::max(p1.first.x(), p3.first.x()) ? -1 : 1;
-            end1.setX(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.x() - p3.first.x()) / std::fabs(p1.second - p3.second));
+            int sign = offset == std::max(p1.first.x(), p4.first.x()) ? -1 : 1;
+            end1.setX(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.x() - p4.first.x()) / std::fabs(p1.second - p4.second));
             offset = p1.first.y();
             sign = offset == std::max(p1.first.y(), p3.first.y()) ? -1 : 1;
             start1.setY(offset + sign * std::fabs(value - p1.second) * std::abs(p1.first.y() - p3.first.y()) / std::fabs(p1.second - p3.second));
             offset = p2.first.x();
-            sign = offset == std::max(p2.first.x(), p4.first.x()) ? -1 : 1;
-            end2.setX(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.x() - p4.first.x()) / std::fabs(p2.second - p4.second));
+            sign = offset == std::max(p2.first.x(), p3.first.x()) ? -1 : 1;
+            end2.setX(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.x() - p3.first.x()) / std::fabs(p2.second - p3.second));
             offset = p2.first.y();
             sign = offset == std::max(p2.first.y(), p4.first.y()) ? -1 : 1;
             start2.setY(offset + sign * std::fabs(value - p2.second) * std::abs(p2.first.y() - p4.first.y()) / std::fabs(p2.second - p4.second));
