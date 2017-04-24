@@ -10,6 +10,7 @@
 #include <QScreen>
 
 #include "about_view.h"
+#include "generatrix_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->statusBar()->show();
     this->initActions();
     this->updateRecentFileActions();
+    this->setCentralWidget(new GeneratrixView);
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 }
 
@@ -100,7 +102,7 @@ void MainWindow::selectAndOpenScene() {
 }
 
 void MainWindow::selectAndSaveScene() {
-    QString filename = QFileDialog::getOpenFileName();
+    QString filename = QFileDialog::getSaveFileName();
     if (!filename.isEmpty()) {
         this->saveScene(filename);
     }

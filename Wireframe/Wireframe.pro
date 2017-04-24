@@ -25,10 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        about_view.cpp
+        about_view.cpp \
+    generatrix_view.cpp \
+    bspline.cpp
 
 HEADERS  += mainwindow.h \
-            about_view.h
+            about_view.h \
+    generatrix_view.h \
+    bspline.h \
+    drawing.h
 
 RESOURCES += \
     images.qrc
