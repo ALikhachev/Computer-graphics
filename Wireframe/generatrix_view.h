@@ -4,13 +4,17 @@
 #include <QWidget>
 
 #include <QMouseEvent>
+#include <QSharedPointer>
+
+#include "configuration.h"
 #include "bspline.h"
 
 class GeneratrixView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GeneratrixView(QWidget *parent = 0);
+    explicit GeneratrixView(QSharedPointer<Configuration> config, QWidget *parent = 0);
+    void setObject(QSharedPointer<GeneratrixObject> object);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -19,9 +23,9 @@ protected:
 private:
     void plot();
 
-    std::vector<QPoint> knots;
     QImage canvas;
-    BSpline spline;
+    QSharedPointer<Configuration> config;
+    QSharedPointer<GeneratrixObject> _object;
 };
 
 #endif // GENERATRIX_VIEW_H

@@ -27,13 +27,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
         about_view.cpp \
     generatrix_view.cpp \
-    bspline.cpp
+    bspline.cpp \
+    configuration.cpp \
+    generatrix_object.cpp
 
 HEADERS  += mainwindow.h \
             about_view.h \
     generatrix_view.h \
     bspline.h \
-    drawing.h
+    drawing.h \
+    configuration.h \
+    generatrix_object.h
 
 RESOURCES += \
     images.qrc

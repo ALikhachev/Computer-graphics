@@ -3,15 +3,16 @@
 #include <QPainter>
 #include "drawing.h"
 
-GeneratrixView::GeneratrixView(QWidget *parent) : QWidget(parent),
-    knots(std::vector<QPoint>{QPoint(5, 350),
-                              QPoint(150, 100),
-                              QPoint(250, 50),
-                              QPoint(550, 50),
-                              QPoint(305, 250)}),
+GeneratrixView::GeneratrixView(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     canvas(this->size(), QImage::Format_RGB32),
-    spline(knots)
+    config(config)
 {
+    this->setObject(config->objects()[0]);
+}
+
+void GeneratrixView::setObject(QSharedPointer<GeneratrixObject> object)
+{
+    this->_object = object;
 }
 
 void GeneratrixView::resizeEvent(QResizeEvent *)
@@ -29,15 +30,12 @@ void GeneratrixView::paintEvent(QPaintEvent *)
 void GeneratrixView::plot()
 {
     Drawing::fill(this->canvas, qRgb(255, 255, 255));
-    for (uint i = 0; i < this->knots.size(); ++i) {
-        Drawing::drawCircle(this->canvas, this->knots[i], 3, qRgb(255, 0, 0));
+    auto knots = this->_object->knots();
+    for (auto it = knots.begin(); it < knots.end(); ++it) {
+        Drawing::drawCircle(this->canvas, *it, 3, qRgb(127, 127, 0));
     }
-    for (uint i = 1; i < this->knots.size() - 2; ++i) {
-        QPoint from = this->spline.solve(i, 0);
-        for (int j = 1; j <= 100; ++j) {
-            QPoint to = this->spline.solve(i, (double) j / 100);
-            Drawing::drawLine(this->canvas, from, to, qRgb(0, 0, 0));
-            from = to;
-        }
+    auto segments = this->_object->getSegments();
+    for (auto it = segments.begin(); it < segments.end(); ++it) {
+        Drawing::drawLine(this->canvas, it->first, it->second, this->_object->color());
     }
 }

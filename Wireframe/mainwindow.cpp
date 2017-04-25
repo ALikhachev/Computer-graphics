@@ -13,13 +13,14 @@
 #include "generatrix_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+      configuration(new Configuration)
 {
     this->setWindowTitle("Wireframe by Alexander Likhachev");
     this->statusBar()->show();
     this->initActions();
     this->updateRecentFileActions();
-    this->setCentralWidget(new GeneratrixView);
+    this->setCentralWidget(new GeneratrixView(this->configuration));
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 }
 

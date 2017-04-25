@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QAction>
 #include <QToolBar>
+#include <QSharedPointer>
+
+#include "configuration.h"
 
 class MainWindow : public QMainWindow
 {
@@ -37,6 +40,7 @@ private:
     QAction *recent_file_acts[MaxRecentFiles];
     QAction *toolbar_switch;
     QAction *statusbar_switch;
+    QSharedPointer<Configuration> configuration;
 };
 
 #endif // MAINWINDOW_H
