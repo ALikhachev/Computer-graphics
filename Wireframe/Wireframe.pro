@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     generatrix_view.cpp \
     bspline.cpp \
     configuration.cpp \
-    generatrix_object.cpp
+    generatrix_object.cpp \
+    canvas3d.cpp
 
 HEADERS  += mainwindow.h \
             about_view.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     bspline.h \
     drawing.h \
     configuration.h \
-    generatrix_object.h
+    generatrix_object.h \
+    canvas3d.h
 
 RESOURCES += \
     images.qrc
