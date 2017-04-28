@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     axis.cpp \
     line3d.cpp \
     homogeneous_point3d.cpp \
-    wire_object.cpp
+    wire_object.cpp \
+    transform.cpp
 
 HEADERS  += mainwindow.h \
             about_view.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwindow.h \
     axis.h \
     line3d.h \
     homogeneous_point3d.h \
-    wire_object.h
+    wire_object.h \
+    transform.h
 
 RESOURCES += \
     images.qrc

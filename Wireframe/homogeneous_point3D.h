@@ -8,7 +8,8 @@ class HomogeneousPoint3D
 {
 public:
     HomogeneousPoint3D(float x, float y, float z);
-    QVector3D to3D() const;
+    const QVector3D to3D() const;
+    const QVector4D &to4D() const;
 
 private:
     QVector4D _coordinates;
