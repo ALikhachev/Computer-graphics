@@ -30,7 +30,11 @@ SOURCES += main.cpp\
     bspline.cpp \
     configuration.cpp \
     generatrix_object.cpp \
-    canvas3d.cpp
+    canvas3d.cpp \
+    axis.cpp \
+    line3d.cpp \
+    homogeneous_point3d.cpp \
+    wire_object.cpp
 
 HEADERS  += mainwindow.h \
             about_view.h \
@@ -39,7 +43,11 @@ HEADERS  += mainwindow.h \
     drawing.h \
     configuration.h \
     generatrix_object.h \
-    canvas3d.h
+    canvas3d.h \
+    axis.h \
+    line3d.h \
+    homogeneous_point3d.h \
+    wire_object.h
 
 RESOURCES += \
     images.qrc

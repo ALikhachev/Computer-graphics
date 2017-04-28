@@ -2,7 +2,10 @@
 #define DRAWING_H
 
 #include <QPoint>
-#include <QRgb>
+#include <QColor>
+#include <QVector3D>
+#include "wire_object.h"
+#include "line3d.h"
 
 namespace Drawing {
     static inline void fill(QImage &image, QRgb color) {
@@ -251,6 +254,23 @@ namespace Drawing {
             x++;
             delta += 2 * (x - y);
             --y;
+        }
+    }
+
+    inline void drawLine3D(QImage &image, QVector3D &from, QVector3D &to, QColor color)
+    {
+        QPoint from2D(qRound(from.x()), qRound(image.height() - 1 - from.y()));
+        QPoint to2D(qRound(to.x()), qRound(image.height() - 1 - to.y()));
+        drawLine(image, from2D, to2D, color.rgb());
+    }
+
+    inline void drawObject(QImage &image, WireObject &object, QColor color)
+    {
+        auto &segments = object.getSegments();
+        for (auto it = segments.begin(); it < segments.end(); ++it) {
+            QVector3D from = it->from3D();
+            QVector3D to = it->to3D();
+            drawLine3D(image, from, to, color);
         }
     }
 }

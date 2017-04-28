@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     QTabWidget *tab_widget = new QTabWidget(this);
     GeneratrixView *generatrix_view_widget = new GeneratrixView(this->configuration, this);
     Canvas3D *canvas_3d = new Canvas3D(this->configuration, this);
-    tab_widget->addTab(canvas_3d, "3D canvas");
-    tab_widget->addTab(generatrix_view_widget, "Generatrix");
+    tab_widget->addTab(canvas_3d, "3D &canvas");
+    tab_widget->addTab(generatrix_view_widget, "&Generatrix");
     this->setCentralWidget(tab_widget);
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 }
