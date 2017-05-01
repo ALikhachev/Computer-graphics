@@ -37,8 +37,17 @@ void GeneratrixView::plot()
     int x_offset = qRound((float) this->width() / 2);
     int y_offset = qRound((float) this->height() / 2);
     scale *= ScaleConst;
-    for (auto it = knots.begin(); it < knots.end(); ++it) {
-        Drawing::drawCircle(this->canvas, QPoint(scale * it->x() + x_offset, scale * it->y() + y_offset), 3, qRgb(255, 255, 0));
+    if (knots.size() > 0) {
+        QPointF prev = knots[0];
+        Drawing::drawCircle(this->canvas, QPoint(scale * prev.x() + x_offset, scale * prev.y() + y_offset), 3, qRgb(255, 255, 0));
+        for (auto it = knots.begin() + 1; it < knots.end(); ++it) {
+            Drawing::drawCircle(this->canvas, QPoint(scale * it->x() + x_offset, scale * it->y() + y_offset), 3, qRgb(255, 255, 0));
+            Drawing::drawLine(this->canvas,
+                              QPoint(scale * prev.x() + x_offset, scale * prev.y() + y_offset),
+                              QPoint(scale * it->x() + x_offset, scale * it->y() + y_offset),
+                              qRgb(255, 255, 0));
+            prev = *it;
+        }
     }
     auto segments = this->_object->getSegments();
     for (auto it = segments.begin(); it < segments.end(); ++it) {
@@ -92,6 +101,8 @@ float GeneratrixView::detectScale(std::vector<QPoint> &knots)
     int y_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
         return std::abs(v1.y()) < std::abs(v2.y());
     })->y();
+    if (x_max == 0) x_max = 1;
+    if (y_max == 0) y_max = 1;
     float scale_divider_x = (float) this->width() / (x_max * 2);
     float scale_divider_y = (float) this->height() / (y_max * 2);
     return std::min(scale_divider_x, scale_divider_y);
