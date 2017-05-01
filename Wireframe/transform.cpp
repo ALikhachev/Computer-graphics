@@ -1,8 +1,14 @@
 #include "transform.h"
 
-QVector4D Transform::apply(HomogeneousPoint3D point)
+QVector4D Transform::apply(const HomogeneousPoint3D point) const
 {
     return this->_matrix * point.to4D();
+}
+
+Transform *Transform::compose(Transform *transform)
+{
+    this->_matrix = transform->_matrix * this->_matrix;
+    return this;
 }
 
 RotateXTransform::RotateXTransform(float angle)
@@ -38,5 +44,15 @@ RotateZTransform::RotateZTransform(float angle)
         sin_angle,  cos_angle, 0.0, 0.0,
         0.0,        0.0,       1.0, 0.0,
         0.0,        0.0,       0.0, 1.0
+    };
+}
+
+IdentityTransform::IdentityTransform()
+{
+    this->_matrix = {
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
     };
 }

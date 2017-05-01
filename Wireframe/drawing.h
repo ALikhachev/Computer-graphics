@@ -257,21 +257,11 @@ namespace Drawing {
         }
     }
 
-    inline void drawLine3D(QImage &image, QVector3D &from, QVector3D &to, QColor color)
+    inline void drawLine3D(QImage &image, const QVector3D &from, const QVector3D &to, QColor color)
     {
-        QPoint from2D(qRound(from.x()), qRound(image.height() - 1 - from.y()));
-        QPoint to2D(qRound(to.x()), qRound(image.height() - 1 - to.y()));
+        QPoint from2D(qRound(from.x() + 150), qRound(image.height() - 150 - 1 - from.y()));
+        QPoint to2D(qRound(to.x() + 150), qRound(image.height() - 150 - 1 - to.y()));
         drawLine(image, from2D, to2D, color.rgb());
-    }
-
-    inline void drawObject(QImage &image, WireObject &object, QColor color)
-    {
-        auto &segments = object.getSegments();
-        for (auto it = segments.begin(); it < segments.end(); ++it) {
-            QVector3D from = it->from3D();
-            QVector3D to = it->to3D();
-            drawLine3D(image, from, to, color);
-        }
     }
 }
 

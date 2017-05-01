@@ -8,8 +8,8 @@ class Line3D
 {
 public:
     Line3D(HomogeneousPoint3D from, HomogeneousPoint3D to);
-    HomogeneousPoint3D from();
-    HomogeneousPoint3D to();
+    HomogeneousPoint3D from() const;
+    HomogeneousPoint3D to() const;
     QVector3D from3D() const;
     QVector3D to3D() const;
 

@@ -7,12 +7,12 @@ Line3D::Line3D(HomogeneousPoint3D from, HomogeneousPoint3D to) :
 
 }
 
-HomogeneousPoint3D Line3D::from()
+HomogeneousPoint3D Line3D::from() const
 {
     return this->_from;
 }
 
-HomogeneousPoint3D Line3D::to()
+HomogeneousPoint3D Line3D::to() const
 {
     return this->_to;
 }
