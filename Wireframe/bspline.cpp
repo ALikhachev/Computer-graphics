@@ -14,9 +14,9 @@ BSpline::BSpline(std::vector<QPoint> values)
     this->calculateCoefficientsVectors();
 }
 
-QPoint BSpline::solve(int knot, double t) const
+QPointF BSpline::solve(int knot, double t) const
 {
-    QPoint point;
+    QPointF point;
     QVector4D t_vect(std::pow(t, 3), std::pow(t, 2), t, 1);
     point.setX(QVector4D::dotProduct(t_vect, this->vectors_x[knot]));
     point.setY(QVector4D::dotProduct(t_vect, this->vectors_y[knot]));

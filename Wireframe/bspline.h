@@ -14,7 +14,7 @@ public:
      * x = T * Mx * G(i)x
      * y = T * My * G(i)y
      */
-    QPoint solve(int knot, double t) const;
+    QPointF solve(int knot, double t) const;
 private:
     void calculateCoefficientsVectors();
 

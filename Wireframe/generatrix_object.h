@@ -11,7 +11,7 @@ class GeneratrixObject
 {
 public:
     GeneratrixObject(QRgb color, std::vector<QPoint> knots);
-    std::vector<std::pair<QPoint, QPoint>> getSegments() const;
+    std::vector<std::pair<QPointF, QPointF> > getSegments() const;
     QRgb color() const;
     std::vector<QPoint> knots() const;
 

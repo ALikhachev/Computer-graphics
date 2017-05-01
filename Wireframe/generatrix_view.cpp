@@ -29,13 +29,70 @@ void GeneratrixView::paintEvent(QPaintEvent *)
 
 void GeneratrixView::plot()
 {
-    Drawing::fill(this->canvas, qRgb(255, 255, 255));
+    Drawing::fill(this->canvas, qRgb(0, 0, 0));
     auto knots = this->_object->knots();
+    float scale = this->detectScale(knots);
+    this->plotAxes();
+    this->plotAxeSegmentation(scale);
+    int x_offset = qRound((float) this->width() / 2);
+    int y_offset = qRound((float) this->height() / 2);
+    scale *= ScaleConst;
     for (auto it = knots.begin(); it < knots.end(); ++it) {
-        Drawing::drawCircle(this->canvas, *it, 3, qRgb(127, 127, 0));
+        Drawing::drawCircle(this->canvas, QPoint(scale * it->x() + x_offset, scale * it->y() + y_offset), 3, qRgb(255, 255, 0));
     }
     auto segments = this->_object->getSegments();
     for (auto it = segments.begin(); it < segments.end(); ++it) {
-        Drawing::drawLine(this->canvas, it->first, it->second, this->_object->color());
+        Drawing::drawLine(this->canvas,
+                          QPoint(scale * it->first.x() + x_offset, scale * it->first.y() + y_offset),
+                          QPoint(scale * it->second.x() + x_offset, scale * it->second.y() + y_offset), this->_object->color());
     }
+}
+
+void GeneratrixView::plotAxes()
+{
+    int x_offset = qRound((float) this->width() / 2);
+    int y_offset = qRound((float) this->height() / 2);
+    Drawing::drawLine(this->canvas, QPoint(x_offset, 0), QPoint(x_offset, this->height() - 1), qRgb(127, 127, 127));
+    Drawing::drawLine(this->canvas, QPoint(0, y_offset), QPoint(this->width() - 1, y_offset), qRgb(127, 127, 127));
+}
+
+void GeneratrixView::plotAxeSegmentation(float scale)
+{
+    int x_offset = qRound((float) this->width() / 2);
+    int y_offset = qRound((float) this->height() / 2);
+    int x_count = x_offset / scale;
+    int y_count = y_offset / scale;
+    for (int i = 0; i < x_count; ++i) {
+        Drawing::drawLine(this->canvas,
+                          QPoint(x_offset + i * scale, y_offset - AxeSegmentWidth),
+                          QPoint(x_offset + i * scale, y_offset + AxeSegmentWidth),
+                          qRgb(127, 127, 127));
+        Drawing::drawLine(this->canvas,
+                          QPoint(x_offset - i * scale, y_offset - AxeSegmentWidth),
+                          QPoint(x_offset - i * scale, y_offset + AxeSegmentWidth),
+                          qRgb(127, 127, 127));
+    }
+    for (int i = 0; i < y_count; ++i) {
+        Drawing::drawLine(this->canvas,
+                          QPoint(x_offset - AxeSegmentWidth, y_offset + i * scale),
+                          QPoint(x_offset + AxeSegmentWidth, y_offset + i * scale),
+                          qRgb(127, 127, 127));
+        Drawing::drawLine(this->canvas,
+                          QPoint(x_offset - AxeSegmentWidth, y_offset - i * scale),
+                          QPoint(x_offset + AxeSegmentWidth, y_offset - i * scale),
+                          qRgb(127, 127, 127));
+    }
+}
+
+float GeneratrixView::detectScale(std::vector<QPoint> &knots)
+{
+    int x_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
+        return std::abs(v1.x()) < std::abs(v2.x());
+    })->x();
+    int y_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
+        return std::abs(v1.y()) < std::abs(v2.y());
+    })->y();
+    float scale_divider_x = (float) this->width() / (x_max * 2);
+    float scale_divider_y = (float) this->height() / (y_max * 2);
+    return std::min(scale_divider_x, scale_divider_y);
 }

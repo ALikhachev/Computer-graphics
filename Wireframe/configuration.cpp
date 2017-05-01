@@ -16,12 +16,12 @@ Configuration::Configuration() :
     _clipping_rect_height(10),
     _background_color(qRgb(255, 255, 255)),
     _objects({
-             QSharedPointer<GeneratrixObject>(new GeneratrixObject(qRgb(255, 0, 0), {QPoint(5, 350),
-                                                                   QPoint(150, 100),
+             QSharedPointer<GeneratrixObject>(new GeneratrixObject(qRgb(255, 0, 0), {QPoint(5, 35),
+                                                                   QPoint(25, 10),
                                                                    QPoint(20, 0),
-                                                                   QPoint(250, 50),
-                                                                   QPoint(550, 50),
-                                                                   QPoint(305, 250)}))
+                                                                   QPoint(25, 50),
+                                                                   QPoint(35, 50),
+                                                                   QPoint(35, 25)}))
              })
 {
 
