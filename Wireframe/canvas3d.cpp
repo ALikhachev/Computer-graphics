@@ -7,7 +7,11 @@
 Canvas3D::Canvas3D(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     _config(config),
     _image(this->size(), QImage::Format_RGB32),
-    _rotation(new IdentityTransform)
+    _rotation(new IdentityTransform),
+    _perspective(new PerspectiveTransform(config->clippingNearDistance(),
+                                          config->clippingFarDistance(),
+                                          config->clippingRectWidth(),
+                                          config->clippingRectHeight()))
 {
 
 }
@@ -36,7 +40,7 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
     float diff_y = (float) (event->y() - this->_rotation_tracking.y()) * 2 * Pi / this->_image.height();
     RotateYTransform y_transform = RotateYTransform(diff_x);
     RotateXTransform x_transform = RotateXTransform(diff_y);
-    this->_rotation->compose((Transform *)&y_transform)->compose((Transform *)&x_transform);
+    this->_rotation = this->_rotation->compose((Transform *)&y_transform)->compose((Transform *)&x_transform);
     this->_rotation_tracking.setX(event->x());
     this->_rotation_tracking.setY(event->y());
     this->plot();
@@ -51,6 +55,7 @@ void Canvas3D::drawObject(WireObject &object, QColor color)
         HomogeneousPoint3D to_point = it->to();
         from_point.applyTransform(this->_rotation);
         to_point.applyTransform(this->_rotation);
+
         Drawing::drawLine3D(this->_image, from_point.to3D(), to_point.to3D(), color);
     }
 }

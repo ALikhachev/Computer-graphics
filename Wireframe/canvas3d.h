@@ -29,7 +29,8 @@ private:
 
     QSharedPointer<Configuration> _config;
     QImage _image;
-    Transform *_rotation;
+    QSharedPointer<Transform> _rotation;
+    QSharedPointer<Transform> _perspective;
     QPoint _rotation_tracking;
     constexpr double static const Pi = std::acos(-1);
 };

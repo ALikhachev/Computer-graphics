@@ -18,7 +18,7 @@ const QVector4D &HomogeneousPoint3D::to4D() const
     return this->_coordinates;
 }
 
-HomogeneousPoint3D &HomogeneousPoint3D::applyTransform(const Transform *transform)
+HomogeneousPoint3D &HomogeneousPoint3D::applyTransform(QSharedPointer<Transform> transform)
 {
     this->_coordinates = transform->apply(*this);
     return *this;

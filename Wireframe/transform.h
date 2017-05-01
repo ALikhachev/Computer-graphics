@@ -3,6 +3,7 @@
 
 #include <QMatrix4x4>
 #include <QVector4D>
+#include <QSharedPointer>
 
 #include "homogeneous_point3d.h"
 
@@ -12,7 +13,7 @@ class Transform
 {
 public:
     QVector4D apply(const HomogeneousPoint3D point) const;
-    Transform *compose(Transform *transform);
+    QSharedPointer<Transform> compose(Transform *transform);
 protected:
     QMatrix4x4 _matrix;
 };
@@ -39,6 +40,13 @@ class IdentityTransform : public Transform
 {
 public:
     IdentityTransform();
+};
+
+class PerspectiveTransform : public Transform
+{
+public:
+    PerspectiveTransform(float clipping_near, float clipping_far,
+                         float clipping_rect_width, float clipping_rect_height);
 };
 
 #endif // TRANSFORM_H

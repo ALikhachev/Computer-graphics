@@ -12,8 +12,8 @@ Configuration::Configuration() :
     _domain_phi_max(2 * PI),
     _clipping_near(5),
     _clipping_far(20),
-    _clipping_rect_width(5),
-    _clipping_rect_height(10),
+    _clipping_rect_width(25),
+    _clipping_rect_height(30),
     _background_color(qRgb(255, 255, 255)),
     _objects({
              QSharedPointer<GeneratrixObject>(new GeneratrixObject(qRgb(255, 0, 0), {QPoint(5, 35),

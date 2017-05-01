@@ -5,10 +5,11 @@ QVector4D Transform::apply(const HomogeneousPoint3D point) const
     return this->_matrix * point.to4D();
 }
 
-Transform *Transform::compose(Transform *transform)
+QSharedPointer<Transform> Transform::compose(Transform *transform)
 {
-    this->_matrix = transform->_matrix * this->_matrix;
-    return this;
+    QSharedPointer<Transform> trans(new Transform);
+    trans->_matrix = transform->_matrix * this->_matrix;
+    return trans;
 }
 
 RotateXTransform::RotateXTransform(float angle)
@@ -54,5 +55,15 @@ IdentityTransform::IdentityTransform()
         0.0, 1.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
+    };
+}
+
+PerspectiveTransform::PerspectiveTransform(float n, float f, float w, float h)
+{
+    this->_matrix = {
+        (2 / w) * n,  0,          0,            0,
+        0,           (2 / h) * n, 0,            0,
+        0,            0,          f / (f - n), -f * n / (f - n),
+        0,            0,          1,            0
     };
 }
