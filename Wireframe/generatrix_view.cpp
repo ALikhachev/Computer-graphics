@@ -49,7 +49,7 @@ void GeneratrixView::plot()
             prev = *it;
         }
     }
-    auto segments = this->_object->getSegments();
+    auto segments = this->_object->getSegments2D();
     for (auto it = segments.begin(); it < segments.end(); ++it) {
         Drawing::drawLine(this->canvas,
                           QPoint(scale * it->first.x() + x_offset, scale * it->first.y() + y_offset),
