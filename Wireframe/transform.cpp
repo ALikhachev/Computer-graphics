@@ -60,10 +60,26 @@ IdentityTransform::IdentityTransform()
 
 PerspectiveTransform::PerspectiveTransform(float n, float f, float w, float h)
 {
+//    this->_matrix = {
+//        (2 / w) * n,  0,          0,            0,
+//        0,           (2 / h) * n, 0,            0,
+//        0,            0,          f / (f - n), -f * n / (f - n),
+//        0,            0,          1,            0
+//    };
     this->_matrix = {
-        (2 / w) * n,  0,          0,            0,
-        0,           (2 / h) * n, 0,            0,
-        0,            0,          f / (f - n), -f * n / (f - n),
-        0,            0,          1,            0
+        1,            0,          0,            0,
+        0,            1,          0,            0,
+        0,            0,          0,            0,
+        0,            0,          1.0/400.0,    1
+    };
+}
+
+CameraTransform::CameraTransform(float x, float y, float z)
+{
+    this->_matrix = {
+        1.0, 0.0, 0.0, x,
+        0.0, 1.0, 0.0, y,
+        0.0, 0.0, 1.0, z,
+        0.0, 0.0, 0.0, 1.0
     };
 }

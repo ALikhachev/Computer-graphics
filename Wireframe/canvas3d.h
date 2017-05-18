@@ -22,6 +22,7 @@ protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
     void drawObject(WireObject &object, QColor color);
@@ -31,8 +32,10 @@ private:
     QImage _image;
     QSharedPointer<Transform> _rotation;
     QSharedPointer<Transform> _perspective;
+    QSharedPointer<Transform> _camera;
     QPoint _rotation_tracking;
     constexpr double static const Pi = std::acos(-1);
+    int z;
 };
 
 #endif // CANVAS3D_H

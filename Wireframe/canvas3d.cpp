@@ -11,7 +11,9 @@ Canvas3D::Canvas3D(QSharedPointer<Configuration> config, QWidget *parent) : QWid
     _perspective(new PerspectiveTransform(config->clippingNearDistance(),
                                           config->clippingFarDistance(),
                                           config->clippingRectWidth(),
-                                          config->clippingRectHeight()))
+                                          config->clippingRectHeight())),
+    _camera(new CameraTransform(0, 0, 0)),
+    z(0)
 {
 
 }
@@ -47,6 +49,14 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
     this->update();
 }
 
+void Canvas3D::wheelEvent(QWheelEvent *event)
+{
+    this->z += event->delta();
+    this->_camera.reset(new CameraTransform(0, 0, this->z));
+    this->plot();
+    this->update();
+}
+
 void Canvas3D::drawObject(WireObject &object, QColor color)
 {
     auto &segments = object.getSegments();
@@ -55,7 +65,10 @@ void Canvas3D::drawObject(WireObject &object, QColor color)
         HomogeneousPoint3D to_point = it->to();
         from_point.applyTransform(this->_rotation);
         to_point.applyTransform(this->_rotation);
-
+        from_point.applyTransform(this->_camera);
+        to_point.applyTransform(this->_camera);
+        from_point.applyTransform(this->_perspective);
+        to_point.applyTransform(this->_perspective);
         Drawing::drawLine3D(this->_image, from_point.to3D(), to_point.to3D(), color);
     }
 }

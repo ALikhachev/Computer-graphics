@@ -49,4 +49,10 @@ public:
                          float clipping_rect_width, float clipping_rect_height);
 };
 
+class CameraTransform : public Transform
+{
+public:
+    CameraTransform(float x, float y, float z);
+};
+
 #endif // TRANSFORM_H
