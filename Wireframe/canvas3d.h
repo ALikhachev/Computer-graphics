@@ -26,6 +26,7 @@ protected:
 
 private:
     void drawObject(WireObject &object, QColor color);
+    void drawBoundingBox();
     void plot();
 
     QSharedPointer<Configuration> _config;
@@ -35,7 +36,6 @@ private:
     QSharedPointer<Transform> _camera;
     QPoint _rotation_tracking;
     constexpr double static const Pi = std::acos(-1);
-    int z;
 };
 
 #endif // CANVAS3D_H

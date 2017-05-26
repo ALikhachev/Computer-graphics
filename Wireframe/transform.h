@@ -45,14 +45,13 @@ public:
 class PerspectiveTransform : public Transform
 {
 public:
-    PerspectiveTransform(float clipping_near, float clipping_far,
-                         float clipping_rect_width, float clipping_rect_height);
+    PerspectiveTransform(float zn, float zf, float sw, float sh);
 };
 
 class CameraTransform : public Transform
 {
 public:
-    CameraTransform(float x, float y, float z);
+    CameraTransform();
 };
 
 #endif // TRANSFORM_H

@@ -1,6 +1,6 @@
 #include "transform.h"
 
-QVector4D Transform::apply(const HomogeneousPoint3D point) const
+QVector4D Transform::apply(HomogeneousPoint3D point) const
 {
     return this->_matrix * point.to4D();
 }
@@ -58,28 +58,38 @@ IdentityTransform::IdentityTransform()
     };
 }
 
-PerspectiveTransform::PerspectiveTransform(float n, float f, float w, float h)
+PerspectiveTransform::PerspectiveTransform(float zn, float zf, float sw, float sh)
 {
-//    this->_matrix = {
-//        (2 / w) * n,  0,          0,            0,
-//        0,           (2 / h) * n, 0,            0,
-//        0,            0,          f / (f - n), -f * n / (f - n),
-//        0,            0,          1,            0
-//    };
     this->_matrix = {
-        1,            0,          0,            0,
-        0,            1,          0,            0,
-        0,            0,          0,            0,
-        0,            0,          1.0/400.0,    1
+        2 * zf / sw, 0, 0, 0,
+        0, 2 * zf / sh, 0, 0,
+        0, 0, zf / (zn - zf), zn * zf / (zn - zf),
+        0, 0, -1, 0
     };
 }
 
-CameraTransform::CameraTransform(float x, float y, float z)
+CameraTransform::CameraTransform()
 {
-    this->_matrix = {
-        1.0, 0.0, 0.0, x,
-        0.0, 1.0, 0.0, y,
-        0.0, 0.0, 1.0, z,
-        0.0, 0.0, 0.0, 1.0
-    };
+    QVector3D ref(10, 0, 0);
+    QVector3D eye(-10, 0, 0);
+    QVector3D up(0, 1, 0);
+    QVector3D w(eye - ref);
+    w.normalize();
+    QVector3D u(QVector3D::crossProduct(up, w));
+    u.normalize();
+    QVector3D v(QVector3D::crossProduct(w, u));
+    this->_matrix =
+            QMatrix4x4(
+                u[0], u[1], u[2], 0,
+                v[0], v[1], v[2], 0,
+                w[0], w[1], w[2], 0,
+                0   , 0   , 0   , 1
+            )
+            *
+            QMatrix4x4(
+                1, 0, 0, -ref[0],
+                0, 1, 0, -ref[1],
+                0, 0, 1, -ref[2],
+                0, 0, 0, 1
+            );
 }

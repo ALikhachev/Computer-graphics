@@ -22,8 +22,10 @@ public:
     double domainTMax() const;
     double domainPhiMin() const;
     double domainPhiMax() const;
-    int clippingNearDistance() const;
-    int clippingFarDistance() const;
+    float clippingNearDistance() const;
+    void setClippingNearDistance(float val);
+    float clippingFarDistance() const;
+    void setClippingFarDistance(float val);
     int clippingRectWidth() const;
     int clippingRectHeight() const;
     QRgb backgroundColor() const;
@@ -38,8 +40,8 @@ private:
     double _domain_t_max;
     double _domain_phi_min;
     double _domain_phi_max;
-    int _clipping_near;
-    int _clipping_far;
+    float _clipping_near;
+    float _clipping_far;
     int _clipping_rect_width;
     int _clipping_rect_height;
     QRgb _background_color;
