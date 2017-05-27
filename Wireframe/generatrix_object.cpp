@@ -29,57 +29,46 @@ const std::vector<Line3D> &GeneratrixObject::getSegments() const
 
 void GeneratrixObject::buildSegments()
 {
-    auto segments_2d = this->getSegments2D();
+    float long_step = (_b - _a) / (_n);
     float rotate_step = (_d - _c) / (_m);
-    int t = 0;
-    int len = segments_2d.size();
-    for (auto &segment_2d : segments_2d) {
+    for (float l = _a; l < _b; l += long_step) {
         for (float i = _c; i <= _d; i += rotate_step) {
-            if (i + rotate_step <= _d && t % _k == 0) {
+            QPointF point = this->_spline.solve(l);
+            if (i + rotate_step <= _d) {
                 HomogeneousPoint3D start_rotate(
-                                segment_2d.first.y() * std::cos(i),
-                                segment_2d.first.y() * std::sin(i),
-                                segment_2d.first.x()
+                                point.y() * std::cos(i),
+                                point.y() * std::sin(i),
+                                point.x()
                             );
                 for (int j = 1; j <= _k; ++j) {
                     HomogeneousPoint3D end_rotate(
-                                    segment_2d.first.y() * std::cos(i + j * rotate_step / _k),
-                                    segment_2d.first.y() * std::sin(i + j * rotate_step / _k),
-                                    segment_2d.first.x()
+                                    point.y() * std::cos(i + j * rotate_step / _k),
+                                    point.y() * std::sin(i + j * rotate_step / _k),
+                                    point.x()
                                 );
                     this->_segments.push_back(Line3D(start_rotate, end_rotate));
                     start_rotate = end_rotate;
                 }
             }
-            HomogeneousPoint3D start(
-                            segment_2d.first.y() * std::cos(i),
-                            segment_2d.first.y() * std::sin(i),
-                            segment_2d.first.x()
-                        );
-            HomogeneousPoint3D end_long(
-                            segment_2d.second.y() * std::cos(i),
-                            segment_2d.second.y() * std::sin(i),
-                            segment_2d.second.x()
-                        );
-            this->_segments.push_back(Line3D(start, end_long));
-            if (i + rotate_step <= _d && t == len - 1) {
-                HomogeneousPoint3D start_rotate(
-                                segment_2d.second.y() * std::cos(i),
-                                segment_2d.second.y() * std::sin(i),
-                                segment_2d.second.x()
+            if (l + long_step <= _b) {
+                HomogeneousPoint3D start_long(
+                                point.y() * std::cos(i),
+                                point.y() * std::sin(i),
+                                point.x()
                             );
+
                 for (int j = 1; j <= _k; ++j) {
-                    HomogeneousPoint3D end_rotate(
-                                    segment_2d.second.y() * std::cos(i + j * rotate_step / _k),
-                                    segment_2d.second.y() * std::sin(i + j * rotate_step / _k),
-                                    segment_2d.second.x()
+                    point = this->_spline.solve(l + j * long_step / _k);
+                    HomogeneousPoint3D end_long(
+                                    point.y() * std::cos(i),
+                                    point.y() * std::sin(i),
+                                    point.x()
                                 );
-                    this->_segments.push_back(Line3D(start_rotate, end_rotate));
-                    start_rotate = end_rotate;
+                    this->_segments.push_back(Line3D(start_long, end_long));
+                    start_long = end_long;
                 }
             }
         }
-        t++;
     }
 }
 
@@ -87,13 +76,11 @@ std::vector<std::pair<QPointF, QPointF>> GeneratrixObject::getSegments2D() const
 {
     std::vector<std::pair<QPointF, QPointF>> segments;
     uint count = _n * _k;
-    for (uint i = 1; i < this->_knots.size() - 2; ++i) {
-        QPointF from = this->_spline.solve(i, 0);
-        for (uint j = 1; j <= count; ++j) {
-            QPointF to = this->_spline.solve(i, (float) j / count);
-            segments.push_back(std::make_pair(from, to));
-            from = to;
-        }
+    QPointF from = this->_spline.solve(0);
+    for (uint j = 1; j <= count; ++j) {
+        QPointF to = this->_spline.solve((float) j / count);
+        segments.push_back(std::make_pair(from, to));
+        from = to;
     }
     return segments;
 }

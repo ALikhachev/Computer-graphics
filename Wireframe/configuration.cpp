@@ -6,7 +6,7 @@ Configuration::Configuration() :
     _grid_width(5),
     _grid_height(7),
     _segments_count(3),
-    _domain_t_min(0),
+    _domain_t_min(0.5),
     _domain_t_max(1),
     _domain_phi_min(0),
     _domain_phi_max(1 * PI),

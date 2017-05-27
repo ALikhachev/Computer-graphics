@@ -14,9 +14,12 @@ public:
      * x = T * Mx * G(i)x
      * y = T * My * G(i)y
      */
+    QPointF solve(double t) const;
     QPointF solve(int knot, double t) const;
 private:
+    int getKnotByLength(float length) const;
     void calculateCoefficientsVectors();
+    float length() const;
 
     std::vector<QPointF> values;
     QMatrix4x4 spline_matrix;
