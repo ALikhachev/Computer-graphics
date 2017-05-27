@@ -2,7 +2,7 @@
 
 #include <QVector4D>
 
-BSpline::BSpline(std::vector<QPoint> values)
+BSpline::BSpline(std::vector<QPointF> values)
     : values(values),
       spline_matrix(-1.0/6.0,  3.0/6.0, -3.0/6.0, 1.0/6.0,
                      3.0/6.0, -6.0/6.0,  3.0/6.0, 0.0/6.0,

@@ -8,7 +8,7 @@
 class BSpline
 {
 public:
-    BSpline(std::vector<QPoint> values);
+    BSpline(std::vector<QPointF> values);
 
     /**
      * x = T * Mx * G(i)x
@@ -18,7 +18,7 @@ public:
 private:
     void calculateCoefficientsVectors();
 
-    std::vector<QPoint> values;
+    std::vector<QPointF> values;
     QMatrix4x4 spline_matrix;
     std::vector<QVector4D> vectors_x;
     std::vector<QVector4D> vectors_y;

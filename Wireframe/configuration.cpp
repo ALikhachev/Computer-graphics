@@ -3,25 +3,32 @@
 const static double PI = 3.141592653589793238463;
 
 Configuration::Configuration() :
-    _grid_width(10),
-    _grid_height(10),
-    _segments_count(5),
+    _grid_width(5),
+    _grid_height(7),
+    _segments_count(3),
     _domain_t_min(0),
     _domain_t_max(1),
     _domain_phi_min(0),
-    _domain_phi_max(2 * PI),
+    _domain_phi_max(1 * PI),
     _clipping_near(0),
     _clipping_far(15),
     _clipping_rect_width(10),
     _clipping_rect_height(10),
     _background_color(qRgb(255, 255, 255)),
     _objects({
-             QSharedPointer<GeneratrixObject>(new GeneratrixObject(qRgb(255, 0, 0), {QPoint(5, 35),
-                                                                   QPoint(25, 10),
-                                                                   QPoint(20, 0),
-                                                                   QPoint(25, 50),
-                                                                   QPoint(35, 50),
-                                                                   QPoint(35, 25)}))
+             QSharedPointer<GeneratrixObject>(new GeneratrixObject(
+                                                  this->_grid_height,
+                                                  this->_grid_width,
+                                                  this->_segments_count,
+                                                  this->_domain_t_min,
+                                                  this->_domain_t_max,
+                                                  this->_domain_phi_min,
+                                                  this->_domain_phi_max,
+                                                  qRgb(255, 0, 0), {QPointF(0.059085, 0.169869),
+                                                                    QPointF(0.000000, 0.155098),
+                                                                    QPointF(0.310196, -1.129998),
+                                                                    QPointF(1.94980, -0.745947)
+                                                                    }))
              })
 {
 

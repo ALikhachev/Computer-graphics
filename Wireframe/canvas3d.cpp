@@ -60,9 +60,9 @@ void Canvas3D::wheelEvent(QWheelEvent *event)
     this->update();
 }
 
-void Canvas3D::drawObject(WireObject &object, QColor color)
+void Canvas3D::drawObject(WireObject *object, QColor color)
 {
-    auto &segments = object.getSegments();
+    auto &segments = object->getSegments();
     for (auto it = segments.begin(); it < segments.end(); ++it) {
         HomogeneousPoint3D from_point = it->from();
         HomogeneousPoint3D to_point = it->to();
@@ -95,7 +95,7 @@ void Canvas3D::drawBoundingBox()
                                      Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, -1, 1)),
                                      Line3D(HomogeneousPoint3D(1, 1, -1), HomogeneousPoint3D(1, 1, 1)),
                                  });
-    this->drawObject(cube, QColor(0, 0, 0));
+    this->drawObject(&cube, QColor(0, 0, 0));
 }
 
 void Canvas3D::plot()
@@ -104,8 +104,11 @@ void Canvas3D::plot()
     Axis axis1 = Axis(AxisType::OX, 0.5);
     Axis axis2 = Axis(AxisType::OY, 0.5);
     Axis axis3 = Axis(AxisType::OZ, 0.5);
-    this->drawObject(axis1, QColor(255, 0, 0));
-    this->drawObject(axis2, QColor(0, 255, 0));
-    this->drawObject(axis3, QColor(0, 0, 255));
+    this->drawObject(&axis1, QColor(255, 0, 0));
+    this->drawObject(&axis2, QColor(0, 255, 0));
+    this->drawObject(&axis3, QColor(0, 0, 255));
+    for (auto obj : this->_config->objects()) {
+        this->drawObject(obj.data(), obj->color());
+    }
     this->drawBoundingBox();
 }

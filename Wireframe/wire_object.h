@@ -9,7 +9,11 @@ class WireObject
 {
 public:
     WireObject(std::vector<Line3D> lines);
-    const std::vector<Line3D> &getSegments() const;
+    virtual const std::vector<Line3D> &getSegments() const;
+    virtual ~WireObject() {};
+
+protected:
+    WireObject();
 
 private:
     std::vector<Line3D> _segments;

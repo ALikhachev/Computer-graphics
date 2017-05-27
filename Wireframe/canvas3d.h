@@ -25,7 +25,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void drawObject(WireObject &object, QColor color);
+    void drawObject(WireObject *object, QColor color);
     void drawBoundingBox();
     void plot();
 

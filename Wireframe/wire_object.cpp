@@ -10,3 +10,9 @@ const std::vector<Line3D> &WireObject::getSegments() const
 {
     return this->_segments;
 }
+
+WireObject::WireObject() :
+    _segments()
+{
+
+}

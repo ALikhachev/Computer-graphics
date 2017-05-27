@@ -93,13 +93,13 @@ void GeneratrixView::plotAxeSegmentation(float scale)
     }
 }
 
-float GeneratrixView::detectScale(std::vector<QPoint> &knots)
+float GeneratrixView::detectScale(std::vector<QPointF> &knots)
 {
-    int x_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
-        return std::abs(v1.x()) < std::abs(v2.x());
+    float x_max = std::max_element(knots.begin(), knots.end(), [] (const QPointF &v1, const QPointF &v2) {
+        return std::fabs(v1.x()) < std::fabs(v2.x());
     })->x();
-    int y_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
-        return std::abs(v1.y()) < std::abs(v2.y());
+    float y_max = std::max_element(knots.begin(), knots.end(), [] (const QPointF &v1, const QPointF &v2) {
+        return std::fabs(v1.y()) < std::fabs(v2.y());
     })->y();
     if (x_max == 0) x_max = 1;
     if (y_max == 0) y_max = 1;
