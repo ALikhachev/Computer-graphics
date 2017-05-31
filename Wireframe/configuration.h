@@ -60,6 +60,7 @@ public:
 signals:
     void updated();
     void objectSelected(int index);
+    void lengthChanged();
 
 private:
     float _sw;

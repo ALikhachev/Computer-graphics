@@ -122,17 +122,9 @@ void GeneratrixObject::buildSegments()
     }
 }
 
-std::vector<std::pair<QPointF, QPointF>> GeneratrixObject::getSegments2D() const
+const BSpline &GeneratrixObject::getBSpline() const
 {
-    std::vector<std::pair<QPointF, QPointF>> segments;
-    uint count = _n * _k;
-    QPointF from = this->_spline.solve(0);
-    for (uint j = 1; j <= count; ++j) {
-        QPointF to = this->_spline.solve((float) j / count);
-        segments.push_back(std::make_pair(from, to));
-        from = to;
-    }
-    return segments;
+    return this->_spline;
 }
 
 QRgb GeneratrixObject::color() const

@@ -194,6 +194,7 @@ void Configuration::setA(float value)
     for (auto &object : _objects) {
         object->setA(value);
     }
+    emit lengthChanged();
 }
 
 float Configuration::b() const
@@ -207,6 +208,7 @@ void Configuration::setB(float value)
     for (auto &object : _objects) {
         object->setB(value);
     }
+    emit lengthChanged();
 }
 
 

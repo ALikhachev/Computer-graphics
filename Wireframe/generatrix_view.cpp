@@ -13,6 +13,10 @@ GeneratrixView::GeneratrixView(QSharedPointer<Configuration> config, QWidget *pa
         this->plot();
         this->update();
     });
+    connect(this->config.data(), &Configuration::lengthChanged, this, [this] () {
+        this->plot();
+        this->update();
+    });
 }
 
 void GeneratrixView::setObject(QSharedPointer<GeneratrixObject> object)
@@ -54,11 +58,36 @@ void GeneratrixView::plot()
             prev = *it;
         }
     }
-    auto segments = this->_object->getSegments2D();
-    for (auto it = segments.begin(); it < segments.end(); ++it) {
+    const BSpline &spline = this->_object->getBSpline();
+    float a = this->config->a();
+    float b = this->config->b();
+    int n = this->config->n();
+    int k = this->config->k();
+    float step = 1.0 / (n * k);
+    QPointF from(spline.solve(0));
+    for (float l = 0 + step; l < a; l += step) {
+        QPointF to(spline.solve(l));
         Drawing::drawLine(this->canvas,
-                          QPoint(scale * it->first.x() + x_offset, scale * it->first.y() + y_offset),
-                          QPoint(scale * it->second.x() + x_offset, scale * it->second.y() + y_offset), this->_object->color());
+                          QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
+                          QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
+                          qRgb(100, 100, 100));
+        from = to;
+    }
+    for (float l = a + step; l < b; l += step) {
+        QPointF to(spline.solve(l));
+        Drawing::drawLine(this->canvas,
+                          QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
+                          QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
+                          this->_object->color());
+        from = to;
+    }
+    for (float l = b + step; l <= 1; l += step) {
+        QPointF to(spline.solve(l));
+        Drawing::drawLine(this->canvas,
+                          QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
+                          QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
+                          qRgb(100, 100, 100));
+        from = to;
     }
 }
 
