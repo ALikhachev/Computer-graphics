@@ -9,7 +9,8 @@ WireObject::WireObject(std::vector<Line3D> lines, QVector3D center, QColor color
     _segments(lines),
     _shift_transform(new ShiftTransform(center.x(), center.y(), center.z())),
     _center(center),
-    _color(color)
+    _color(color),
+    _rotation(new IdentityTransform())
 {
 
 }
@@ -40,10 +41,21 @@ QColor WireObject::getColor() const
     return _color;
 }
 
+QSharedPointer<Transform> WireObject::getRotation() const
+{
+    return _rotation;
+}
+
+void WireObject::setRotation(QSharedPointer<Transform> transform)
+{
+    this->_rotation = transform;
+}
+
 WireObject::WireObject(QVector3D center, QColor color) :
     _shift_transform(new ShiftTransform(center.x(), center.y(), center.z())),
     _center(center),
-    _color(color)
+    _color(color),
+    _rotation(new IdentityTransform())
 {
 
 }

@@ -40,6 +40,7 @@ void Canvas3D::mousePressEvent(QMouseEvent *event)
 {
     this->_rotation_tracking.setX(event->x());
     this->_rotation_tracking.setY(event->y());
+    this->_button_clicked = event->button();
 }
 
 void Canvas3D::mouseMoveEvent(QMouseEvent *event)
@@ -48,11 +49,17 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
     float diff_y = (float) (event->y() - this->_rotation_tracking.y()) * 2 * Pi / this->_image.height();
     RotateYTransform y_transform = RotateYTransform(diff_x);
     RotateZTransform x_transform = RotateZTransform(diff_y);
-    this->_rotation = this->_rotation->compose((Transform *)&y_transform)->compose((Transform *)&x_transform);
-    this->_rotation_tracking.setX(event->x());
-    this->_rotation_tracking.setY(event->y());
-    this->plot();
-    this->update();
+    if (this->_button_clicked == Qt::LeftButton) {
+        this->_rotation = this->_rotation->compose((Transform *)&y_transform)->compose((Transform *)&x_transform);
+        this->_rotation_tracking.setX(event->x());
+        this->_rotation_tracking.setY(event->y());
+        this->plot();
+        this->update();
+    } else if (this->_button_clicked == Qt::RightButton) {
+        this->_config->rotateCurrentObject(((Transform *)&y_transform)->compose((Transform *)&x_transform));
+        this->plot();
+        this->update();
+    }
 }
 
 //void Canvas3D::wheelEvent(QWheelEvent *event)
@@ -71,7 +78,7 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
 void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
 {
     auto &segments = object->getSegments();
-    QSharedPointer<Transform> shift = object->getShiftTransform();
+    QSharedPointer<Transform> object_transform = object->getRotation()->compose(object->getShiftTransform().data());
     if (dynamic_cast<GeneratrixObject *>(object) != nullptr) {
         Axis axis1(object->getCenter(), AxisType::OX, 0.5);
         Axis axis2(object->getCenter(), AxisType::OY, 0.5);
@@ -83,8 +90,8 @@ void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
     for (auto it = segments.begin(); it < segments.end(); ++it) {
         HomogeneousPoint3D from_point = it->from();
         HomogeneousPoint3D to_point = it->to();
-        from_point.applyTransform(shift);
-        to_point.applyTransform(shift);
+        from_point.applyTransform(object_transform);
+        to_point.applyTransform(object_transform);
         if (scale_transform != NULL) {
             from_point.applyTransform(scale_transform);
             to_point.applyTransform(scale_transform);
@@ -126,12 +133,12 @@ float Canvas3D::findAbsMax()
     float max = 0;
     for (auto obj : this->_config->objects()) {
         auto &segments = obj->getSegments();
-        QSharedPointer<Transform> shift = obj->getShiftTransform();
+        QSharedPointer<Transform> object_transform = obj->getRotation()->compose(obj->getShiftTransform().data());
         for (auto it = segments.begin(); it < segments.end(); ++it) {
             HomogeneousPoint3D from_point = it->from();
             HomogeneousPoint3D to_point = it->to();
-            from_point.applyTransform(shift);
-            to_point.applyTransform(shift);
+            from_point.applyTransform(object_transform);
+            to_point.applyTransform(object_transform);
             QVector3D from_3D = from_point.to3D();
             QVector3D to_3D = to_point.to3D();
             std::vector<float> points {

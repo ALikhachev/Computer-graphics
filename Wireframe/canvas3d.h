@@ -36,6 +36,7 @@ private:
     QSharedPointer<Transform> _perspective;
     QSharedPointer<Transform> _camera;
     QPoint _rotation_tracking;
+    Qt::MouseButton _button_clicked;
     constexpr double static const Pi = std::acos(-1);
 };
 

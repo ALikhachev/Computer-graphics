@@ -19,6 +19,8 @@ public:
     QVector3D getCenter() const;
     void setCenter(QVector3D center);
     QColor getColor() const;
+    QSharedPointer<Transform> getRotation() const;
+    void setRotation(QSharedPointer<Transform> transform);
 
     virtual ~WireObject() {}
 
@@ -30,6 +32,7 @@ private:
     QSharedPointer<Transform> _shift_transform;
     QVector3D _center;
     QColor _color;
+    QSharedPointer<Transform> _rotation;
 };
 
 #endif // WIRE_OBJECT_H

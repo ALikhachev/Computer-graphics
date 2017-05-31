@@ -34,6 +34,7 @@ public:
     float currentY() const;
     void setCurrentZ(float z);
     float currentZ() const;
+    void rotateCurrentObject(QSharedPointer<Transform> transform);
 
 signals:
     void updated();

@@ -146,3 +146,9 @@ float Configuration::currentZ() const
 {
     return this->_objects[this->_current_object]->getCenter().z();
 }
+
+void Configuration::rotateCurrentObject(QSharedPointer<Transform> transform)
+{
+    QSharedPointer<Transform> rotation = this->_objects[this->_current_object]->getRotation();
+    this->_objects[this->_current_object]->setRotation(rotation->compose(transform.data()));
+}
