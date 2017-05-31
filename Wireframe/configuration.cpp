@@ -13,9 +13,8 @@ Configuration::Configuration() :
     _current_object(0),
     _clipping_near(5),
     _clipping_far(20),
-    _clipping_rect_width(10),
-    _clipping_rect_height(10),
     _background_color(qRgb(255, 255, 255)),
+    _rotation_transform(new IdentityTransform),
     _objects({
              QSharedPointer<GeneratrixObject>(new GeneratrixObject(
                                                   _n,
@@ -88,24 +87,9 @@ void Configuration::setClippingFarDistance(float val)
     this->_clipping_far = val;
 }
 
-int Configuration::clippingRectWidth() const
-{
-    return this->_clipping_rect_width;
-}
-
-int Configuration::clippingRectHeight() const
-{
-    return this->_clipping_rect_height;
-}
-
 QRgb Configuration::backgroundColor() const
 {
     return this->_background_color;
-}
-
-const QMatrix3x3 &Configuration::rotationComposedMatrix() const
-{
-    return this->_rotation_composed_matrix;
 }
 
 const std::vector<QSharedPointer<GeneratrixObject> > Configuration::objects() const
@@ -271,4 +255,14 @@ float Configuration::sh() const
 void Configuration::setSh(float value)
 {
     _sh = value;
+}
+
+QSharedPointer<Transform> Configuration::rotationTransform() const
+{
+    return this->_rotation_transform;
+}
+
+void Configuration::setRotationTransform(QSharedPointer<Transform> transform)
+{
+    this->_rotation_transform = transform;
 }

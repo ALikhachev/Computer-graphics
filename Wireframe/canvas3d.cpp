@@ -7,12 +7,11 @@
 Canvas3D::Canvas3D(QSharedPointer<Configuration> config, QWidget *parent) : QWidget(parent),
     _config(config),
     _image(this->size(), QImage::Format_RGB32),
-    _rotation(new IdentityTransform),
-    _camera(new CameraTransform()),
     _perspective(new PerspectiveTransform(this->_config->clippingNearDistance(),
                                           this->_config->clippingFarDistance(),
                                           this->_config->sw(),
-                                          this->_config->sh()))
+                                          this->_config->sh())),
+    _camera(new CameraTransform())
 {
     connect(this->_config.data(), &Configuration::updated, this, [this] {
         this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
@@ -50,7 +49,7 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
     RotateYTransform y_transform = RotateYTransform(diff_x);
     RotateZTransform x_transform = RotateZTransform(diff_y);
     if (this->_button_clicked == Qt::LeftButton) {
-        this->_rotation = this->_rotation->compose((Transform *)&y_transform)->compose((Transform *)&x_transform);
+        this->_config->setRotationTransform(this->_config->rotationTransform()->compose((Transform *)&y_transform)->compose((Transform *)&x_transform));
         this->_rotation_tracking.setX(event->x());
         this->_rotation_tracking.setY(event->y());
         this->plot();
@@ -96,8 +95,8 @@ void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
             from_point.applyTransform(scale_transform);
             to_point.applyTransform(scale_transform);
         }
-        from_point.applyTransform(this->_rotation);
-        to_point.applyTransform(this->_rotation);
+        from_point.applyTransform(this->_config->rotationTransform());
+        to_point.applyTransform(this->_config->rotationTransform());
         from_point.applyTransform(this->_camera);
         to_point.applyTransform(this->_camera);
         from_point.applyTransform(this->_perspective);

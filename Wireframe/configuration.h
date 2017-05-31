@@ -27,7 +27,6 @@ public:
     int clippingRectWidth() const;
     int clippingRectHeight() const;
     QRgb backgroundColor() const;
-    const QMatrix3x3 &rotationComposedMatrix() const;
     const std::vector<QSharedPointer<GeneratrixObject>> objects() const;
     void update();
     void setCurrentX(float x);
@@ -55,6 +54,8 @@ public:
     void setSw(float value);
     float sh() const;
     void setSh(float value);
+    QSharedPointer<Transform> rotationTransform() const;
+    void setRotationTransform(QSharedPointer<Transform> transform);
 
 signals:
     void updated();
@@ -73,10 +74,8 @@ private:
     int _current_object;
     float _clipping_near;
     float _clipping_far;
-    int _clipping_rect_width;
-    int _clipping_rect_height;
     QRgb _background_color;
-    QMatrix3x3 _rotation_composed_matrix;
+    QSharedPointer<Transform> _rotation_transform;
     std::vector<QSharedPointer<GeneratrixObject>> _objects;
 };
 
