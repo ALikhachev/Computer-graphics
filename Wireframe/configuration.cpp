@@ -3,6 +3,7 @@
 const static double PI = 3.141592653589793238463;
 
 Configuration::Configuration() :
+    _current_object(0),
     _clipping_near(5),
     _clipping_far(20),
     _clipping_rect_width(10),
@@ -23,6 +24,21 @@ Configuration::Configuration() :
                                                                     QPointF(0.9875 , -0.2625),
                                                                     QPointF(1.6    , -1.575),
                                                                     QPointF(0.5    , -1.7125)
+                                                                    })),
+             QSharedPointer<GeneratrixObject>(new GeneratrixObject(
+                                                  10,
+                                                  10,
+                                                  10,
+                                                  0.3,
+                                                  0.7,
+                                                  0,
+                                                  1 * PI,
+                                                  qRgb(0, 0, 255), QVector3D(-5, 0, 0),
+                                                                   {QPointF(-2.775 , -1.3),
+                                                                    QPointF(-5.7375, 10.175),
+                                                                    QPointF(0.9875 , -0.2625),
+                                                                    QPointF(1.6    , -1.575),
+                                                                    QPointF(0.5    , -1.7125)
                                                                     }))
              })
 {
@@ -32,6 +48,17 @@ Configuration::Configuration() :
 bool Configuration::load(QTextStream &stream)
 {
     return false;
+}
+
+int Configuration::currentObject() const
+{
+    return _current_object;
+}
+
+void Configuration::setCurrentObject(int value)
+{
+    this->_current_object = value;
+    emit objectSelected(value);
 }
 
 float Configuration::clippingNearDistance() const
@@ -77,4 +104,9 @@ const QMatrix3x3 &Configuration::rotationComposedMatrix() const
 const std::vector<QSharedPointer<GeneratrixObject> > Configuration::objects() const
 {
     return this->_objects;
+}
+
+void Configuration::update()
+{
+    emit updated();
 }

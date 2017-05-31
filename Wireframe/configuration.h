@@ -8,13 +8,16 @@
 
 #include "generatrix_object.h"
 
-class Configuration
+class Configuration : public QObject
 {
+    Q_OBJECT
 public:
     Configuration();
 
     bool load(QTextStream &stream);
 
+    int currentObject() const;
+    void setCurrentObject(int value);
     float clippingNearDistance() const;
     void setClippingNearDistance(float val);
     float clippingFarDistance() const;
@@ -24,8 +27,14 @@ public:
     QRgb backgroundColor() const;
     const QMatrix3x3 &rotationComposedMatrix() const;
     const std::vector<QSharedPointer<GeneratrixObject>> objects() const;
+    void update();
+
+signals:
+    void updated();
+    void objectSelected(int index);
 
 private:
+    int _current_object;
     float _clipping_near;
     float _clipping_far;
     int _clipping_rect_width;

@@ -8,6 +8,11 @@ GeneratrixView::GeneratrixView(QSharedPointer<Configuration> config, QWidget *pa
     config(config)
 {
     this->setObject(config->objects()[0]);
+    connect(this->config.data(), &Configuration::objectSelected, this, [this] (int index) {
+        this->setObject(this->config->objects()[index]);
+        this->plot();
+        this->update();
+    });
 }
 
 void GeneratrixView::setObject(QSharedPointer<GeneratrixObject> object)

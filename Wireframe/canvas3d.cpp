@@ -10,7 +10,14 @@ Canvas3D::Canvas3D(QSharedPointer<Configuration> config, QWidget *parent) : QWid
     _rotation(new IdentityTransform),
     _camera(new CameraTransform())
 {
-
+    connect(this->_config.data(), &Configuration::updated, this, [this] {
+        this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
+                                              this->_config->clippingFarDistance(),
+                                              this->width(),
+                                              this->height()));
+        this->plot();
+        this->update();
+    });
 }
 
 void Canvas3D::resizeEvent(QResizeEvent *)
@@ -48,18 +55,18 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
     this->update();
 }
 
-void Canvas3D::wheelEvent(QWheelEvent *event)
-{
-    float k = event->delta() > 0 ? 0.95f : 1.05f;
-    this->_config->setClippingNearDistance(this->_config->clippingNearDistance() * k);
-    this->_config->setClippingFarDistance(this->_config->clippingFarDistance() * k);
-    this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
-                                          this->_config->clippingFarDistance(),
-                                          this->width(),
-                                          this->height()));
-    this->plot();
-    this->update();
-}
+//void Canvas3D::wheelEvent(QWheelEvent *event)
+//{
+//    float k = event->delta() > 0 ? 0.95f : 1.05f;
+//    this->_config->setClippingNearDistance(this->_config->clippingNearDistance() * k);
+//    this->_config->setClippingFarDistance(this->_config->clippingFarDistance() * k);
+//    this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
+//                                          this->_config->clippingFarDistance(),
+//                                          this->width(),
+//                                          this->height()));
+//    this->plot();
+//    this->update();
+//}
 
 void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
 {

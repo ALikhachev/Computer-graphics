@@ -8,11 +8,11 @@
 #include <QApplication>
 #include <QSettings>
 #include <QScreen>
-#include <QTabWidget>
 
 #include "about_view.h"
 #include "generatrix_view.h"
 #include "canvas3d.h"
+#include "wireframe_widget.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -22,12 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->statusBar()->show();
     this->initActions();
     this->updateRecentFileActions();
-    QTabWidget *tab_widget = new QTabWidget(this);
-    GeneratrixView *generatrix_view_widget = new GeneratrixView(this->configuration, this);
-    Canvas3D *canvas_3d = new Canvas3D(this->configuration, this);
-    tab_widget->addTab(canvas_3d, "3D &canvas");
-    tab_widget->addTab(generatrix_view_widget, "&Generatrix");
-    this->setCentralWidget(tab_widget);
+    WireframeWidget *widget = new WireframeWidget(this->configuration, this);
+    this->setCentralWidget(widget);
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 }
 
