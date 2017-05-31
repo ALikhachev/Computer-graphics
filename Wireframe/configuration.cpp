@@ -110,3 +110,39 @@ void Configuration::update()
 {
     emit updated();
 }
+
+void Configuration::setCurrentX(float x)
+{
+    QVector3D center = this->_objects[this->_current_object]->getCenter();
+    center.setX(x);
+    this->_objects[this->_current_object]->setCenter(center);
+}
+
+float Configuration::currentX() const
+{
+    return this->_objects[this->_current_object]->getCenter().x();
+}
+
+void Configuration::setCurrentY(float x)
+{
+    QVector3D center = this->_objects[this->_current_object]->getCenter();
+    center.setY(x);
+    this->_objects[this->_current_object]->setCenter(center);
+}
+
+float Configuration::currentY() const
+{
+    return this->_objects[this->_current_object]->getCenter().y();
+}
+
+void Configuration::setCurrentZ(float x)
+{
+    QVector3D center = this->_objects[this->_current_object]->getCenter();
+    center.setZ(x);
+    this->_objects[this->_current_object]->setCenter(center);
+}
+
+float Configuration::currentZ() const
+{
+    return this->_objects[this->_current_object]->getCenter().z();
+}

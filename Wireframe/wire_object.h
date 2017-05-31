@@ -17,6 +17,7 @@ public:
     virtual const std::vector<Line3D> &getSegments() const;
     QSharedPointer<Transform> getShiftTransform() const;
     QVector3D getCenter() const;
+    void setCenter(QVector3D center);
     QColor getColor() const;
 
     virtual ~WireObject() {}

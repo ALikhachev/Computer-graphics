@@ -28,6 +28,12 @@ public:
     const QMatrix3x3 &rotationComposedMatrix() const;
     const std::vector<QSharedPointer<GeneratrixObject>> objects() const;
     void update();
+    void setCurrentX(float x);
+    float currentX() const;
+    void setCurrentY(float y);
+    float currentY() const;
+    void setCurrentZ(float z);
+    float currentZ() const;
 
 signals:
     void updated();

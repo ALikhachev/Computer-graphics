@@ -29,6 +29,12 @@ QVector3D WireObject::getCenter() const
     return _center;
 }
 
+void WireObject::setCenter(QVector3D center)
+{
+    this->_center = center;
+    _shift_transform.reset(new ShiftTransform(center.x(), center.y(), center.z()));
+}
+
 QColor WireObject::getColor() const
 {
     return _color;

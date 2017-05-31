@@ -36,10 +36,43 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
 
     form_layout2->addRow(tr("Object #"), spin_current_object);
 
-    connect(spin_current_object, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this] (int value) {
-        this->_config->setCurrentObject(value);
+    QDoubleSpinBox *spin_curx = new QDoubleSpinBox(this);
+    spin_curx->setRange(-100, 100);
+    spin_curx->setValue(this->_config->currentX());
+    form_layout2->addRow(tr("x"), spin_curx);
+
+    connect(spin_curx, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setCurrentX(value);
+        this->_config->update();
+    });
+
+    QDoubleSpinBox *spin_cury = new QDoubleSpinBox(this);
+    spin_cury->setRange(-100, 100);
+    spin_cury->setValue(this->_config->currentY());
+    form_layout2->addRow(tr("y"), spin_cury);
+
+    connect(spin_cury, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setCurrentY(value);
+        this->_config->update();
+    });
+
+    QDoubleSpinBox *spin_curz = new QDoubleSpinBox(this);
+    spin_curz->setRange(-100, 100);
+    spin_curz->setValue(this->_config->currentZ());
+    form_layout2->addRow(tr("z"), spin_curz);
+
+    connect(spin_curz, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setCurrentZ(value);
+        this->_config->update();
     });
 
     layout->addLayout(form_layout);
     layout->addLayout(form_layout2);
+
+    connect(spin_current_object, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this, spin_curx, spin_cury, spin_curz] (int value) {
+        this->_config->setCurrentObject(value);
+        spin_curx->setValue(this->_config->currentX());
+        spin_cury->setValue(this->_config->currentY());
+        spin_curz->setValue(this->_config->currentZ());
+    });
 }
