@@ -1,13 +1,15 @@
 #include "wire_object.h"
 
-WireObject::WireObject(std::vector<Line3D> lines) : WireObject(lines, QVector3D(0, 0, 0))
+WireObject::WireObject(std::vector<Line3D> lines, QColor color) : WireObject(lines, QVector3D(0, 0, 0), color)
 {
 
 }
 
-WireObject::WireObject(std::vector<Line3D> lines, QVector3D center) :
+WireObject::WireObject(std::vector<Line3D> lines, QVector3D center, QColor color) :
     _segments(lines),
-    _shift_transform(new ShiftTransform(center.x(), center.y(), center.z()))
+    _shift_transform(new ShiftTransform(center.x(), center.y(), center.z())),
+    _center(center),
+    _color(color)
 {
 
 }
@@ -22,8 +24,20 @@ QSharedPointer<Transform> WireObject::getShiftTransform() const
     return _shift_transform;
 }
 
-WireObject::WireObject(QVector3D center) :
-    _shift_transform(new ShiftTransform(center.x(), center.y(), center.z()))
+QVector3D WireObject::getCenter() const
+{
+    return _center;
+}
+
+QColor WireObject::getColor() const
+{
+    return _color;
+}
+
+WireObject::WireObject(QVector3D center, QColor color) :
+    _shift_transform(new ShiftTransform(center.x(), center.y(), center.z())),
+    _center(center),
+    _color(color)
 {
 
 }

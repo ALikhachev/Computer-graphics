@@ -14,6 +14,7 @@ class Axis : public WireObject
 {
 public:
     Axis(AxisType type, float length);
+    Axis(QVector3D center, AxisType type, float length);
 };
 
 #endif // AXIS_H

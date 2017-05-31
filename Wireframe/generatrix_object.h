@@ -27,7 +27,6 @@ private:
     void buildSegments();
 
     QRgb _color;
-    QMatrix4x4 _rotation_matrix;
     std::vector<QPointF> _knots;
     std::vector<Line3D> _segments;
     BSpline _spline;

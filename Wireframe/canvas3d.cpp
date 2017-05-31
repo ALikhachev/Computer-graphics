@@ -61,10 +61,18 @@ void Canvas3D::wheelEvent(QWheelEvent *event)
     this->update();
 }
 
-void Canvas3D::drawObject(WireObject *object, QColor color, Transform *scale_transform)
+void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
 {
     auto &segments = object->getSegments();
     QSharedPointer<Transform> shift = object->getShiftTransform();
+    if (dynamic_cast<GeneratrixObject *>(object) != nullptr) {
+        Axis axis1(object->getCenter(), AxisType::OX, 0.5);
+        Axis axis2(object->getCenter(), AxisType::OY, 0.5);
+        Axis axis3(object->getCenter(), AxisType::OZ, 0.5);
+        this->drawObject(&axis1, scale_transform);
+        this->drawObject(&axis2, scale_transform);
+        this->drawObject(&axis3, scale_transform);
+    }
     for (auto it = segments.begin(); it < segments.end(); ++it) {
         HomogeneousPoint3D from_point = it->from();
         HomogeneousPoint3D to_point = it->to();
@@ -82,7 +90,7 @@ void Canvas3D::drawObject(WireObject *object, QColor color, Transform *scale_tra
         to_point.applyTransform(this->_perspective);
         Line3D res_line(from_point, to_point);
         if (res_line.clip()) {
-            Drawing::drawLine3D(this->_image, res_line.from3D() * 80, res_line.to3D() * 80, color);
+            Drawing::drawLine3D(this->_image, res_line.from3D() * 80, res_line.to3D() * 80, object->getColor());
         }
     }
 }
@@ -102,8 +110,8 @@ void Canvas3D::drawBoundingBox()
                          Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(-1, 1, 1)),
                          Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, -1, 1)),
                          Line3D(HomogeneousPoint3D(1, 1, -1), HomogeneousPoint3D(1, 1, 1)),
-                     });
-    this->drawObject(&cube, QColor(0, 0, 0), NULL);
+                     }, QColor(0, 0, 0));
+    this->drawObject(&cube, NULL);
 }
 
 float Canvas3D::findAbsMax()
@@ -136,16 +144,18 @@ float Canvas3D::findAbsMax()
 void Canvas3D::plot()
 {
     memset(this->_image.bits(), 0xFF, this->_image.bytesPerLine() * this->_image.height());
-    Axis axis1(AxisType::OX, 0.5);
-    Axis axis2(AxisType::OY, 0.5);
-    Axis axis3(AxisType::OZ, 0.5);
-    this->drawObject(&axis1, QColor(255, 0, 0), NULL);
-    this->drawObject(&axis2, QColor(0, 255, 0), NULL);
-    this->drawObject(&axis3, QColor(0, 0, 255), NULL);
+    if (this->_config->objects().size() > 1) {
+        Axis axis1(AxisType::OX, 0.5);
+        Axis axis2(AxisType::OY, 0.5);
+        Axis axis3(AxisType::OZ, 0.5);
+        this->drawObject(&axis1, NULL);
+        this->drawObject(&axis2, NULL);
+        this->drawObject(&axis3, NULL);
+    }
     this->drawBoundingBox();
     float max = this->findAbsMax();
     ScaleTransform scale_transform = ScaleTransform(max);
     for (auto obj : this->_config->objects()) {
-        this->drawObject(obj.data(), obj->color(), &scale_transform);
+        this->drawObject(obj.data(), &scale_transform);
     }
 }

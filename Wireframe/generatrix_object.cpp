@@ -8,7 +8,7 @@ GeneratrixObject::GeneratrixObject(int n, int m, int k, float a, float b, float 
 
 GeneratrixObject::GeneratrixObject(int n, int m, int k,
                                    float a, float b, float c, float d,
-        QRgb color, QVector3D center, std::vector<QPointF> knots) : WireObject(center),
+        QRgb color, QVector3D center, std::vector<QPointF> knots) : WireObject(center, QColor(color)),
     _color(color),
     _knots(knots),
     _spline(knots),
