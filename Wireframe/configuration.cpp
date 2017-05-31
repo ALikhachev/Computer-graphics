@@ -1,6 +1,8 @@
 #include "configuration.h"
 
 Configuration::Configuration() :
+    _sw(5),
+    _sh(5),
     _a(0),
     _b(0.75),
     _c(0),
@@ -249,4 +251,24 @@ void Configuration::setD(float value)
     for (auto &object : _objects) {
         object->setD(value);
     }
+}
+
+float Configuration::sw() const
+{
+    return _sw;
+}
+
+void Configuration::setSw(float value)
+{
+    _sw = value;
+}
+
+float Configuration::sh() const
+{
+    return _sh;
+}
+
+void Configuration::setSh(float value)
+{
+    _sh = value;
 }

@@ -257,10 +257,10 @@ namespace Drawing {
         }
     }
 
-    inline void drawLine3D(QImage &image, const QVector3D &from, const QVector3D &to, QColor color)
+    inline void drawLine3D(QImage &image, const QVector3D &from, const QVector3D &to, QColor color, float sw, float sh)
     {
-        QPoint from2D(qRound(image.width() / 2 + from.x() / 2 * image.width()), qRound(image.height() / 2 - 1 - from.y() / 2 * image.height()));
-        QPoint to2D(qRound(image.width() / 2 + to.x() / 2 * image.width()), qRound(image.height() / 2 - 1 - to.y() / 2 * image.height()));
+        QPoint from2D(qRound((float) image.width() / 2 + from.x() * sw / 2), qRound((float) image.height() / 2 - 1 - from.y() * sh / 2));
+        QPoint to2D(qRound((float) image.width() / 2 + to.x() * sw / 2), qRound((float) image.height() / 2 - 1 - to.y() * sh / 2));
         drawLine(image, from2D, to2D, color.rgb());
     }
 }

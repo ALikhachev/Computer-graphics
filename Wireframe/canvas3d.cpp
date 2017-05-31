@@ -8,13 +8,17 @@ Canvas3D::Canvas3D(QSharedPointer<Configuration> config, QWidget *parent) : QWid
     _config(config),
     _image(this->size(), QImage::Format_RGB32),
     _rotation(new IdentityTransform),
-    _camera(new CameraTransform())
+    _camera(new CameraTransform()),
+    _perspective(new PerspectiveTransform(this->_config->clippingNearDistance(),
+                                          this->_config->clippingFarDistance(),
+                                          this->_config->sw(),
+                                          this->_config->sh()))
 {
     connect(this->_config.data(), &Configuration::updated, this, [this] {
         this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
                                               this->_config->clippingFarDistance(),
-                                              this->width(),
-                                              this->height()));
+                                              this->_config->sw(),
+                                              this->_config->sh()));
         this->plot();
         this->update();
     });
@@ -23,10 +27,6 @@ Canvas3D::Canvas3D(QSharedPointer<Configuration> config, QWidget *parent) : QWid
 void Canvas3D::resizeEvent(QResizeEvent *)
 {
     this->_image = QImage(this->size(), QImage::Format_RGB32);
-    this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
-                                          this->_config->clippingFarDistance(),
-                                          this->width(),
-                                          this->height()));
     this->plot();
 }
 
@@ -104,7 +104,8 @@ void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
         to_point.applyTransform(this->_perspective);
         Line3D res_line(from_point, to_point);
         if (res_line.clip()) {
-            Drawing::drawLine3D(this->_image, res_line.from3D() * 80, res_line.to3D() * 80, object->getColor());
+            Drawing::drawLine3D(this->_image, res_line.from3D() * 80, res_line.to3D() * 80, object->getColor(),
+                                this->_config->sw(), this->_config->sh());
         }
     }
 }
@@ -157,7 +158,7 @@ float Canvas3D::findAbsMax()
 
 void Canvas3D::plot()
 {
-    memset(this->_image.bits(), 0xFF, this->_image.bytesPerLine() * this->_image.height());
+    Drawing::fill(this->_image, this->_config->backgroundColor());
     if (this->_config->objects().size() > 1) {
         Axis axis1(AxisType::OX, 0.5);
         Axis axis2(AxisType::OY, 0.5);

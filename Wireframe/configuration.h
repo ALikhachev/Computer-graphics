@@ -51,12 +51,18 @@ public:
     void setC(float value);
     float d() const;
     void setD(float value);
+    float sw() const;
+    void setSw(float value);
+    float sh() const;
+    void setSh(float value);
 
 signals:
     void updated();
     void objectSelected(int index);
 
 private:
+    float _sw;
+    float _sh;
     float _a;
     float _b;
     float _c;

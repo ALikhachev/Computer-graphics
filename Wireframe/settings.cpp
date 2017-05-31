@@ -33,6 +33,28 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
         spin_znear->setMaximum(value - 0.1f);
     });
 
+    QDoubleSpinBox *spin_sw = new QDoubleSpinBox(this);
+    spin_sw->setRange(1, 20);
+    spin_sw->setSingleStep(0.1);
+    spin_sw->setValue(this->_config->sw());
+    form_layout->addRow(tr("sw"), spin_sw);
+
+    connect(spin_sw, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setSw(value);
+        this->_config->update();
+    });
+
+    QDoubleSpinBox *spin_sh = new QDoubleSpinBox(this);
+    spin_sh->setRange(1, 20);
+    spin_sh->setSingleStep(0.1);
+    spin_sh->setValue(this->_config->sh());
+    form_layout->addRow(tr("sh"), spin_sh);
+
+    connect(spin_sh, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setSh(value);
+        this->_config->update();
+    });
+
     QSpinBox *spin_current_object = new QSpinBox(this);
     spin_current_object->setMaximum(this->_config->objects().size() - 1);
 
