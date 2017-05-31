@@ -15,13 +15,6 @@ public:
 
     bool load(QTextStream &stream);
 
-    int gridWidth() const;
-    int gridHeight() const;
-    int segmentsCount() const;
-    double domainTMin() const;
-    double domainTMax() const;
-    double domainPhiMin() const;
-    double domainPhiMax() const;
     float clippingNearDistance() const;
     void setClippingNearDistance(float val);
     float clippingFarDistance() const;
@@ -33,13 +26,6 @@ public:
     const std::vector<QSharedPointer<GeneratrixObject>> objects() const;
 
 private:
-    int _grid_width;
-    int _grid_height;
-    int _segments_count;
-    double _domain_t_min;
-    double _domain_t_max;
-    double _domain_phi_min;
-    double _domain_phi_max;
     float _clipping_near;
     float _clipping_far;
     int _clipping_rect_width;
