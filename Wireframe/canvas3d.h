@@ -25,8 +25,9 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void drawObject(WireObject *object, QColor color);
+    void drawObject(WireObject *object, QColor color, Transform *scale_transform);
     void drawBoundingBox();
+    float findAbsMax();
     void plot();
 
     QSharedPointer<Configuration> _config;

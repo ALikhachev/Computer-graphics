@@ -93,3 +93,13 @@ CameraTransform::CameraTransform()
                 0, 0, 0, 1
             );
 }
+
+ScaleTransform::ScaleTransform(float scale_factor)
+{
+    this->_matrix = {
+        1.0f / scale_factor, 0.0,                 0.0,                 0.0,
+        0.0,                 1.0f / scale_factor, 0.0,                 0.0,
+        0.0,                 0.0,                 1.0f / scale_factor, 0.0,
+        0.0,                 0.0,                 0.0,                 1.0f
+    };
+}

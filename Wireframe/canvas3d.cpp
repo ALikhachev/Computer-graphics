@@ -60,12 +60,16 @@ void Canvas3D::wheelEvent(QWheelEvent *event)
     this->update();
 }
 
-void Canvas3D::drawObject(WireObject *object, QColor color)
+void Canvas3D::drawObject(WireObject *object, QColor color, Transform *scale_transform)
 {
     auto &segments = object->getSegments();
     for (auto it = segments.begin(); it < segments.end(); ++it) {
         HomogeneousPoint3D from_point = it->from();
         HomogeneousPoint3D to_point = it->to();
+        if (scale_transform != NULL) {
+            from_point.applyTransform(scale_transform);
+            to_point.applyTransform(scale_transform);
+        }
         from_point.applyTransform(this->_rotation);
         to_point.applyTransform(this->_rotation);
         from_point.applyTransform(this->_camera);
@@ -95,7 +99,32 @@ void Canvas3D::drawBoundingBox()
                                      Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, -1, 1)),
                                      Line3D(HomogeneousPoint3D(1, 1, -1), HomogeneousPoint3D(1, 1, 1)),
                                  });
-    this->drawObject(&cube, QColor(0, 0, 0));
+    this->drawObject(&cube, QColor(0, 0, 0), NULL);
+}
+
+float Canvas3D::findAbsMax()
+{
+    float max = 0;
+    for (auto obj : this->_config->objects()) {
+        auto &segments = obj->getSegments();
+        for (auto it = segments.begin(); it < segments.end(); ++it) {
+            // shift
+            HomogeneousPoint3D from_point = it->from();
+            HomogeneousPoint3D to_point = it->to();
+            QVector3D from_3D = from_point.to3D();
+            QVector3D to_3D = to_point.to3D();
+            std::vector<float> points {
+                std::fabs(from_3D.x()),
+                std::fabs(from_3D.y()),
+                std::fabs(from_3D.z()),
+                std::fabs(to_3D.x()),
+                std::fabs(to_3D.y()),
+                std::fabs(to_3D.z())
+            };
+            max = std::max(max, *std::max_element(points.begin(), points.end()));
+        }
+    }
+    return max;
 }
 
 void Canvas3D::plot()
@@ -104,11 +133,13 @@ void Canvas3D::plot()
     Axis axis1 = Axis(AxisType::OX, 0.5);
     Axis axis2 = Axis(AxisType::OY, 0.5);
     Axis axis3 = Axis(AxisType::OZ, 0.5);
-    this->drawObject(&axis1, QColor(255, 0, 0));
-    this->drawObject(&axis2, QColor(0, 255, 0));
-    this->drawObject(&axis3, QColor(0, 0, 255));
-    for (auto obj : this->_config->objects()) {
-        this->drawObject(obj.data(), obj->color());
-    }
+    this->drawObject(&axis1, QColor(255, 0, 0), NULL);
+    this->drawObject(&axis2, QColor(0, 255, 0), NULL);
+    this->drawObject(&axis3, QColor(0, 0, 255), NULL);
     this->drawBoundingBox();
+    float max = this->findAbsMax();
+    ScaleTransform scale_transform = ScaleTransform(max);
+    for (auto obj : this->_config->objects()) {
+        this->drawObject(obj.data(), obj->color(), &scale_transform);
+    }
 }

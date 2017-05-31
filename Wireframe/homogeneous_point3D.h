@@ -15,6 +15,7 @@ public:
     const QVector3D to3D() const;
     QVector4D &to4D();
     HomogeneousPoint3D &applyTransform(QSharedPointer<Transform> transform);
+    HomogeneousPoint3D &applyTransform(Transform *transform);
     void normalize();
 
 private:

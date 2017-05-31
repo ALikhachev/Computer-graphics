@@ -54,4 +54,10 @@ public:
     CameraTransform();
 };
 
+class ScaleTransform : public Transform
+{
+public:
+    ScaleTransform(float scale_factor);
+};
+
 #endif // TRANSFORM_H
