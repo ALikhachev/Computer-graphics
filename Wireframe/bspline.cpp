@@ -16,7 +16,8 @@ BSpline::BSpline(std::vector<QPointF> values)
 
 QPointF BSpline::solve(double t) const
 {
-    return solve(this->getKnotByLength(t), t);
+    auto pair = this->getKnotByLength(t);
+    return solve(pair.first, pair.second);
 }
 
 QPointF BSpline::solve(int knot, double t) const
@@ -28,22 +29,22 @@ QPointF BSpline::solve(int knot, double t) const
     return point;
 }
 
-int BSpline::getKnotByLength(float length_percent) const
+std::pair<int, float> BSpline::getKnotByLength(float length_percent) const
 {
     float length = this->length() * length_percent;
 
     float len = 0;
     for (uint i = 1; i < this->values.size() - 2; ++i) {
         QPointF prev = solve(i, 0);
-        for (float t = 0.01f; t < 1.0f; t += 0.001f) {
+        for (float t = 0.001f; t < 1.0f; t += 0.001f) {
             QPointF curr = solve(i, t);
             len += std::sqrt(std::pow(curr.x() - prev.x(), 2) + std::pow(curr.y() - prev.y(), 2));
             if (len > length) {
-                return i;
+                return std::make_pair(i, t);
             }
         }
     }
-    return this->values.size() - 2;
+    return std::make_pair(this->values.size() - 2, 0);
 }
 
 void BSpline::calculateCoefficientsVectors()
@@ -67,7 +68,7 @@ float BSpline::length() const
     float len = 0;
     for (uint i = 1; i < this->values.size() - 2; ++i) {
         QPointF prev = solve(i, 0);
-        for (float t = 0.01f; t < 1.0f; t += 0.001f) {
+        for (float t = 0.001f; t < 1.0f; t += 0.001f) {
             QPointF curr = solve(i, t);
             len += std::sqrt(std::pow(curr.x() - prev.x(), 2) + std::pow(curr.y() - prev.y(), 2));
         }

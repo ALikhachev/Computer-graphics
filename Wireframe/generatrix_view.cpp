@@ -105,5 +105,5 @@ float GeneratrixView::detectScale(std::vector<QPointF> &knots)
     if (y_max == 0) y_max = 1;
     float scale_divider_x = (float) this->width() / (x_max * 2);
     float scale_divider_y = (float) this->height() / (y_max * 2);
-    return std::min(scale_divider_x, scale_divider_y);
+    return std::max(scale_divider_x, scale_divider_y);
 }

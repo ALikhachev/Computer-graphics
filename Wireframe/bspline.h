@@ -17,7 +17,7 @@ public:
     QPointF solve(double t) const;
     QPointF solve(int knot, double t) const;
 private:
-    int getKnotByLength(float length) const;
+    std::pair<int, float> getKnotByLength(float length) const;
     void calculateCoefficientsVectors();
     float length() const;
 
