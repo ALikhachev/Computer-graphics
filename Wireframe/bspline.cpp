@@ -42,6 +42,7 @@ std::pair<int, float> BSpline::getKnotByLength(float length_percent) const
             if (len > length) {
                 return std::make_pair(i, t);
             }
+            prev = curr;
         }
     }
     return std::make_pair(this->values.size() - 2, 0);
@@ -71,6 +72,7 @@ float BSpline::length() const
         for (float t = 0.001f; t < 1.0f; t += 0.001f) {
             QPointF curr = solve(i, t);
             len += std::sqrt(std::pow(curr.x() - prev.x(), 2) + std::pow(curr.y() - prev.y(), 2));
+            prev = curr;
         }
     }
     return len;
