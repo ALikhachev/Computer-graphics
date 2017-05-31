@@ -64,9 +64,12 @@ void Canvas3D::wheelEvent(QWheelEvent *event)
 void Canvas3D::drawObject(WireObject *object, QColor color, Transform *scale_transform)
 {
     auto &segments = object->getSegments();
+    QSharedPointer<Transform> shift = object->getShiftTransform();
     for (auto it = segments.begin(); it < segments.end(); ++it) {
         HomogeneousPoint3D from_point = it->from();
         HomogeneousPoint3D to_point = it->to();
+        from_point.applyTransform(shift);
+        to_point.applyTransform(shift);
         if (scale_transform != NULL) {
             from_point.applyTransform(scale_transform);
             to_point.applyTransform(scale_transform);
@@ -86,20 +89,20 @@ void Canvas3D::drawObject(WireObject *object, QColor color, Transform *scale_tra
 
 void Canvas3D::drawBoundingBox()
 {
-    WireObject cube = WireObject({
-                                     Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(1, -1, -1)),
-                                     Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(-1, 1, -1)),
-                                     Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(1, 1, -1)),
-                                     Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, 1, -1)),
-                                     Line3D(HomogeneousPoint3D(-1, -1, 1), HomogeneousPoint3D(1, -1, 1)),
-                                     Line3D(HomogeneousPoint3D(-1, -1, 1), HomogeneousPoint3D(-1, 1, 1)),
-                                     Line3D(HomogeneousPoint3D(-1, 1, 1), HomogeneousPoint3D(1, 1, 1)),
-                                     Line3D(HomogeneousPoint3D(1, -1, 1), HomogeneousPoint3D(1, 1, 1)),
-                                     Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(-1, -1, 1)),
-                                     Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(-1, 1, 1)),
-                                     Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, -1, 1)),
-                                     Line3D(HomogeneousPoint3D(1, 1, -1), HomogeneousPoint3D(1, 1, 1)),
-                                 });
+    WireObject cube(std::vector<Line3D>{
+                         Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(1, -1, -1)),
+                         Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(-1, 1, -1)),
+                         Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(1, 1, -1)),
+                         Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, 1, -1)),
+                         Line3D(HomogeneousPoint3D(-1, -1, 1), HomogeneousPoint3D(1, -1, 1)),
+                         Line3D(HomogeneousPoint3D(-1, -1, 1), HomogeneousPoint3D(-1, 1, 1)),
+                         Line3D(HomogeneousPoint3D(-1, 1, 1), HomogeneousPoint3D(1, 1, 1)),
+                         Line3D(HomogeneousPoint3D(1, -1, 1), HomogeneousPoint3D(1, 1, 1)),
+                         Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(-1, -1, 1)),
+                         Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(-1, 1, 1)),
+                         Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, -1, 1)),
+                         Line3D(HomogeneousPoint3D(1, 1, -1), HomogeneousPoint3D(1, 1, 1)),
+                     });
     this->drawObject(&cube, QColor(0, 0, 0), NULL);
 }
 
@@ -108,10 +111,12 @@ float Canvas3D::findAbsMax()
     float max = 0;
     for (auto obj : this->_config->objects()) {
         auto &segments = obj->getSegments();
+        QSharedPointer<Transform> shift = obj->getShiftTransform();
         for (auto it = segments.begin(); it < segments.end(); ++it) {
-            // shift
             HomogeneousPoint3D from_point = it->from();
             HomogeneousPoint3D to_point = it->to();
+            from_point.applyTransform(shift);
+            to_point.applyTransform(shift);
             QVector3D from_3D = from_point.to3D();
             QVector3D to_3D = to_point.to3D();
             std::vector<float> points {
@@ -131,9 +136,9 @@ float Canvas3D::findAbsMax()
 void Canvas3D::plot()
 {
     memset(this->_image.bits(), 0xFF, this->_image.bytesPerLine() * this->_image.height());
-    Axis axis1 = Axis(AxisType::OX, 0.5);
-    Axis axis2 = Axis(AxisType::OY, 0.5);
-    Axis axis3 = Axis(AxisType::OZ, 0.5);
+    Axis axis1(AxisType::OX, 0.5);
+    Axis axis2(AxisType::OY, 0.5);
+    Axis axis3(AxisType::OZ, 0.5);
     this->drawObject(&axis1, QColor(255, 0, 0), NULL);
     this->drawObject(&axis2, QColor(0, 255, 0), NULL);
     this->drawObject(&axis3, QColor(0, 0, 255), NULL);

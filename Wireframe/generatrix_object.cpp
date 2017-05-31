@@ -1,8 +1,14 @@
 #include "generatrix_object.h"
 
+GeneratrixObject::GeneratrixObject(int n, int m, int k, float a, float b, float c, float d, QRgb color, std::vector<QPointF> knots) :
+    GeneratrixObject(n, m, k, a, b, c, d, color, QVector3D(0, 0, 0), knots)
+{
+
+}
+
 GeneratrixObject::GeneratrixObject(int n, int m, int k,
                                    float a, float b, float c, float d,
-        QRgb color, std::vector<QPointF> knots) : WireObject(),
+        QRgb color, QVector3D center, std::vector<QPointF> knots) : WireObject(center),
     _color(color),
     _knots(knots),
     _spline(knots),

@@ -60,4 +60,10 @@ public:
     ScaleTransform(float scale_factor);
 };
 
+class ShiftTransform : public Transform
+{
+public:
+    ShiftTransform(float x, float y, float z);
+};
+
 #endif // TRANSFORM_H
