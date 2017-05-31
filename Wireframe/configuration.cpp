@@ -1,8 +1,10 @@
 #include "configuration.h"
 
-const static double PI = 3.141592653589793238463;
-
 Configuration::Configuration() :
+    _a(0),
+    _b(0.75),
+    _c(0),
+    _d(2 * PI),
     _n(10),
     _m(10),
     _k(10),
@@ -14,13 +16,13 @@ Configuration::Configuration() :
     _background_color(qRgb(255, 255, 255)),
     _objects({
              QSharedPointer<GeneratrixObject>(new GeneratrixObject(
-                                                  10,
-                                                  10,
-                                                  10,
-                                                  0,
-                                                  1,
-                                                  0,
-                                                  2 * PI,
+                                                  _n,
+                                                  _m,
+                                                  _k,
+                                                  _a,
+                                                  _b,
+                                                  _c,
+                                                  _d,
                                                   qRgb(255, 0, 0), QVector3D(1, 0, 0),
                                                                    {QPointF(-2.775 , -1.3),
                                                                     QPointF(-1.7375, -0.175),
@@ -29,13 +31,13 @@ Configuration::Configuration() :
                                                                     QPointF(0.5    , -1.7125)
                                                                     })),
              QSharedPointer<GeneratrixObject>(new GeneratrixObject(
-                                                  10,
-                                                  10,
-                                                  10,
-                                                  0.3,
-                                                  0.7,
-                                                  0,
-                                                  1 * PI,
+                                                  _n,
+                                                  _m,
+                                                  _k,
+                                                  _a,
+                                                  _b,
+                                                  _c,
+                                                  _d,
                                                   qRgb(0, 0, 255), QVector3D(-5, 0, 0),
                                                                    {QPointF(-2.775 , -1.3),
                                                                     QPointF(-5.7375, 10.175),
@@ -195,3 +197,56 @@ void Configuration::setK(int value)
     }
 }
 
+float Configuration::a() const
+{
+    return _a;
+}
+
+void Configuration::setA(float value)
+{
+    _a = value;
+    for (auto &object : _objects) {
+        object->setA(value);
+    }
+}
+
+float Configuration::b() const
+{
+    return _b;
+}
+
+void Configuration::setB(float value)
+{
+    _b = value;
+    for (auto &object : _objects) {
+        object->setB(value);
+    }
+}
+
+
+float Configuration::c() const
+{
+    return _c;
+}
+
+void Configuration::setC(float value)
+{
+    _c = value;
+    for (auto &object : _objects) {
+        object->setC(value);
+    }
+}
+
+
+float Configuration::d() const
+{
+    return _d;
+}
+
+void Configuration::setD(float value)
+{
+    _d = value;
+    for (auto &object : _objects) {
+        object->setD(value);
+    }
+}

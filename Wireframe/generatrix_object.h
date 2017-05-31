@@ -25,6 +25,10 @@ public:
     void setN(int n);
     void setM(int m);
     void setK(int k);
+    void setA(float a);
+    void setB(float b);
+    void setC(float c);
+    void setD(float d);
 
 private:
     void buildSegments();

@@ -8,6 +8,8 @@
 
 #include "generatrix_object.h"
 
+const static double PI = 3.141592653589793238463;
+
 class Configuration : public QObject
 {
     Q_OBJECT
@@ -41,12 +43,24 @@ public:
     void setM(int value);
     int k() const;
     void setK(int value);
+    float a() const;
+    void setA(float value);
+    float b() const;
+    void setB(float value);
+    float c() const;
+    void setC(float value);
+    float d() const;
+    void setD(float value);
 
 signals:
     void updated();
     void objectSelected(int index);
 
 private:
+    float _a;
+    float _b;
+    float _c;
+    float _d;
     int _n;
     int _m;
     int _k;

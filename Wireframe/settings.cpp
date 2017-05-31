@@ -13,6 +13,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
     QFormLayout *form_layout = new QFormLayout();
     QFormLayout *form_layout2 = new QFormLayout();
     QFormLayout *form_layout3 = new QFormLayout();
+    QFormLayout *form_layout4 = new QFormLayout();
     QDoubleSpinBox *spin_znear = new QDoubleSpinBox(this);
     QDoubleSpinBox *spin_zfar = new QDoubleSpinBox(this);
     spin_znear->setValue(this->_config->clippingNearDistance());
@@ -67,10 +68,6 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
         this->_config->update();
     });
 
-    layout->addLayout(form_layout);
-    layout->addLayout(form_layout2);
-    layout->addLayout(form_layout3);
-
     QSpinBox *spin_n = new QSpinBox(this);
     spin_n->setValue(this->_config->n());
     spin_n->setRange(1, 50);
@@ -97,6 +94,53 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
         this->_config->setK(value);
         this->_config->update();
     });
+
+    QDoubleSpinBox *spin_a= new QDoubleSpinBox(this);
+    spin_a->setRange(0, 1);
+    spin_a->setValue(this->_config->a());
+    form_layout4->addRow(tr("a"), spin_a);
+
+    connect(spin_a, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setA(value);
+        this->_config->update();
+    });
+
+    QDoubleSpinBox *spin_b= new QDoubleSpinBox(this);
+    spin_b->setRange(0, 1);
+    spin_b->setValue(this->_config->b());
+    form_layout4->addRow(tr("b"), spin_b);
+
+    connect(spin_b, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setB(value);
+        this->_config->update();
+    });
+
+    QDoubleSpinBox *spin_c = new QDoubleSpinBox(this);
+    spin_c->setDecimals(5);
+    spin_c->setRange(0, 2 * PI);
+    spin_c->setValue(this->_config->c());
+    form_layout4->addRow(tr("c"), spin_c);
+
+    connect(spin_c, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setC(value);
+        this->_config->update();
+    });
+
+    QDoubleSpinBox *spin_d = new QDoubleSpinBox(this);
+    spin_d->setDecimals(5);
+    spin_d->setRange(0, 2 * PI);
+    spin_d->setValue(this->_config->d());
+    form_layout4->addRow(tr("d"), spin_d);
+
+    connect(spin_d, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
+        this->_config->setD(value);
+        this->_config->update();
+    });
+
+    layout->addLayout(form_layout);
+    layout->addLayout(form_layout2);
+    layout->addLayout(form_layout3);
+    layout->addLayout(form_layout4);
 
     connect(spin_current_object, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this, spin_curx, spin_cury, spin_curz] (int value) {
         this->_config->setCurrentObject(value);
