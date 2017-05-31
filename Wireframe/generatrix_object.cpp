@@ -33,8 +33,29 @@ const std::vector<Line3D> &GeneratrixObject::getSegments() const
     return _segments;
 }
 
+void GeneratrixObject::setN(int n)
+{
+    this->_n = n;
+    buildSegments();
+}
+
+void GeneratrixObject::setM(int m)
+{
+    this->_m = m;
+    buildSegments();
+}
+
+
+void GeneratrixObject::setK(int k)
+{
+    this->_k = k;
+    buildSegments();
+}
+
+
 void GeneratrixObject::buildSegments()
 {
+    this->_segments.clear();
     float long_step = (_b - _a) / (_n);
     float rotate_step = (_d - _c) / (_m);
     for (float l = _a; l < _b; l += long_step) {

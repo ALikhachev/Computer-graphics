@@ -22,6 +22,9 @@ public:
     QRgb color() const;
     std::vector<QPointF> knots() const;
     const std::vector<Line3D> &getSegments() const override;
+    void setN(int n);
+    void setM(int m);
+    void setK(int k);
 
 private:
     void buildSegments();

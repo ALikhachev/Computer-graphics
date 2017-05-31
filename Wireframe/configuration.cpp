@@ -3,6 +3,9 @@
 const static double PI = 3.141592653589793238463;
 
 Configuration::Configuration() :
+    _n(10),
+    _m(10),
+    _k(10),
     _current_object(0),
     _clipping_near(5),
     _clipping_far(20),
@@ -152,3 +155,43 @@ void Configuration::rotateCurrentObject(QSharedPointer<Transform> transform)
     QSharedPointer<Transform> rotation = this->_objects[this->_current_object]->getRotation();
     this->_objects[this->_current_object]->setRotation(rotation->compose(transform.data()));
 }
+
+int Configuration::n() const
+{
+    return _n;
+}
+
+void Configuration::setN(int value)
+{
+    _n = value;
+    for (auto &object : _objects) {
+        object->setN(value);
+    }
+}
+
+int Configuration::m() const
+{
+    return _n;
+}
+
+void Configuration::setM(int value)
+{
+    _m = value;
+    for (auto &object : _objects) {
+        object->setM(value);
+    }
+}
+
+int Configuration::k() const
+{
+    return _k;
+}
+
+void Configuration::setK(int value)
+{
+    _k = value;
+    for (auto &object : _objects) {
+        object->setK(value);
+    }
+}
+

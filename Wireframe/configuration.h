@@ -35,12 +35,21 @@ public:
     void setCurrentZ(float z);
     float currentZ() const;
     void rotateCurrentObject(QSharedPointer<Transform> transform);
+    int n() const;
+    void setN(int value);
+    int m() const;
+    void setM(int value);
+    int k() const;
+    void setK(int value);
 
 signals:
     void updated();
     void objectSelected(int index);
 
 private:
+    int _n;
+    int _m;
+    int _k;
     int _current_object;
     float _clipping_near;
     float _clipping_far;

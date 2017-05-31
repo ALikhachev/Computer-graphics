@@ -12,6 +12,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
     QFormLayout *form_layout = new QFormLayout();
     QFormLayout *form_layout2 = new QFormLayout();
+    QFormLayout *form_layout3 = new QFormLayout();
     QDoubleSpinBox *spin_znear = new QDoubleSpinBox(this);
     QDoubleSpinBox *spin_zfar = new QDoubleSpinBox(this);
     spin_znear->setValue(this->_config->clippingNearDistance());
@@ -68,6 +69,34 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
 
     layout->addLayout(form_layout);
     layout->addLayout(form_layout2);
+    layout->addLayout(form_layout3);
+
+    QSpinBox *spin_n = new QSpinBox(this);
+    spin_n->setValue(this->_config->n());
+    spin_n->setRange(1, 50);
+    form_layout3->addRow(tr("n"), spin_n);
+    connect(spin_n, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this] (int value) {
+        this->_config->setN(value);
+        this->_config->update();
+    });
+
+    QSpinBox *spin_m = new QSpinBox(this);
+    spin_m->setValue(this->_config->m());
+    spin_m->setRange(1, 50);
+    form_layout3->addRow(tr("m"), spin_m);
+    connect(spin_m, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this] (int value) {
+        this->_config->setM(value);
+        this->_config->update();
+    });
+
+    QSpinBox *spin_k = new QSpinBox(this);
+    spin_k->setValue(this->_config->k());
+    spin_k->setRange(1, 50);
+    form_layout3->addRow(tr("k"), spin_k);
+    connect(spin_k, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this] (int value) {
+        this->_config->setK(value);
+        this->_config->update();
+    });
 
     connect(spin_current_object, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this, spin_curx, spin_cury, spin_curz] (int value) {
         this->_config->setCurrentObject(value);
