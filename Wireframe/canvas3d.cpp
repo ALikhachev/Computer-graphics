@@ -50,7 +50,8 @@ void Canvas3D::mouseMoveEvent(QMouseEvent *event)
 
 void Canvas3D::wheelEvent(QWheelEvent *event)
 {
-    float k = event->delta() > 0 ? 1.1 : 0.9;
+    float k = event->delta() > 0 ? 0.95f : 1.05f;
+    this->_config->setClippingNearDistance(this->_config->clippingNearDistance() * k);
     this->_config->setClippingFarDistance(this->_config->clippingFarDistance() * k);
     this->_perspective.reset(new PerspectiveTransform(this->_config->clippingNearDistance(),
                                           this->_config->clippingFarDistance(),
@@ -78,7 +79,7 @@ void Canvas3D::drawObject(WireObject *object, QColor color, Transform *scale_tra
         to_point.applyTransform(this->_perspective);
         Line3D res_line(from_point, to_point);
         if (res_line.clip()) {
-            Drawing::drawLine3D(this->_image, res_line.from3D() * 100, res_line.to3D()* 100, color);
+            Drawing::drawLine3D(this->_image, res_line.from3D() * 80, res_line.to3D() * 80, color);
         }
     }
 }

@@ -87,9 +87,9 @@ CameraTransform::CameraTransform()
             )
             *
             QMatrix4x4(
-                1, 0, 0, -ref[0],
-                0, 1, 0, -ref[1],
-                0, 0, 1, -ref[2],
+                1, 0, 0, -eye[0],
+                0, 1, 0, -eye[1],
+                0, 0, 1, -eye[2],
                 0, 0, 0, 1
             );
 }
