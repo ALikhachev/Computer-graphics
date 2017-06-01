@@ -144,7 +144,8 @@ QSharedPointer<GeneratrixObject> Configuration::parseObject(int n, int m, int k,
         stream.readLine();
         knots.push_back(QPointF(x, y));
     }
-    return QSharedPointer<GeneratrixObject>(new GeneratrixObject(n, m, k, a, b, c, d, qRgb(red, green, blue), knots));
+    QVector3D center(cx, cy, cz);
+    return QSharedPointer<GeneratrixObject>(new GeneratrixObject(n, m, k, a, b, c, d, qRgb(red, green, blue), center, knots, QSharedPointer<Transform>(new MatrixTransform(a1, a2, a3, a4, a5, a6, a7, a8, a9))));
 }
 
 int Configuration::currentObject() const

@@ -8,7 +8,15 @@ GeneratrixObject::GeneratrixObject(int n, int m, int k, float a, float b, float 
 
 GeneratrixObject::GeneratrixObject(int n, int m, int k,
                                    float a, float b, float c, float d,
-        QRgb color, QVector3D center, std::vector<QPointF> knots) : WireObject(center, QColor(color)),
+        QRgb color, QVector3D center, std::vector<QPointF> knots) : GeneratrixObject(n, m, k, a, b, c, d,
+                                                                                     color, center,
+                                                                                     knots, QSharedPointer<Transform>(new IdentityTransform))
+{
+}
+
+GeneratrixObject::GeneratrixObject(int n, int m, int k,
+                                   float a, float b, float c, float d,
+        QRgb color, QVector3D center, std::vector<QPointF> knots, QSharedPointer<Transform> rotation) : WireObject(center, QColor(color), rotation),
     _color(color),
     _knots(knots),
     _spline(knots),

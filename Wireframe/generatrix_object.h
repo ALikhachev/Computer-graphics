@@ -18,6 +18,8 @@ public:
                      QRgb color, std::vector<QPointF> knots);
     GeneratrixObject(int n, int m, int k, float a, float b, float c, float d,
                      QRgb color, QVector3D center, std::vector<QPointF> knots);
+    GeneratrixObject(int n, int m, int k, float a, float b, float c, float d,
+                     QRgb color, QVector3D center, std::vector<QPointF> knots, QSharedPointer<Transform> rotation);
     const BSpline &getBSpline() const;
     QRgb color() const;
     std::vector<QPointF> knots() const;

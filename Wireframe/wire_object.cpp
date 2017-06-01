@@ -51,11 +51,16 @@ void WireObject::setRotation(QSharedPointer<Transform> transform)
     this->_rotation = transform;
 }
 
-WireObject::WireObject(QVector3D center, QColor color) :
+WireObject::WireObject(QVector3D center, QColor color) : WireObject(center, color, QSharedPointer<Transform>(new IdentityTransform()))
+{
+
+}
+
+WireObject::WireObject(QVector3D center, QColor color, QSharedPointer<Transform> rotation) :
     _shift_transform(new ShiftTransform(center.x(), center.y(), center.z())),
     _center(center),
     _color(color),
-    _rotation(new IdentityTransform())
+    _rotation(rotation)
 {
 
 }

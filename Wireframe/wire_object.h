@@ -26,6 +26,7 @@ public:
 
 protected:
     WireObject(QVector3D center, QColor color);
+    WireObject(QVector3D center, QColor color, QSharedPointer<Transform> rotation);
 
 private:
     std::vector<Line3D> _segments;
