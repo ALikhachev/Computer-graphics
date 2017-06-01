@@ -12,6 +12,7 @@ BSpline::BSpline(std::vector<QPointF> values)
       vectors_y(values.size())
 {
     this->calculateCoefficientsVectors();
+    this->countLength();
 }
 
 QPointF BSpline::solve(double t) const
@@ -31,12 +32,12 @@ QPointF BSpline::solve(int knot, double t) const
 
 std::pair<int, float> BSpline::getKnotByLength(float length_percent) const
 {
-    float length = this->length() * length_percent;
+    float length = _length * length_percent;
 
     float len = 0;
     for (uint i = 1; i < this->values.size() - 2; ++i) {
         QPointF prev = solve(i, 0);
-        for (float t = 0.001f; t < 1.0f; t += 0.001f) {
+        for (float t = 0.01f; t < 1.0f; t += 0.01f) {
             QPointF curr = solve(i, t);
             len += std::sqrt(std::pow(curr.x() - prev.x(), 2) + std::pow(curr.y() - prev.y(), 2));
             if (len > length) {
@@ -64,7 +65,7 @@ void BSpline::calculateCoefficientsVectors()
     }
 }
 
-float BSpline::length() const
+void BSpline::countLength()
 {
     float len = 0;
     for (uint i = 1; i < this->values.size() - 2; ++i) {
@@ -75,5 +76,5 @@ float BSpline::length() const
             prev = curr;
         }
     }
-    return len;
+    _length = len;
 }
