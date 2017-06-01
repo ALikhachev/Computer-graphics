@@ -78,7 +78,7 @@ void GeneratrixView::plot()
         Drawing::drawLine(this->canvas,
                           QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
                           QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
-                          this->_object->color());
+                          qRgb(255, 0, 0));
         from = to;
     }
     for (float l = b + step; l <= 1; l += step) {

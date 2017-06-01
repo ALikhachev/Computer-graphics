@@ -134,7 +134,6 @@ QSharedPointer<GeneratrixObject> Configuration::parseObject(int n, int m, int k,
     int count;
     stream >> count;
     stream.readLine();
-    qDebug() << count;
     if (count <= 0) {
        return QSharedPointer<GeneratrixObject>(nullptr);
     }
