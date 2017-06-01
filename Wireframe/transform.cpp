@@ -113,3 +113,13 @@ ShiftTransform::ShiftTransform(float x, float y, float z)
         0.0, 0.0, 0.0, 1.0
     };
 }
+
+MatrixTransform::MatrixTransform(float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8, float a9)
+{
+    this->_matrix = {
+        a1 , a2 , a3 , 0,
+        a4 , a5 , a6 , 0,
+        a7 , a8 , a9 , 0,
+        0.0, 0.0, 0.0, 1.0
+    };
+}

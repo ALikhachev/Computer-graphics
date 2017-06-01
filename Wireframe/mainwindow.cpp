@@ -119,7 +119,13 @@ void MainWindow::openScene(const QString &filename) {
         return;
     }
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    this->setCurrentFile(filename);
+    QTextStream in(&f);
+    if (!this->configuration->load(in)) {
+        this->showError(QString("Incorrect configuration file %1").arg(filename));
+    } else {
+        this->setCurrentFile(filename);
+        this->statusBar()->showMessage(tr("Configuration loaded"), 2000);
+    }
     QApplication::restoreOverrideCursor();
 }
 

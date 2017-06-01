@@ -63,6 +63,10 @@ signals:
     void lengthChanged();
 
 private:
+    QSharedPointer<GeneratrixObject> parseObject(
+            int n, int m, int k, float a, float b, float c, float d,
+            QTextStream &stream);
+
     float _sw;
     float _sh;
     float _a;

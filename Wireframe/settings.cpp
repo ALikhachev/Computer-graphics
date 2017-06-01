@@ -24,7 +24,6 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
         spin_zfar->setMinimum(value + 0.1f);
     });
 
-
     spin_zfar->setValue(this->_config->clippingFarDistance());
     form_layout->addRow(tr("Z far"), spin_zfar);
     connect(spin_zfar, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this, spin_znear] (double value) {
@@ -169,5 +168,24 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
         spin_curx->setValue(this->_config->currentX());
         spin_cury->setValue(this->_config->currentY());
         spin_curz->setValue(this->_config->currentZ());
+    });
+
+    connect(configuration.data(), &Configuration::updated, this, [this, spin_znear, spin_zfar, spin_sw, spin_sh,
+            spin_current_object, spin_curx, spin_cury, spin_curz, spin_n, spin_m, spin_k, spin_a, spin_b, spin_c, spin_d] {
+        spin_znear->setValue(this->_config->clippingNearDistance());
+        spin_zfar->setValue(this->_config->clippingFarDistance());
+        spin_sw->setValue(this->_config->sw());
+        spin_sh->setValue(this->_config->sh());
+        spin_current_object->setValue(0);
+        spin_curx->setValue(this->_config->currentX());
+        spin_cury->setValue(this->_config->currentY());
+        spin_curz->setValue(this->_config->currentZ());
+        spin_n->setValue(this->_config->n());
+        spin_m->setValue(this->_config->m());
+        spin_k->setValue(this->_config->k());
+        spin_a->setValue(this->_config->a());
+        spin_b->setValue(this->_config->b());
+        spin_c->setValue(this->_config->c());
+        spin_d->setValue(this->_config->d());
     });
 }

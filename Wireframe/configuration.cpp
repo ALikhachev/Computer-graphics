@@ -53,7 +53,99 @@ Configuration::Configuration() :
 
 bool Configuration::load(QTextStream &stream)
 {
-    return false;
+    int n, m, k;
+    float a, b, c, d;
+    stream >> n >> m >> k >> a >> b >> c >> d;
+    if (n <= 0 || m <= 0 || k <= 0 || a >= b || c >= d) {
+        return false;
+    }
+    stream.readLine();
+    float zn, zf, sw, sh;
+    stream >> zn >> zf >> sw >> sh;
+    if (zn >= zf || zn <= 0 || sw <= 0 || sh <= 0) {
+        return false;
+    }
+    stream.readLine();
+    float a1, a2, a3, a4, a5, a6, a7, a8, a9;
+    stream >> a1 >> a2 >> a3;
+    stream.readLine();
+    stream >> a4 >> a5 >> a6;
+    stream.readLine();
+    stream >> a7 >> a8 >> a9;
+    stream.readLine();
+    int red, green, blue;
+    stream >> red >> green >> blue;
+    if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255) {
+        return false;
+    }
+    stream.readLine();
+    int count;
+    stream >> count;
+    stream.readLine();
+    if (count <= 0) {
+        return false;
+    }
+    std::vector<QSharedPointer<GeneratrixObject>> objects;
+    while (count-- > 0) {
+        QSharedPointer<GeneratrixObject> object = parseObject(n, m, k, a, b, c, d, stream);
+        if (object.data() == nullptr) {
+            return false;
+        }
+        objects.push_back(object);
+    }
+    this->_n = n;
+    this->_m = m;
+    this->_k = k;
+    this->_a = a;
+    this->_b = b;
+    this->_c = c;
+    this->_d = d;
+    this->_clipping_near = zn;
+    this->_clipping_far = zf;
+    this->_sw = sw;
+    this->_sh = sh;
+    this->_background_color = qRgb(red, green, blue);
+    this->setRotationTransform(QSharedPointer<Transform>(new MatrixTransform(a1, a2, a3, a4, a5, a6, a7, a8, a9)));
+    this->_objects = objects;
+    emit updated();
+    setCurrentObject(0);
+    emit lengthChanged();
+    return true;
+}
+
+QSharedPointer<GeneratrixObject> Configuration::parseObject(int n, int m, int k, float a, float b, float c, float d, QTextStream &stream)
+{
+    int red, green, blue;
+    stream >> red >> green >> blue;
+    if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255) {
+        return QSharedPointer<GeneratrixObject>(nullptr);
+    }
+    stream.readLine();
+    float cx, cy, cz;
+    stream >> cx >> cy >> cz;
+    stream.readLine();
+    float a1, a2, a3, a4, a5, a6, a7, a8, a9;
+    stream >> a1 >> a2 >> a3;
+    stream.readLine();
+    stream >> a4 >> a5 >> a6;
+    stream.readLine();
+    stream >> a7 >> a8 >> a9;
+    stream.readLine();
+    int count;
+    stream >> count;
+    stream.readLine();
+    qDebug() << count;
+    if (count <= 0) {
+       return QSharedPointer<GeneratrixObject>(nullptr);
+    }
+    std::vector<QPointF> knots;
+    while (count-- > 0) {
+        float x, y;
+        stream >> x >> y;
+        stream.readLine();
+        knots.push_back(QPointF(x, y));
+    }
+    return QSharedPointer<GeneratrixObject>(new GeneratrixObject(n, m, k, a, b, c, d, qRgb(red, green, blue), knots));
 }
 
 int Configuration::currentObject() const
