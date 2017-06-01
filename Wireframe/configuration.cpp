@@ -147,7 +147,7 @@ QSharedPointer<GeneratrixObject> Configuration::parseObject(int n, int m, int k,
     int count;
     stream >> count;
     stream.readLine();
-    if (count <= 0) {
+    if (count <= 3) {
        return QSharedPointer<GeneratrixObject>(nullptr);
     }
     std::vector<QPointF> knots;

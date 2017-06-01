@@ -13,6 +13,7 @@
 #include "generatrix_view.h"
 #include "canvas3d.h"
 #include "wireframe_widget.h"
+#include "transform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -93,6 +94,13 @@ void MainWindow::initViewMenu(QToolBar *toolbar) {
         this->statusBar()->setHidden(!b);
         this->statusbar_switch->setChecked(b);
     });
+
+    view_menu->addSeparator();
+
+    QAction *reset_rotation_action = view_menu->addAction(QIcon(":/icons/reset.png"), tr("Reset scene rotation"), this, &MainWindow::resetSceneRotation, QKeySequence(QString("Ctrl+R")));
+    toolbar->addAction(reset_rotation_action);
+    reset_rotation_action->setStatusTip("Reset scene rotation");
+
     this->statusbar_switch->setCheckable(true);
     this->statusbar_switch->setChecked(true);
     this->statusbar_switch->setStatusTip("Show/hide statusbar");
@@ -157,8 +165,10 @@ void MainWindow::showAbout() {
     about_view.exec();
 }
 
-void MainWindow::showConfiguration() {
-
+void MainWindow::resetSceneRotation()
+{
+    this->configuration->setRotationTransform(QSharedPointer<Transform>(new IdentityTransform()));
+    this->configuration->update();
 }
 
 void MainWindow::setCurrentFile(const QString &fileName) {
