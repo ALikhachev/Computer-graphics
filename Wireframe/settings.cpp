@@ -119,6 +119,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
     QDoubleSpinBox *spin_a= new QDoubleSpinBox(this);
     spin_a->setRange(0, 1);
     spin_a->setValue(this->_config->a());
+    spin_a->setSingleStep(0.01);
     form_layout4->addRow(tr("a"), spin_a);
 
     connect(spin_a, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
@@ -129,6 +130,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
     QDoubleSpinBox *spin_b= new QDoubleSpinBox(this);
     spin_b->setRange(0, 1);
     spin_b->setValue(this->_config->b());
+    spin_b->setSingleStep(0.01);
     form_layout4->addRow(tr("b"), spin_b);
 
     connect(spin_b, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
@@ -140,6 +142,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
     spin_c->setDecimals(5);
     spin_c->setRange(0, 2 * PI);
     spin_c->setValue(this->_config->c());
+    spin_c->setSingleStep(0.01);
     form_layout4->addRow(tr("c"), spin_c);
 
     connect(spin_c, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {
@@ -151,6 +154,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
     spin_d->setDecimals(5);
     spin_d->setRange(0, 2 * PI);
     spin_d->setValue(this->_config->d());
+    spin_d->setSingleStep(0.01);
     form_layout4->addRow(tr("d"), spin_d);
 
     connect(spin_d, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this] (double value) {

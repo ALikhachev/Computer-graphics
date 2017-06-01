@@ -278,7 +278,7 @@ void Configuration::setN(int value)
 
 int Configuration::m() const
 {
-    return _n;
+    return _m;
 }
 
 void Configuration::setM(int value)
