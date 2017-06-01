@@ -22,16 +22,21 @@ protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+//    void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void drawObject(WireObject &object, QColor color);
+    void drawObject(WireObject *object, Transform *scale_transform);
+    void drawBoundingBox();
+    float findAbsMax();
     void plot();
 
     QSharedPointer<Configuration> _config;
     QImage _image;
     QSharedPointer<Transform> _rotation;
     QSharedPointer<Transform> _perspective;
+    QSharedPointer<Transform> _camera;
     QPoint _rotation_tracking;
+    Qt::MouseButton _button_clicked;
     constexpr double static const Pi = std::acos(-1);
 };
 

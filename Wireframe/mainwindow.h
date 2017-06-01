@@ -21,7 +21,7 @@ private slots:
     void selectAndSaveScene();
     void openRecentFile();
     void showAbout();
-    void showConfiguration();
+    void resetSceneRotation();
 
 private:
     void initActions();

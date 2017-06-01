@@ -8,11 +8,12 @@
 #include <QApplication>
 #include <QSettings>
 #include <QScreen>
-#include <QTabWidget>
 
 #include "about_view.h"
 #include "generatrix_view.h"
 #include "canvas3d.h"
+#include "wireframe_widget.h"
+#include "transform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -22,12 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->statusBar()->show();
     this->initActions();
     this->updateRecentFileActions();
-    QTabWidget *tab_widget = new QTabWidget(this);
-    GeneratrixView *generatrix_view_widget = new GeneratrixView(this->configuration, this);
-    Canvas3D *canvas_3d = new Canvas3D(this->configuration, this);
-    tab_widget->addTab(canvas_3d, "3D &canvas");
-    tab_widget->addTab(generatrix_view_widget, "&Generatrix");
-    this->setCentralWidget(tab_widget);
+    WireframeWidget *widget = new WireframeWidget(this->configuration, this);
+    this->setCentralWidget(widget);
     this->resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 }
 
@@ -97,6 +94,13 @@ void MainWindow::initViewMenu(QToolBar *toolbar) {
         this->statusBar()->setHidden(!b);
         this->statusbar_switch->setChecked(b);
     });
+
+    view_menu->addSeparator();
+
+    QAction *reset_rotation_action = view_menu->addAction(QIcon(":/icons/reset.png"), tr("Reset scene rotation"), this, &MainWindow::resetSceneRotation, QKeySequence(QString("Ctrl+R")));
+    toolbar->addAction(reset_rotation_action);
+    reset_rotation_action->setStatusTip("Reset scene rotation");
+
     this->statusbar_switch->setCheckable(true);
     this->statusbar_switch->setChecked(true);
     this->statusbar_switch->setStatusTip("Show/hide statusbar");
@@ -123,7 +127,13 @@ void MainWindow::openScene(const QString &filename) {
         return;
     }
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    this->setCurrentFile(filename);
+    QTextStream in(&f);
+    if (!this->configuration->load(in)) {
+        this->showError(QString("Incorrect configuration file %1").arg(filename));
+    } else {
+        this->setCurrentFile(filename);
+        this->statusBar()->showMessage(tr("Configuration loaded"), 2000);
+    }
     QApplication::restoreOverrideCursor();
 }
 
@@ -142,6 +152,8 @@ void MainWindow::saveScene(const QString &filename) {
         return;
     }
     QApplication::setOverrideCursor(Qt::WaitCursor);
+    QTextStream in(&f);
+    this->configuration->save(in);
     this->setCurrentFile(filename);
     QApplication::restoreOverrideCursor();
 }
@@ -153,8 +165,10 @@ void MainWindow::showAbout() {
     about_view.exec();
 }
 
-void MainWindow::showConfiguration() {
-
+void MainWindow::resetSceneRotation()
+{
+    this->configuration->setRotationTransform(QSharedPointer<Transform>(new IdentityTransform()));
+    this->configuration->update();
 }
 
 void MainWindow::setCurrentFile(const QString &fileName) {

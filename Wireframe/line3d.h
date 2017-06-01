@@ -12,8 +12,11 @@ public:
     HomogeneousPoint3D to() const;
     QVector3D from3D() const;
     QVector3D to3D() const;
+    bool clip();
 
 private:
+    bool clipCoordinate(int pos, float min, float max);
+
     HomogeneousPoint3D _from;
     HomogeneousPoint3D _to;
 };

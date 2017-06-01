@@ -24,7 +24,7 @@ private:
     void plot();
     void plotAxes();
     void plotAxeSegmentation(float scale);
-    float detectScale(std::vector<QPoint> &knots);
+    float detectScale(std::vector<QPointF> &knots);
 
     QImage canvas;
     QSharedPointer<Configuration> config;

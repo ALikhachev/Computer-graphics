@@ -8,6 +8,15 @@ GeneratrixView::GeneratrixView(QSharedPointer<Configuration> config, QWidget *pa
     config(config)
 {
     this->setObject(config->objects()[0]);
+    connect(this->config.data(), &Configuration::objectSelected, this, [this] (int index) {
+        this->setObject(this->config->objects()[index]);
+        this->plot();
+        this->update();
+    });
+    connect(this->config.data(), &Configuration::lengthChanged, this, [this] () {
+        this->plot();
+        this->update();
+    });
 }
 
 void GeneratrixView::setObject(QSharedPointer<GeneratrixObject> object)
@@ -49,11 +58,36 @@ void GeneratrixView::plot()
             prev = *it;
         }
     }
-    auto segments = this->_object->getSegments();
-    for (auto it = segments.begin(); it < segments.end(); ++it) {
+    const BSpline &spline = this->_object->getBSpline();
+    float a = this->config->a();
+    float b = this->config->b();
+    int n = this->config->n();
+    int k = this->config->k();
+    float step = 1.0 / (n * k);
+    QPointF from(spline.solve(0));
+    for (float l = 0 + step; l < a; l += step) {
+        QPointF to(spline.solve(l));
         Drawing::drawLine(this->canvas,
-                          QPoint(scale * it->first.x() + x_offset, scale * it->first.y() + y_offset),
-                          QPoint(scale * it->second.x() + x_offset, scale * it->second.y() + y_offset), this->_object->color());
+                          QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
+                          QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
+                          qRgb(100, 100, 100));
+        from = to;
+    }
+    for (float l = a + step; l < b; l += step) {
+        QPointF to(spline.solve(l));
+        Drawing::drawLine(this->canvas,
+                          QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
+                          QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
+                          qRgb(255, 0, 0));
+        from = to;
+    }
+    for (float l = b + step; l <= 1; l += step) {
+        QPointF to(spline.solve(l));
+        Drawing::drawLine(this->canvas,
+                          QPoint(scale * from.x() + x_offset, scale * from.y() + y_offset),
+                          QPoint(scale * to.x() + x_offset, scale * to.y() + y_offset),
+                          qRgb(100, 100, 100));
+        from = to;
     }
 }
 
@@ -93,17 +127,17 @@ void GeneratrixView::plotAxeSegmentation(float scale)
     }
 }
 
-float GeneratrixView::detectScale(std::vector<QPoint> &knots)
+float GeneratrixView::detectScale(std::vector<QPointF> &knots)
 {
-    int x_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
-        return std::abs(v1.x()) < std::abs(v2.x());
+    float x_max = std::max_element(knots.begin(), knots.end(), [] (const QPointF &v1, const QPointF &v2) {
+        return std::fabs(v1.x()) < std::fabs(v2.x());
     })->x();
-    int y_max = std::max_element(knots.begin(), knots.end(), [] (const QPoint &v1, const QPoint &v2) {
-        return std::abs(v1.y()) < std::abs(v2.y());
+    float y_max = std::max_element(knots.begin(), knots.end(), [] (const QPointF &v1, const QPointF &v2) {
+        return std::fabs(v1.y()) < std::fabs(v2.y());
     })->y();
     if (x_max == 0) x_max = 1;
     if (y_max == 0) y_max = 1;
     float scale_divider_x = (float) this->width() / (x_max * 2);
     float scale_divider_y = (float) this->height() / (y_max * 2);
-    return std::min(scale_divider_x, scale_divider_y);
+    return std::max(scale_divider_x, scale_divider_y);
 }
