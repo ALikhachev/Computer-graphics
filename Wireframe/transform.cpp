@@ -12,6 +12,16 @@ QSharedPointer<Transform> Transform::compose(Transform *transform)
     return trans;
 }
 
+void Transform::save3D(QTextStream &stream) const
+{
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            stream << _matrix(i, j) << " ";
+        }
+        stream << '\n';
+    }
+}
+
 RotateXTransform::RotateXTransform(float angle)
 {
     float cos_angle = std::cos(angle);

@@ -14,6 +14,7 @@ class Transform
 public:
     QVector4D apply(const HomogeneousPoint3D point) const;
     QSharedPointer<Transform> compose(Transform *transform);
+    void save3D(QTextStream &stream) const;
 protected:
     QMatrix4x4 _matrix;
 };

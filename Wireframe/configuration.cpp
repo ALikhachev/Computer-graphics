@@ -113,6 +113,19 @@ bool Configuration::load(QTextStream &stream)
     return true;
 }
 
+void Configuration::save(QTextStream &out) const
+{
+    out << _n << " " << _m << " " << _k << " " << _a << " " << _b << " " << _c << " " << _d << '\n';
+    out << _clipping_near << " " << _clipping_far << " " << _sw << " " << _sh << '\n';
+    this->rotationTransform()->save3D(out);
+    QColor color(_background_color);
+    out << color.red() << " " << color.green() << " " << color.blue() << '\n';
+    out << _objects.size() << '\n';
+    for (auto obj : _objects) {
+        saveObject(obj, out);
+    }
+}
+
 QSharedPointer<GeneratrixObject> Configuration::parseObject(int n, int m, int k, float a, float b, float c, float d, QTextStream &stream)
 {
     int red, green, blue;
@@ -146,6 +159,20 @@ QSharedPointer<GeneratrixObject> Configuration::parseObject(int n, int m, int k,
     }
     QVector3D center(cx, cy, cz);
     return QSharedPointer<GeneratrixObject>(new GeneratrixObject(n, m, k, a, b, c, d, qRgb(red, green, blue), center, knots, QSharedPointer<Transform>(new MatrixTransform(a1, a2, a3, a4, a5, a6, a7, a8, a9))));
+}
+
+void Configuration::saveObject(QSharedPointer<GeneratrixObject> object, QTextStream &out) const
+{
+    QColor color(object->color());
+    out << color.red() << " " << color.green() << " " << color.blue() << '\n';
+    QVector3D center(object->getCenter());
+    out << center.x() << " " << center.y() << " " << center.z() << '\n';
+    object->getRotation()->save3D(out);
+    auto knots = object->knots();
+    out << knots.size() << '\n';
+    for (QPointF &knot : knots) {
+        out << knot.x() << " " << knot.y() << '\n';
+    }
 }
 
 int Configuration::currentObject() const

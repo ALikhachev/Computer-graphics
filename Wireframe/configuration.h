@@ -17,6 +17,7 @@ public:
     Configuration();
 
     bool load(QTextStream &stream);
+    void save(QTextStream &stream) const;
 
     int currentObject() const;
     void setCurrentObject(int value);
@@ -63,6 +64,7 @@ signals:
     void lengthChanged();
 
 private:
+    void saveObject(QSharedPointer<GeneratrixObject> object, QTextStream &out) const;
     QSharedPointer<GeneratrixObject> parseObject(
             int n, int m, int k, float a, float b, float c, float d,
             QTextStream &stream);

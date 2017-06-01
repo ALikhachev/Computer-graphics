@@ -144,6 +144,8 @@ void MainWindow::saveScene(const QString &filename) {
         return;
     }
     QApplication::setOverrideCursor(Qt::WaitCursor);
+    QTextStream in(&f);
+    this->configuration->save(in);
     this->setCurrentFile(filename);
     QApplication::restoreOverrideCursor();
 }
