@@ -81,10 +81,10 @@ void GeneratrixObject::buildSegments()
     this->_segments.clear();
     float long_step = (_b - _a) / (_n);
     float rotate_step = (_d - _c) / (_m);
-    for (float l = _a; l < _b; l += long_step) {
-        for (float i = _c; i <= _d; i += rotate_step) {
+    for (float l = _a; l < _b + 0.01f; l += long_step) {
+        for (float i = _c; i < _d + 0.01f; i += rotate_step) {
             QPointF point = this->_spline.solve(l);
-            if (i + rotate_step <= _d + 0.01f) {
+            if (i + rotate_step < _d + 0.01f) {
                 HomogeneousPoint3D start_rotate(
                                 point.y() * std::cos(i),
                                 point.y() * std::sin(i),
@@ -100,7 +100,7 @@ void GeneratrixObject::buildSegments()
                     start_rotate = end_rotate;
                 }
             }
-            if (l + long_step <= _b) {
+            if (l + long_step < _b + 0.01f) {
                 HomogeneousPoint3D start_long(
                                 point.y() * std::cos(i),
                                 point.y() * std::sin(i),
