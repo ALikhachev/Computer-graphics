@@ -176,7 +176,7 @@ Settings::Settings(QSharedPointer<Configuration> configuration, QWidget *parent)
         spin_zfar->setValue(this->_config->clippingFarDistance());
         spin_sw->setValue(this->_config->sw());
         spin_sh->setValue(this->_config->sh());
-        spin_current_object->setValue(0);
+        spin_current_object->setValue(this->_config->currentObject());
         spin_current_object->setMaximum(this->_config->objects().size() - 1);
         spin_curx->setValue(this->_config->currentX());
         spin_cury->setValue(this->_config->currentY());
