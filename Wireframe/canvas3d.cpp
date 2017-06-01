@@ -103,7 +103,7 @@ void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
         to_point.applyTransform(this->_perspective);
         Line3D res_line(from_point, to_point);
         if (res_line.clip()) {
-            Drawing::drawLine3D(this->_image, res_line.from3D() * 80, res_line.to3D() * 80, object->getColor(),
+            Drawing::drawLine3D(this->_image, res_line.from3D() * _scale, res_line.to3D() * _scale, object->getColor(),
                                 this->_config->sw(), this->_config->sh());
         }
     }
@@ -157,6 +157,7 @@ float Canvas3D::findAbsMax()
 
 void Canvas3D::plot()
 {
+    this->_scale = std::min(this->width() / this->_config->sw(), this->height() / this->_config->sh());
     Drawing::fill(this->_image, this->_config->backgroundColor());
     if (this->_config->objects().size() > 1) {
         Axis axis1(AxisType::OX, 0.5);
@@ -172,4 +173,20 @@ void Canvas3D::plot()
     for (auto obj : this->_config->objects()) {
         this->drawObject(obj.data(), &scale_transform);
     }
+    this->drawBorders();
+}
+
+void Canvas3D::drawBorders()
+{
+    // vertical
+    Drawing::drawLine(this->_image, QPoint(this->width() / 2 - this->_config->sw() * _scale / 2, this->height() / 2 - this->_config->sh() * _scale / 2),
+                                    QPoint(this->width() / 2 - this->_config->sw() * _scale / 2, this->height() / 2 + this->_config->sh() * _scale / 2), qRgb(0, 0, 0));
+    Drawing::drawLine(this->_image, QPoint(this->width() / 2 + this->_config->sw() * _scale / 2, this->height() / 2 - this->_config->sh() * _scale / 2),
+                                    QPoint(this->width() / 2 + this->_config->sw() * _scale / 2, this->height() / 2 + this->_config->sh() * _scale / 2), qRgb(0, 0, 0));
+    // horizontal
+    Drawing::drawLine(this->_image, QPoint(this->width() / 2 - this->_config->sw() * _scale / 2, this->height() / 2 - this->_config->sh() * _scale / 2),
+                                    QPoint(this->width() / 2 + this->_config->sw() * _scale / 2, this->height() / 2 - this->_config->sh() * _scale / 2), qRgb(0, 0, 0));
+    Drawing::drawLine(this->_image, QPoint(this->width() / 2 - this->_config->sw() * _scale / 2, this->height() / 2 + this->_config->sh() * _scale / 2),
+                                    QPoint(this->width() / 2 + this->_config->sw() * _scale / 2, this->height() / 2 + this->_config->sh() * _scale / 2), qRgb(0, 0, 0));
+
 }

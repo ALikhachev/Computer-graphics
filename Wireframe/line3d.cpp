@@ -56,6 +56,7 @@ bool Line3D::clipCoordinate(int pos, float min, float max)
         }
         _from.to4D()[3] = 1;
     }
+    from = _from.to4D()[pos];
     if (to > max) {
         QVector3D diff(_to.to4D().x() - _from.to4D().x(),
                        _to.to4D().y() - _from.to4D().y(),

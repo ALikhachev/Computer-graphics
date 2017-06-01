@@ -29,6 +29,7 @@ private:
     void drawBoundingBox();
     float findAbsMax();
     void plot();
+    void drawBorders();
 
     QSharedPointer<Configuration> _config;
     QImage _image;
@@ -38,6 +39,7 @@ private:
     QPoint _rotation_tracking;
     Qt::MouseButton _button_clicked;
     constexpr double static const Pi = std::acos(-1);
+    float _scale;
 };
 
 #endif // CANVAS3D_H
