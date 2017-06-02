@@ -2,7 +2,6 @@
 #define AXIS_H
 
 #include "wire_object.h"
-#include "homogeneous_point3D.h"
 
 enum AxisType {
     OX,

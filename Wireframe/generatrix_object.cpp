@@ -93,34 +93,38 @@ void GeneratrixObject::buildSegments()
         for (float i = _c; i < _d + 0.01f; i += rotate_step) {
             QPointF point = this->_spline.solve(l);
             if (i + rotate_step < _d + 0.01f) {
-                HomogeneousPoint3D start_rotate(
+                QVector4D start_rotate(
                                 point.y() * std::cos(i),
                                 point.y() * std::sin(i),
-                                point.x()
+                                point.x(),
+                                1
                             );
                 for (int j = 1; j <= _k; ++j) {
-                    HomogeneousPoint3D end_rotate(
+                    QVector4D end_rotate(
                                     point.y() * std::cos(i + j * rotate_step / _k),
                                     point.y() * std::sin(i + j * rotate_step / _k),
-                                    point.x()
+                                    point.x(),
+                                    1
                                 );
                     this->_segments.push_back(Line3D(start_rotate, end_rotate));
                     start_rotate = end_rotate;
                 }
             }
             if (l + long_step < _b + 0.01f) {
-                HomogeneousPoint3D start_long(
+                QVector4D start_long(
                                 point.y() * std::cos(i),
                                 point.y() * std::sin(i),
-                                point.x()
+                                point.x(),
+                                1
                             );
 
                 for (int j = 1; j <= _k; ++j) {
                     point = this->_spline.solve(l + j * long_step / _k);
-                    HomogeneousPoint3D end_long(
+                    QVector4D end_long(
                                     point.y() * std::cos(i),
                                     point.y() * std::sin(i),
-                                    point.x()
+                                    point.x(),
+                                    1
                                 );
                     this->_segments.push_back(Line3D(start_long, end_long));
                     start_long = end_long;

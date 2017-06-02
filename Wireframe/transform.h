@@ -5,14 +5,12 @@
 #include <QVector4D>
 #include <QSharedPointer>
 
-#include "homogeneous_point3d.h"
-
 class HomogeneousPoint3D;
 
 class Transform
 {
 public:
-    QVector4D apply(const HomogeneousPoint3D point) const;
+    QVector4D apply(const QVector4D point) const;
     QSharedPointer<Transform> compose(Transform *transform);
     void save3D(QTextStream &stream) const;
 protected:
