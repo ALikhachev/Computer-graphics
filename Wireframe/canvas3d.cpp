@@ -87,20 +87,20 @@ void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
         this->drawObject(&axis3, scale_transform);
     }
     for (auto it = segments.begin(); it < segments.end(); ++it) {
-        HomogeneousPoint3D from_point = it->from();
-        HomogeneousPoint3D to_point = it->to();
-        from_point.applyTransform(object_transform);
-        to_point.applyTransform(object_transform);
+        QVector4D from_point = it->from();
+        QVector4D to_point = it->to();
+        from_point = object_transform->apply(from_point);
+        to_point = object_transform->apply(to_point);
         if (scale_transform != NULL) {
-            from_point.applyTransform(scale_transform);
-            to_point.applyTransform(scale_transform);
+            from_point = scale_transform->apply(from_point);
+            to_point = scale_transform->apply(to_point);
         }
-        from_point.applyTransform(this->_config->rotationTransform());
-        to_point.applyTransform(this->_config->rotationTransform());
-        from_point.applyTransform(this->_camera);
-        to_point.applyTransform(this->_camera);
-        from_point.applyTransform(this->_perspective);
-        to_point.applyTransform(this->_perspective);
+        from_point = this->_config->rotationTransform()->apply(from_point);
+        to_point = this->_config->rotationTransform()->apply(to_point);
+        from_point = this->_camera->apply(from_point);
+        to_point = this->_camera->apply(to_point);
+        from_point = this->_perspective->apply(from_point);
+        to_point = this->_perspective->apply(to_point);
         Line3D res_line(from_point, to_point);
         if (res_line.clip()) {
             Drawing::drawLine3D(this->_image, res_line.from3D() * _scale, res_line.to3D() * _scale, object->getColor(),
@@ -112,18 +112,18 @@ void Canvas3D::drawObject(WireObject *object, Transform *scale_transform)
 void Canvas3D::drawBoundingBox()
 {
     WireObject cube(std::vector<Line3D>{
-                         Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(1, -1, -1)),
-                         Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(-1, 1, -1)),
-                         Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(1, 1, -1)),
-                         Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, 1, -1)),
-                         Line3D(HomogeneousPoint3D(-1, -1, 1), HomogeneousPoint3D(1, -1, 1)),
-                         Line3D(HomogeneousPoint3D(-1, -1, 1), HomogeneousPoint3D(-1, 1, 1)),
-                         Line3D(HomogeneousPoint3D(-1, 1, 1), HomogeneousPoint3D(1, 1, 1)),
-                         Line3D(HomogeneousPoint3D(1, -1, 1), HomogeneousPoint3D(1, 1, 1)),
-                         Line3D(HomogeneousPoint3D(-1, -1, -1), HomogeneousPoint3D(-1, -1, 1)),
-                         Line3D(HomogeneousPoint3D(-1, 1, -1), HomogeneousPoint3D(-1, 1, 1)),
-                         Line3D(HomogeneousPoint3D(1, -1, -1), HomogeneousPoint3D(1, -1, 1)),
-                         Line3D(HomogeneousPoint3D(1, 1, -1), HomogeneousPoint3D(1, 1, 1)),
+                         Line3D(QVector4D(-1, -1, -1, 1), QVector4D(1, -1, -1, 1)),
+                         Line3D(QVector4D(-1, -1, -1, 1), QVector4D(-1, 1, -1, 1)),
+                         Line3D(QVector4D(-1, 1, -1, 1), QVector4D(1, 1, -1, 1)),
+                         Line3D(QVector4D(1, -1, -1, 1), QVector4D(1, 1, -1, 1)),
+                         Line3D(QVector4D(-1, -1, 1, 1), QVector4D(1, -1, 1, 1)),
+                         Line3D(QVector4D(-1, -1, 1, 1), QVector4D(-1, 1, 1, 1)),
+                         Line3D(QVector4D(-1, 1, 1, 1), QVector4D(1, 1, 1, 1)),
+                         Line3D(QVector4D(1, -1, 1, 1), QVector4D(1, 1, 1, 1)),
+                         Line3D(QVector4D(-1, -1, -1, 1), QVector4D(-1, -1, 1, 1)),
+                         Line3D(QVector4D(-1, 1, -1, 1), QVector4D(-1, 1, 1, 1)),
+                         Line3D(QVector4D(1, -1, -1, 1), QVector4D(1, -1, 1, 1)),
+                         Line3D(QVector4D(1, 1, -1, 1), QVector4D(1, 1, 1, 1)),
                      }, QColor(0, 0, 0));
     this->drawObject(&cube, NULL);
 }
@@ -135,12 +135,12 @@ float Canvas3D::findAbsMax()
         auto &segments = obj->getSegments();
         QSharedPointer<Transform> object_transform = obj->getRotation()->compose(obj->getShiftTransform().data());
         for (auto it = segments.begin(); it < segments.end(); ++it) {
-            HomogeneousPoint3D from_point = it->from();
-            HomogeneousPoint3D to_point = it->to();
-            from_point.applyTransform(object_transform);
-            to_point.applyTransform(object_transform);
-            QVector3D from_3D = from_point.to3D();
-            QVector3D to_3D = to_point.to3D();
+            QVector4D from_point = it->from();
+            QVector4D to_point = it->to();
+            from_point = object_transform->apply(from_point);
+            to_point = object_transform->apply(to_point);
+            QVector3D from_3D = from_point.toVector3D();
+            QVector3D to_3D = to_point.toVector3D();
             std::vector<float> points {
                 std::fabs(from_3D.x()),
                 std::fabs(from_3D.y()),

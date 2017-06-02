@@ -19,8 +19,9 @@ public:
 private:
     std::pair<int, float> getKnotByLength(float length) const;
     void calculateCoefficientsVectors();
-    float length() const;
+    void countLength();
 
+    float _length;
     std::vector<QPointF> values;
     QMatrix4x4 spline_matrix;
     std::vector<QVector4D> vectors_x;

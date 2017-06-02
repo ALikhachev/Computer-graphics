@@ -33,7 +33,6 @@ SOURCES += main.cpp\
     canvas3d.cpp \
     axis.cpp \
     line3d.cpp \
-    homogeneous_point3d.cpp \
     wire_object.cpp \
     transform.cpp \
     settings.cpp \
@@ -49,7 +48,6 @@ HEADERS  += mainwindow.h \
     canvas3d.h \
     axis.h \
     line3d.h \
-    homogeneous_point3d.h \
     wire_object.h \
     transform.h \
     settings.h \

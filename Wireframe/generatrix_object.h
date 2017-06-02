@@ -7,7 +7,6 @@
 #include <QSharedPointer>
 
 #include "bspline.h"
-#include "homogeneous_point3d.h"
 #include "line3d.h"
 #include "wire_object.h"
 

@@ -2,14 +2,14 @@
 #define LINE3D_H
 
 #include <QVector3D>
-#include "homogeneous_point3D.h"
+#include <QVector4D>
 
 class Line3D
 {
 public:
-    Line3D(HomogeneousPoint3D from, HomogeneousPoint3D to);
-    HomogeneousPoint3D from() const;
-    HomogeneousPoint3D to() const;
+    Line3D(QVector4D from, QVector4D to);
+    QVector4D from() const;
+    QVector4D to() const;
     QVector3D from3D() const;
     QVector3D to3D() const;
     bool clip();
@@ -17,8 +17,8 @@ public:
 private:
     bool clipCoordinate(int pos, float min, float max);
 
-    HomogeneousPoint3D _from;
-    HomogeneousPoint3D _to;
+    QVector4D _from;
+    QVector4D _to;
 };
 
 #endif // LINE3D_H

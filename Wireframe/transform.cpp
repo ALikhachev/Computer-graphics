@@ -1,8 +1,8 @@
 #include "transform.h"
 
-QVector4D Transform::apply(HomogeneousPoint3D point) const
+QVector4D Transform::apply(const QVector4D point) const
 {
-    return this->_matrix * point.to4D();
+    return this->_matrix * point;
 }
 
 QSharedPointer<Transform> Transform::compose(Transform *transform)
