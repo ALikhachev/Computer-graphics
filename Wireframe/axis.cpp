@@ -1,6 +1,6 @@
 #include "axis.h"
 
-#include <QVector4D>)
+#include <QVector4D>
 
 Axis::Axis(AxisType type, float length) : Axis(QVector3D(0, 0, 0), type, length)
 {
